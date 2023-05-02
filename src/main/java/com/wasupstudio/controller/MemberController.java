@@ -44,18 +44,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/member")
 public class MemberController {
 
-    @Value("${google.CLIENT_ID}")
-    private  String CLIENT_ID;
-    @Value("${google.CLIENT_SECRET}")
-    private String CLIENT_SECRET;
-    @Value("${google.REDIRECT_URI}")
-    private String REDIRECT_URI;
-    private final List<String> SCOPES = Arrays.asList(
-            "https://www.googleapis.com/auth/userinfo.email",
-            "https://www.googleapis.com/auth/userinfo.profile"
-    );
-    private final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    private final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     @Autowired
     private MemberService memberService;
 
@@ -70,11 +58,7 @@ public class MemberController {
         MemberEntity licenseEntity = memberService.findOne(id);
         return ResultGenerator.genSuccessResult(licenseEntity);
     }
-    @PostMapping("/google-signup")
-    public Result google_signup() throws IOException {
-        String url = GoogleSignIn.getAuthorizationUrl();
-        return ResultGenerator.genSuccessResult(url);
-    }
+
     @PostMapping("/signup")
     public Result signup(@RequestBody @Valid MemberDTO memberDTO, BindingResult bindingResult) throws IOException {
 
@@ -87,38 +71,6 @@ public class MemberController {
         memberService.save(memberDTO);
         return ResultGenerator.genSuccessResult();
     }
-    @GetMapping(value = "/oauth2callback")
-    public Result handleOAuth2Callback(@RequestParam(value = "code") String code, HttpSession session) throws IOException {
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                HTTP_TRANSPORT,
-                JSON_FACTORY,
-                CLIENT_ID,
-                CLIENT_SECRET,
-                SCOPES)
-                .setAccessType("offline")
-                .setApprovalPrompt("force")
-                .build();
-        GoogleTokenResponse tokenResponse = flow.newTokenRequest(code)
-                .setRedirectUri(REDIRECT_URI)
-                .setGrantType("authorization_code")
-                .execute();
-
-        Credential credential = new Credential.Builder(BearerToken.authorizationHeaderAccessMethod())
-                .setTransport(HTTP_TRANSPORT)
-                .setJsonFactory(JSON_FACTORY)
-                .setTokenServerUrl(new GenericUrl("https://oauth2.googleapis.com/token"))
-                .setClientAuthentication(new BasicAuthentication(CLIENT_ID, CLIENT_SECRET))
-                .build()
-                .setAccessToken(tokenResponse.getAccessToken())
-                .setRefreshToken(tokenResponse.getRefreshToken());
-
-        // 取得使用者資訊
-        Oauth2 oauth2 = new Oauth2.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
-        Userinfo userInfo = oauth2.userinfo().get().execute();
-
-        return ResultGenerator.genSuccessResult(userInfo);
-    }
-
     @PostMapping("/login")
     public Result login(@RequestBody @Valid MemberDTO memberDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

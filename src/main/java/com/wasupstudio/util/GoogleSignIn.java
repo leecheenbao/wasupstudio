@@ -1,16 +1,16 @@
 package com.wasupstudio.util;
 
-import com.google.api.client.auth.oauth2.BearerToken;
 import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.auth.oauth2.*;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
+import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.BasicAuthentication;
-import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfo;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,10 +20,10 @@ import java.util.Collections;
 
 public class GoogleSignIn {
 
-    private static final String APPLICATION_NAME = "Your Application Name";
+    private static final String APPLICATION_NAME = "wasupstudio";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String CLIENT_SECRET_FILE = "/client_secret.json";
-    private static final String REDIRECT_URI = "http://localhost:8080/wasupstudio/api/member/oauth2callback";
+    private static final String REDIRECT_URI = "http://localhost:8080/wasupstudio/api/google/oauth2callback";
 
     public static HttpTransport httpTransport;
 
@@ -66,20 +66,4 @@ public class GoogleSignIn {
         return GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(inputStream));
     }
 
-    public static void main(String[] args) throws IOException {
-        GoogleClientSecrets googleClientSecrets = getClientSecrets();
-        String authUrl = GoogleSignIn.getAuthorizationUrl();
-        System.out.println("Please go to this URL to authorize the application: ");
-        System.out.println(authUrl);
-
-        System.out.print("Enter the authorization code: ");
-        String code = System.console().readLine().trim();
-
-        Credential credential = GoogleSignIn.exchangeAuthorizationCode(code);
-
-        Userinfo userInfo = GoogleSignIn.getUserInfo(credential);
-        System.out.println("Email: " + userInfo.getEmail());
-
-        // Use the user's email to create or authenticate your user
-    }
 }
