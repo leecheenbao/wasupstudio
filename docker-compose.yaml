@@ -1,0 +1,19 @@
+version: '3.9'
+services:
+#  mysql:
+#     image: mysql
+#     environment:
+#        MYSQL_ROOT_PASSWORD: 123456
+#     ports:
+#       - 3308:3306
+#       - 33061:33060
+  admin:
+     image: adminer
+     ports:
+       - 8080:8080
+  paulservice:
+     # 不同OS要注意
+     build:
+       dockerfile: ./dockerfile-mac
+     ports:
+       - 8081:8080
