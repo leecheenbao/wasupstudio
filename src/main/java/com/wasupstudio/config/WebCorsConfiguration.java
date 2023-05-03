@@ -15,7 +15,7 @@ import java.util.Collections;
 /**
  * WebCorsConfiguration 跨域配置
  *
- * @author star
+ * @author Paul
  */
 @Configuration
 public class WebCorsConfiguration implements WebMvcConfigurer {
