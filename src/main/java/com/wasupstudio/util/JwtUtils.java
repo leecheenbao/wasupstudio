@@ -2,7 +2,6 @@ package com.wasupstudio.util;
 
 import com.wasupstudio.constant.SecurityConstants;
 import com.wasupstudio.constant.UserRoleConstants;
-import com.wasupstudio.model.entity.MemberEntity;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
@@ -12,13 +11,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.xml.bind.DatatypeConverter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Jwt 工具类，用于生成、解析与验证 token
+ * Jwt 工具類，用於生成、解析與驗證 token
  *
- * @author star
+ * @author Paul
  **/
 public class JwtUtils {
 
@@ -31,20 +33,20 @@ public class JwtUtils {
     }
 
     /**
-     * 根据用户名和用户角色生成 token
+     * 根據用戶名和用戶角色生成 token
      *
-     * @param username   用户名
-     * @param role       用户角色
-     * @param isRemember 是否记住我
+     * @param username   用戶名
+     * @param role       用戶角色
+     * @param isRemember 是否記住我
      * @return 返回生成的 token
      */
     public static String generateToken(String username, String role, boolean isRemember) {
         byte[] jwtSecretKey = DatatypeConverter.parseBase64Binary(SecurityConstants.JWT_SECRET_KEY);
-        // 过期时间
+        // 過期時間
         long expiration = isRemember ? SecurityConstants.EXPIRATION_REMEMBER_TIME : SecurityConstants.EXPIRATION_TIME;
         // 生成 token
         String token = Jwts.builder()
-                // 生成签证信息
+                // 生成簽證信息
                 .setHeaderParam("typ", SecurityConstants.TOKEN_TYPE)
                 .signWith(Keys.hmacShaKeyFor(jwtSecretKey), SignatureAlgorithm.HS256)
                 .setSubject(username)
@@ -52,20 +54,20 @@ public class JwtUtils {
                 .setIssuer(SecurityConstants.TOKEN_ISSUER)
                 .setIssuedAt(new Date())
                 .setAudience(SecurityConstants.TOKEN_AUDIENCE)
-                // 设置有效时间
+                // 設置有效時間
                 .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
                 .compact();
         return token;
     }
 
     /**
-     * 验证 token 是否有效
+     * 驗證 token 是否有效
      *
      * <p>
-     * 如果解析失败，说明 token 是无效的
+     * 如果解析失敗，說明 token 是無效的
      *
      * @param token token 信息
-     * @return 如果返回 true，说明 token 有效
+     * @return 如果返回 true，說明 token 有效
      */
     public static boolean validateToken(String token) {
         try {
@@ -84,14 +86,14 @@ public class JwtUtils {
     }
 
     /**
-     * 根据 token 获取用户认证信息
+     * 根據 token 獲取用戶認證信息
      *
      * @param token token 信息
-     * @return 返回用户认证信息
+     * @return 返回用戶認證信息
      */
     public static Authentication getAuthentication(String token) {
         Claims claims = getTokenBody(token);
-        // 获取用户角色字符串
+        // 獲取用戶角色字符串
         String role = (String) claims.get(SecurityConstants.TOKEN_ROLE_CLAIM);
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
@@ -103,7 +105,7 @@ public class JwtUtils {
                     .collect(Collectors.toList());
         }
 
-        // 获取用户名
+        // 獲取用戶名
         String userName = claims.getSubject();
 
         return new UsernamePasswordAuthenticationToken(userName, token, authorities);
@@ -118,3 +120,4 @@ public class JwtUtils {
     }
 
 }
+
