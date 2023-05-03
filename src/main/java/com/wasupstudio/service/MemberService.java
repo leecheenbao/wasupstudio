@@ -1,15 +1,16 @@
 package com.wasupstudio.service;
 
-import com.google.gson.JsonObject;
 import com.wasupstudio.model.dto.MemberDTO;
 import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
 import com.wasupstudio.util.BasePageInfo;
 
+import java.util.Map;
+
 public interface MemberService {
 
-    void save (MemberDTO memberDTO);
+    String save (MemberDTO memberDTO);
 
     MemberEntity findOne(Integer id);
 
@@ -19,5 +20,5 @@ public interface MemberService {
 
     void update(MemberDTO memberDTO);
 
-    JsonObject login(AdminLoginQuery adminLoginQuery, AdminLoginLogQuery adminLoginLogQuery);
+    Map<String, Object> login(AdminLoginQuery adminLoginQuery, AdminLoginLogQuery adminLoginLogQuery);
 }

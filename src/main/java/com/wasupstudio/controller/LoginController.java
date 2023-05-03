@@ -2,13 +2,13 @@ package com.wasupstudio.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.wasupstudio.exception.Result;
 import com.wasupstudio.exception.ResultGenerator;
-import com.wasupstudio.model.dto.LoginDTO;
+import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
 import com.wasupstudio.service.MemberService;
-import com.wasupstudio.util.BasePageInfo;
 import com.wasupstudio.util.HttpServletRequestUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -17,19 +17,15 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 @Api(tags = "LoginController")
@@ -55,7 +51,7 @@ public class LoginController {
 			@ApiImplicitParam(name = "uuid", value = "图片验证码唯一ID", required = true, dataType = "string")
 	})
 	@PostMapping(value = "/login", produces = "application/json;charset=utf-8")
-	public Result login(@Valid AdminLoginQuery adminLoginQuery) {
+	public Result login(@RequestBody @Valid AdminLoginQuery adminLoginQuery) {
 		String loginIp = getIP();
 
 		AdminLoginLogQuery adminLoginLogQuery = new AdminLoginLogQuery();
@@ -67,9 +63,11 @@ public class LoginController {
 		adminLoginQuery.setDevice_type(getHeader("device_type"));
 		adminLoginQuery.setDevice_os(getHeader("device_os"));
 
-		JsonObject jsonObject = memberService.login(adminLoginQuery, adminLoginLogQuery);
+		Map<String, Object> dataMap = memberService.login(adminLoginQuery, adminLoginLogQuery);
+		MemberEntity memberEntity = (MemberEntity) dataMap.get("member");
+		memberEntity.setLastIp(getIP());
 
-		return ResultGenerator.genSuccessResult(jsonObject);
+		return ResultGenerator.genSuccessResult(dataMap);
 
 	}
 	/**

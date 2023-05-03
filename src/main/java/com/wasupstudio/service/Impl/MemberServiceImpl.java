@@ -1,8 +1,5 @@
 package com.wasupstudio.service.Impl;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.exception.BussinessException;
 import com.wasupstudio.exception.ResultCode;
@@ -20,7 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -29,21 +28,24 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
     public MemberMapper memberMapper;
 
     @Override
-    public void save(MemberDTO memberDTO) {
+    public String save(MemberDTO memberDTO) {
+        MemberEntity memberEntity = this.getAdminByEmail(memberDTO.getEmail());
+        if (memberEntity == null) {
+            memberEntity.setEmail(memberDTO.getEmail());
+            memberEntity.setName(memberDTO.getName());
+            memberEntity.setPwd(AesHelper.encrypt(memberDTO.getPwd()));
+            memberEntity.setPhone(memberDTO.getPhone());
+            memberEntity.setBirthday(memberDTO.getBirthday());
+            memberEntity.setOrganization(memberDTO.getOrganization());
+            memberEntity.setGrade(memberDTO.getGrade());
+            memberEntity.setRegistionTime(memberDTO.getRegistionTime());
+            memberEntity.setStatus(ProjectConstant.SystemAdminStatus.NORMAL);
+            memberEntity.setRole(memberDTO.getRole());
+            save(memberEntity);
 
-        MemberEntity memberEntity = new MemberEntity();
-        memberEntity.setEmail(memberDTO.getEmail());
-        memberEntity.setName(memberDTO.getName());
-        memberEntity.setPwd(AesHelper.encrypt(memberDTO.getPwd()));
-        memberEntity.setPhone(memberDTO.getPhone());
-        memberEntity.setBirthday(memberDTO.getBirthday());
-        memberEntity.setOrganization(memberDTO.getOrganization());
-        memberEntity.setGrade(memberDTO.getGrade());
-        memberEntity.setRegistionTime(memberDTO.getRegistionTime());
-        memberEntity.setStatus(ProjectConstant.SystemAdminStatus.NORMAL);
-        memberEntity.setRole(memberDTO.getRole());
-        save(memberEntity);
-
+            return ResultCode.SAVE_SUCCESS.getMessage();
+        }
+        return ResultCode.CREATE_ACCOUNT_ERROR.getMessage() + ":" + ResultCode.SAVE_REPEAT_FAILD.getMessage();
     }
 
     @Override
@@ -87,7 +89,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
      * @param adminLoginQuery
      */
     @Override
-    public JsonObject login(AdminLoginQuery adminLoginQuery, AdminLoginLogQuery adminLoginLogQuery) {
+    public Map login(AdminLoginQuery adminLoginQuery, AdminLoginLogQuery adminLoginLogQuery) {
         String email = adminLoginQuery.getEmail();
 
         MemberEntity memberEntity = this.getAdminByEmail(email);
@@ -99,14 +101,17 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
 
         Integer memberEntityId = memberEntity.getId();
 
-        Gson gson = new Gson();
         // 生成token
         String token = ProjectTokenUtils.genToken();
-        String userJsonString = gson.toJson(memberEntity, MemberEntity.class);
-        JsonObject jsonObject = JsonParser.parseString(userJsonString).getAsJsonObject();
 
-        return jsonObject;
+        Map<String, Object> map = new HashMap<>();
+        map.put("token", token);
+        map.put("member", memberEntity);
+
+        return map;
     }
+
+
 
 }
 

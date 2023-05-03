@@ -1,15 +1,17 @@
 package com.wasupstudio.controller;
 
-import com.google.api.client.auth.oauth2.*;
+import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl;
+import com.google.api.client.auth.oauth2.BearerToken;
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.*;
+import com.google.api.client.http.BasicAuthentication;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.store.MemoryDataStoreFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfo;
 import com.wasupstudio.exception.Result;
@@ -17,15 +19,11 @@ import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.util.GoogleSignIn;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.List;
 

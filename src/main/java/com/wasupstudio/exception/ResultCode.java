@@ -385,10 +385,10 @@ public enum ResultCode {
     PLATFORM_EXCHANGE_CLOSED(20162, "該交易所已下架"),
 
     //遊戲
-    GAME_AE_CREATE_ACCOUNT_ERROR(40002, "創建用戶失敗"),
-    GAME_AE_GET_HISTORY_ERROR(40003, "獲取記錄失敗"),
-    GAME_AE_CHECK_BALANCE_ERROR(40004, "檢查餘額失敗"),
-    GAME_AE_LOGIN_ERROR(40005, "登陸遊戲失敗，請稍後嘗試"),
+    CREATE_ACCOUNT_ERROR(40002, "創建用戶失敗"),
+    GET_HISTORY_ERROR(40003, "獲取記錄失敗"),
+    CHECK_BALANCE_ERROR(40004, "檢查餘額失敗"),
+    LOGIN_ERROR(40005, "登陸遊戲失敗，請稍後嘗試"),
     GAME_GET_BET_ERROR(40000, "獲取投注記錄失敗"),
     GAME_LOGIN_ERROR(40001, "遊戲平入失敗，請稍後嘗試"),
     GAME_CREATE_ACCOUNT_ERROR(40006, "創建用戶失敗"),

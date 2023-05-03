@@ -2,6 +2,7 @@ package com.wasupstudio.controller;
 
 import com.google.gson.Gson;
 import com.wasupstudio.exception.Result;
+import com.wasupstudio.exception.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.dto.LicenseDTO;
 import com.wasupstudio.model.entity.LicenseEntity;
@@ -34,6 +35,9 @@ public class LicenseController {
     @GetMapping("/{id}")
     public Result getOneData(@PathVariable Integer id) {
         LicenseEntity licenseEntity = licenseService.findOne(id);
+        if (licenseEntity == null){
+            return ResultGenerator.genSuccessResult(ResultCode.DATA_NOT_EXIST.getMessage());
+        }
         return ResultGenerator.genSuccessResult(licenseEntity);
     }
 
@@ -59,7 +63,7 @@ public class LicenseController {
         }
         licenseService.save(licenseDTO);
         Gson gson = new Gson();
-        return ResultGenerator.genSuccessResult();
+        return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
     }
 
     @PutMapping("/{id}")
@@ -73,6 +77,6 @@ public class LicenseController {
 
         licenseDTO.setId(id);
         licenseService.update(licenseDTO);
-        return ResultGenerator.genSuccessResult();
+        return ResultGenerator.genSuccessResult(ResultCode.SAVE_SUCCESS.getMessage());
     }
 }
