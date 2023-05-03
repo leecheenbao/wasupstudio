@@ -33,12 +33,12 @@ public class JwtUtils {
     /**
      * 根据用户名和用户角色生成 token
      *
-     * @param userName   用户名
-     * @param roles      用户角色
+     * @param username   用户名
+     * @param role       用户角色
      * @param isRemember 是否记住我
      * @return 返回生成的 token
      */
-    public static String generateToken(MemberEntity member, boolean isRemember) {
+    public static String generateToken(String username, String role, boolean isRemember) {
         byte[] jwtSecretKey = DatatypeConverter.parseBase64Binary(SecurityConstants.JWT_SECRET_KEY);
         // 过期时间
         long expiration = isRemember ? SecurityConstants.EXPIRATION_REMEMBER_TIME : SecurityConstants.EXPIRATION_TIME;
@@ -47,8 +47,8 @@ public class JwtUtils {
                 // 生成签证信息
                 .setHeaderParam("typ", SecurityConstants.TOKEN_TYPE)
                 .signWith(Keys.hmacShaKeyFor(jwtSecretKey), SignatureAlgorithm.HS256)
-                .setSubject(member.getEmail())
-                .claim(SecurityConstants.TOKEN_ROLE_CLAIM, member.getRole())
+                .setSubject(username)
+                .claim(SecurityConstants.TOKEN_ROLE_CLAIM, role)
                 .setIssuer(SecurityConstants.TOKEN_ISSUER)
                 .setIssuedAt(new Date())
                 .setAudience(SecurityConstants.TOKEN_AUDIENCE)

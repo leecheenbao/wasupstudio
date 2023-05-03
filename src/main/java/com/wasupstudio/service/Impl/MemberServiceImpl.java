@@ -2,7 +2,6 @@ package com.wasupstudio.service.Impl;
 
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.constant.UserRoleConstants;
-import com.wasupstudio.exception.BussinessException;
 import com.wasupstudio.exception.ResultCode;
 import com.wasupstudio.mapper.MemberMapper;
 import com.wasupstudio.model.dto.MemberDTO;
@@ -10,16 +9,16 @@ import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
 import com.wasupstudio.service.MemberService;
-import com.wasupstudio.util.*;
+import com.wasupstudio.util.AbstractService;
+import com.wasupstudio.util.AesHelper;
+import com.wasupstudio.util.BasePageInfo;
+import com.wasupstudio.util.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Slf4j
@@ -83,34 +82,6 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
         this.update(memberEntity);
     }
 
-    /**
-     * 登入
-     *
-     * @param adminLoginQuery
-     */
-    @Override
-    public Map loginV2(AdminLoginQuery adminLoginQuery, AdminLoginLogQuery adminLoginLogQuery) {
-        String email = adminLoginQuery.getEmail();
-
-        MemberEntity memberEntity = this.getAdminByEmail(email);
-
-        if (null == memberEntity || memberEntity.getStatus() != ProjectConstant.SystemAdminStatus.NORMAL) {
-            log.info("[管理員登入][{}][失敗] 原因:{}", email, ResultCode.PASSWOWRD_WRONG.getMessage() );
-            throw new BussinessException(ResultCode.PASSWOWRD_WRONG.getMessage());
-        }
-
-        Integer memberEntityId = memberEntity.getId();
-
-        // 生成token
-        String token = ProjectTokenUtils.genToken();
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("token", token);
-        map.put("member", memberEntity);
-
-        return map;
-    }
-
     @Override
     public String login(AdminLoginQuery adminLoginQuery, AdminLoginLogQuery adminLoginLogQuery) {
 
@@ -125,7 +96,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
             if (memberEntity.getRole() == null) {
                 memberEntity.setRole(MemberEntity.Role.valueOf(UserRoleConstants.ROLE_USER));
             }
-            String token = JwtUtils.generateToken(memberEntity, true);
+            String token = JwtUtils.generateToken(memberEntity.getEmail(),memberEntity.getRole().name(), true);
             return token;
         }
 

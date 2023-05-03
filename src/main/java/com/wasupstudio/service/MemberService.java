@@ -6,8 +6,6 @@ import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
 import com.wasupstudio.util.BasePageInfo;
 
-import java.util.Map;
-
 public interface MemberService {
 
     String save (MemberDTO memberDTO);
@@ -19,8 +17,6 @@ public interface MemberService {
     BasePageInfo findAllData();
 
     void update(MemberDTO memberDTO);
-
-    Map<String, Object> loginV2(AdminLoginQuery adminLoginQuery, AdminLoginLogQuery adminLoginLogQuery);
 
     String login(AdminLoginQuery adminLoginQuery, AdminLoginLogQuery adminLoginLogQuery);
 }
