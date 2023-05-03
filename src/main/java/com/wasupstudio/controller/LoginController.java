@@ -139,7 +139,9 @@ public class LoginController {
 
 			String jwtToken = memberService.login(userInfo.getEmail());
 			if (jwtToken == null) {
-				return ResultGenerator.genSuccessResult(ResultCode.USER_LOGIN_FAILED.getMessage());
+				return ResultGenerator.genSuccessResult(
+						ResultCode.USER_LOGIN_FAILED.getMessage() + ":" +
+								ResultCode.USER_NAME_NOT_EXIST.getMessage());
 			}
 			LoginDTO loginDTO = new LoginDTO();
 			loginDTO.setToken(jwtToken);

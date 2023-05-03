@@ -1,9 +1,9 @@
 package com.wasupstudio.constant;
 
 /**
- * RoleConstants
+ * UserRoleConstants
  *
- * @author star
+ * @author Paul
  */
 public final class UserRoleConstants {
 
