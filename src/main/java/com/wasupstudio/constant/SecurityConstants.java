@@ -15,6 +15,7 @@ public final class SecurityConstants {
      * 用於登錄的 url
      */
     public static final String AUTH_LOGIN_URL = "/auth/login";
+    public static final String AUTH_SIGNUP_URL = "/auth/signup";
 
     /**
      * JWT簽名密鑰，這裡使用 HS512 算法的簽名密鑰

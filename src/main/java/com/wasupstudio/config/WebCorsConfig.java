@@ -18,7 +18,7 @@ import java.util.Collections;
  * @author Paul
  */
 @Configuration
-public class WebCorsConfiguration implements WebMvcConfigurer {
+public class WebCorsConfig implements WebMvcConfigurer {
 
     /**
      * 设置swagger为默认主页

@@ -8,13 +8,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 /**
  * JwtConfigurer
  *
- * @author Paul
  */
-public class JwtConfigurer extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
+public class JwtConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
     private JwtAuthorizationFilter jwtAuthorizationFilter;
 
-    public JwtConfigurer(JwtAuthorizationFilter jwtAuthorizationFilter) {
+    public JwtConfig(JwtAuthorizationFilter jwtAuthorizationFilter) {
         this.jwtAuthorizationFilter = jwtAuthorizationFilter;
     }
 

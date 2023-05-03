@@ -22,7 +22,6 @@ import java.io.IOException;
  * 提供请求授权功能。用于处理所有 HTTP 请求，并检查是否存在带有正确 token 的 Authorization 标头。
  * 如果 token 有效，则过滤器会将身份验证数据添加到 Spring 的安全上下文中，并授权此次请求访问资源。</p>
  *
- * @author Paul
  */
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 

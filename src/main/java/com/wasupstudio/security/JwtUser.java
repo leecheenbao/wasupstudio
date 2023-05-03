@@ -6,7 +6,6 @@ import lombok.Data;
 /**
  * JwtUserDTO
  *
- * @author Paul
  */
 @Data
 public class JwtUser {
