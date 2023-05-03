@@ -16,13 +16,13 @@ import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfo;
 import com.wasupstudio.exception.BussinessException;
 import com.wasupstudio.exception.Result;
+import com.wasupstudio.exception.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.dto.LoginDTO;
 import com.wasupstudio.model.dto.MemberDTO;
 import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
 import com.wasupstudio.service.MemberService;
-import com.wasupstudio.util.GoogleSignIn;
 import com.wasupstudio.util.HttpServletRequestUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -41,6 +41,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,8 +54,11 @@ public class LoginController {
 	private  String CLIENT_ID;
 	@Value("${google.CLIENT_SECRET}")
 	private String CLIENT_SECRET;
-	@Value("${google.REDIRECT_URI}")
-	private String REDIRECT_URI;
+	@Value("${google.LOGIN_REDIRECT_URI}")
+	private String LOGIN_REDIRECT_URI;
+	@Value("${google.SIGNUP_REDIRECT_URI}")
+	private String SIGNUP_REDIRECT_URI;
+
 	private final List<String> SCOPES = Arrays.asList(
 			"https://www.googleapis.com/auth/userinfo.email",
 			"https://www.googleapis.com/auth/userinfo.profile"
@@ -67,13 +71,86 @@ public class LoginController {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@PostMapping("/google-signup")
-	public Result google_signup() throws IOException {
-		String url = GoogleSignIn.getAuthorizationUrl();
-		return ResultGenerator.genSuccessResult(url);
+	public Result google_signup(@RequestParam(value = "code" ,required = false) String code) throws IOException, GeneralSecurityException {
+		if (code != null) {
+			GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+					HTTP_TRANSPORT,
+					JSON_FACTORY,
+					CLIENT_ID,
+					CLIENT_SECRET,
+					SCOPES)
+					.setAccessType("offline")
+					.setApprovalPrompt("force")
+					.build();
+			GoogleTokenResponse tokenResponse = flow.newTokenRequest(code)
+					.setRedirectUri(SIGNUP_REDIRECT_URI)
+					.setGrantType("authorization_code")
+					.execute();
+
+			Credential credential = new Credential.Builder(BearerToken.authorizationHeaderAccessMethod())
+					.setTransport(HTTP_TRANSPORT)
+					.setJsonFactory(JSON_FACTORY)
+					.setTokenServerUrl(new GenericUrl("https://oauth2.googleapis.com/token"))
+					.setClientAuthentication(new BasicAuthentication(CLIENT_ID, CLIENT_SECRET))
+					.build()
+					.setAccessToken(tokenResponse.getAccessToken())
+					.setRefreshToken(tokenResponse.getRefreshToken());
+
+			// 取得使用者資訊
+			Oauth2 oauth2 = new Oauth2.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
+			Userinfo userInfo = oauth2.userinfo().get().execute();
+
+			return ResultGenerator.genSuccessResult(userInfo);
+		}
+
+		return getGoogleOAuth(SIGNUP_REDIRECT_URI);
 	}
 
 	@GetMapping("/google-login")
-	public String googleLogin(HttpServletRequest request) throws Exception {
+	public Result googleLogin(@RequestParam(value = "code" ,required = false) String code) throws Exception {
+
+		if (code != null) {
+			GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+					HTTP_TRANSPORT,
+					JSON_FACTORY,
+					CLIENT_ID,
+					CLIENT_SECRET,
+					SCOPES)
+					.setAccessType("offline")
+					.setApprovalPrompt("force")
+					.build();
+			GoogleTokenResponse tokenResponse = flow.newTokenRequest(code)
+					.setRedirectUri(LOGIN_REDIRECT_URI)
+					.setGrantType("authorization_code")
+					.execute();
+
+			Credential credential = new Credential.Builder(BearerToken.authorizationHeaderAccessMethod())
+					.setTransport(HTTP_TRANSPORT)
+					.setJsonFactory(JSON_FACTORY)
+					.setTokenServerUrl(new GenericUrl("https://oauth2.googleapis.com/token"))
+					.setClientAuthentication(new BasicAuthentication(CLIENT_ID, CLIENT_SECRET))
+					.build()
+					.setAccessToken(tokenResponse.getAccessToken())
+					.setRefreshToken(tokenResponse.getRefreshToken());
+
+			// 取得使用者資訊
+			Oauth2 oauth2 = new Oauth2.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
+			Userinfo userInfo = oauth2.userinfo().get().execute();
+
+			String jwtToken = memberService.login(userInfo.getEmail());
+			if (jwtToken == null) {
+				return ResultGenerator.genSuccessResult(ResultCode.USER_LOGIN_FAILED.getMessage());
+			}
+			LoginDTO loginDTO = new LoginDTO();
+			loginDTO.setToken(jwtToken);
+			loginDTO.setMemMail(userInfo.getEmail());
+			return ResultGenerator.genSuccessResult(loginDTO);
+		}
+
+		return getGoogleOAuth(LOGIN_REDIRECT_URI);
+	}
+
+	private Result getGoogleOAuth(String REDIRECT_URI) throws GeneralSecurityException, IOException {
 		List<String> scopes = Arrays.asList("openid", "email", "profile");
 		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
 				GoogleNetHttpTransport.newTrustedTransport(),
@@ -83,7 +160,7 @@ public class LoginController {
 				scopes)
 				.build();
 		AuthorizationCodeRequestUrl authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI);
-		return "redirect:" + authorizationUrl.build();
+		return ResultGenerator.genSuccessResult(authorizationUrl.build());
 	}
 
 	@GetMapping(value = "/oauth2callback")
@@ -98,7 +175,7 @@ public class LoginController {
 				.setApprovalPrompt("force")
 				.build();
 		GoogleTokenResponse tokenResponse = flow.newTokenRequest(code)
-				.setRedirectUri(REDIRECT_URI)
+				.setRedirectUri(SIGNUP_REDIRECT_URI)
 				.setGrantType("authorization_code")
 				.execute();
 

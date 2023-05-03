@@ -103,6 +103,25 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
         return null;
     }
 
+    @Override
+    public String login(String mail) {
+        MemberEntity memberEntity = memberMapper.findAccount(mail);
+
+        if (memberEntity != null) {
+            HashMap<String, Object> dataMap = new HashMap<>();
+            dataMap.put("user", memberEntity);
+            memberEntity.getRole();
+            // 如果用户角色为空，则默认赋予 ROLE_USER 角色
+            if (memberEntity.getRole() == null) {
+                memberEntity.setRole(MemberEntity.Role.valueOf(UserRoleConstants.ROLE_USER));
+            }
+            String token = JwtUtils.generateToken(memberEntity.getEmail(),memberEntity.getRole().name(), true);
+            return token;
+        }
+
+        return null;
+    }
+
 
     public Boolean checkoutPassword(AdminLoginQuery adminLoginQuery, MemberEntity memberEntity){
         String dbData = AesHelper.decrypt(memberEntity.getPwd());

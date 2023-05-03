@@ -3,7 +3,6 @@ package com.wasupstudio.exception;
 /**
  * 響應碼枚舉，參考HTTP狀態碼的語義
  *
- * @author Sim
  * <p>
  * 10000-19999 => 系統
  * 20000-29999 => 用戶
@@ -25,14 +24,14 @@ public enum ResultCode {
     SYSTEM_ERROR(409, "系統異常"),
     UNAUTHORIZED(401, "簽名錯誤"),
     TOEKNUNVALIBLE(405, "TOKEN過期"),
-    TOEKN_DEVICE(408, "該賬號於其他設備登錄"),
+    TOEKN_DEVICE(408, "該帳號於其他設備登入"),
     NOT_FOUND(404, "此位置不存在"),
     NOT_ACCESS(406, "無權限訪問"),
     NO_SENSE_ERROR(407, "圖片滑動驗證失敗"),
     INTERNAL_SERVER_ERROR(500, "系統繁忙,請稍後再試"),
     DEPRECATED_ERROR(501, "接口廢棄"),
     BACKGROUND_SETTING_ERROR(998, "後台設定錯誤"),
-    AUTO_LOGIN_SUCCESS(999, "自動登錄成功"),
+    AUTO_LOGIN_SUCCESS(999, "自動登入成功"),
 
     //操作提示
     ADD_SUCCESS(1001, "添加成功"),
@@ -63,19 +62,19 @@ public enum ResultCode {
     INSERT_FAILD(10001, "新增添數據失敗，請稍後再試"),
     UPDATE_FAILD(10002, "更新數據失敗，請稍後再試"),
     DATA_NOT_EXIST(10003, "該資料不存在"),
-    NOT_ACCESS_ERROR(10004, "請登錄本人賬號進行操作"),
+    NOT_ACCESS_ERROR(10004, "請登入本人帳號進行操作"),
     UPLOAD_ERROR(10005, "上傳失敗，請稍後再試"),
     UPLOAD_DELETE_ERROR(10006, "文件刪除失敗，請稍後再試"),
     UPLOAD_FORMAT_ERROR(10007, "文件格式有誤"),
     TOKEN_FORMAT_ERROR(10008, "TOKEN格式錯誤"),
     INTENSITY_PASSWORD_ERROR(10009, "請設定至少8-16個字符、1個大寫字母、1個小寫字母和1個數字"),
     UPLOAD_MAX_ERROR(10010, "文件圖片過大，請勿超過%s"),
-    NOT_AUTH_ERROR(10011, "該賬號無權限訪問"),
+    NOT_AUTH_ERROR(10011, "該帳號無權限訪問"),
 
     OPERATION_INVALID(10012, "此操作無效，請重新嘗試"),
     QUERY_FAILD(10013, "查詢內容失敗，請稍後再試"),
     TIME_INVALID_PARAM(10014, "日期參數有誤，請輸入正確日期"),
-    ADMIN_NOT_EXIST(10015, "該賬號已失效，請重新登錄"),
+    ADMIN_NOT_EXIST(10015, "該帳號已失效，請重新登入"),
     DOWNLOAD_FAILD(10016, "下載失敗"),
     DOMAIN_FORMAT_ERROR(10017, "域名格式錯誤"),
     RATE_LIMIT_ERROR(10018, "請求太過頻繁，請稍後再試"),
@@ -83,8 +82,7 @@ public enum ResultCode {
     APP_DATA_NOT_EXIST(10020, "無法獲取有效下載鏈接"),
     APP_LAST_VERSION_ALLREADY(10022, "當前已是最新版本"),
     UPLOAD_SUCCESS(10021, "文件上傳成功"),
-    ONLY_ONE_CS(10022, "只能有一家客服開啓"),
-    UNLOGIN_ERROR(10023,"請先登錄您的賬號"),
+    UNLOGIN_ERROR(10023,"請先登入您的帳號"),
     NO_FORCE_UPDATE_VERSION(10024, "沒找到需要強更的版本"),
     APP_VERSION_NO_SIGN_TYPE(10025, "請選擇簽名類型"),
     APP_LATEST_VERSION_NOT_FOUND(10026, "找不到最新版本"),
@@ -92,7 +90,7 @@ public enum ResultCode {
     CARD_NUMBER_OVER_SIZE(10028, "最多只能綁定5張銀行卡！"),
     NOT_CLOSED_CUSTOMER_INTERFACE(10029, "客服系統預設啓用，不能關閉"),
 
-    NOT_AUTH_MODIFY_DEFAULT_FRONT_PAGE(10030, "該賬號無法使用此預設首頁,修改失敗"),
+    NOT_AUTH_MODIFY_DEFAULT_FRONT_PAGE(10030, "該帳號無法使用此預設首頁,修改失敗"),
 
     //活動
     ACTIVETY_NOT_ONGOING_ROUND(11021, "對不起，此時非該活動申請時間。"),
@@ -178,21 +176,21 @@ public enum ResultCode {
     ACTIVITY_DRAW_CHANCES_NOT_ENOUGH_YEAR_DM(11119, "採摘機會不足"),
     ACTIVITY_DRAW_CHANCES_NOT_ENOUGHYEAR_VS(11120, "開運簽數量不足"),
     //用戶
-    USER_LOGIN_SUCCESS(20000, "登錄成功"),
-    USER_LOGIN_FAILED(21000, "登錄失敗"),
+    USER_LOGIN_SUCCESS(20000, "登入成功"),
+    USER_LOGIN_FAILED(21000, "登入失敗"),
     USER_REGISTER_FAILED(22000, "註冊失敗"),
     USER_NAME_EXIST(20001, "該用戶名已存在"),
     VALIDATAE_CODE_ERROR(20002, "驗證碼錯誤"),
     USER_NAME_NOT_EXIST(20003, "該用戶名不存在"),
     PASSWOWRD_WRONG(20004, "用戶名或密碼不正確"),
-    USER_NAME_ERROR(20005, "賬號必須為英文+數字且長度在6-10以內"),
+    USER_NAME_ERROR(20005, "帳號必須為英文+數字且長度在6-10以內"),
     PASSWORD_ERROR(20077, "密碼不符合要求"),
     INVITE_CODE_NOT_EXIST(20006, "該邀請碼不存在，確認後請再嘗試"),
     MOBILE_EXIST(20007, "該手機號碼已存在"),
     EMAIL_EXIST(20008, "該郵箱已存在"),
-    EMAIL_NOT_EXIST(20018, "該郵箱賬號有誤，請確認後再嘗試"),
-    TOKEN_UNAVAILABLE(20009, "登錄失效"),
-    TRANSFER_UNAVAILABLE(20010, "我們檢測到您的賬號有異常行為，為您的財產安全考慮，此賬戶已經被自動鎖定，請聯繫客服解決"),
+    EMAIL_NOT_EXIST(20018, "該郵箱帳號有誤，請確認後再嘗試"),
+    TOKEN_UNAVAILABLE(20009, "登入失效"),
+    TRANSFER_UNAVAILABLE(20010, "我們檢測到您的帳號有異常行為，為您的財產安全考慮，此賬戶已經被自動鎖定，請聯繫客服解決"),
     TRANSFER_COUNT_MAX(20011, "今日無轉賬次數，請明日再嘗試。"),
     TRANSFER_PLATFORM_NOT_ENOUGH_LEFT(20012, "該賬戶平台餘額不足"),
     TRANSFER_GAME_NOT_ENOUGH_LEFT(20013, "該賬戶平台遊戲餘額不足"),
@@ -228,10 +226,7 @@ public enum ResultCode {
     USER_SECURITY_INFO_NOT_EXIST(20040, "用戶保護信息不存在"),
     USER_NAME_PWD_EQUAL_ERROR(20041, "用戶名與密碼不能一致"),
     USER_OLD_NEW_PWD_EQUAL_ERROR(20042, "新舊密碼不能一致"),
-    USER_LOCK_ERROR(20043, "系統檢測到您的賬號有異常行為，為了您的賬戶和資金安全，系統已暫時鎖定了您的賬號，請聯繫客服解鎖。"),
-    TRANSFER_MIN_AMOUNT_ERROR(20044, "轉賬金額小於平台最低金額"),
-    TRANSFER_MAX_AMOUNT_ERROR(20045, "轉賬金額大於平台最高金額"),
-    WITHDRAW_CONFIG_ERROR(20046, "請檢測提現賬戶"),
+    USER_LOCK_ERROR(20043, "系統檢測到您的帳號有異常行為，為了您的賬戶和資金安全，系統已暫時鎖定了您的帳號，請聯繫客服解鎖。"),
     USER_BIRFTHDAY_ERROR(20047, "生日格式錯誤，正確格式為：yyyy-MM-dd"),
     WITHDRAW_SUB_ORDER_NOT_EXIST(20048, "提現子訂單不存在或者已被審核"),
     VALIDATE_USERNAME_ERROR(20049, "驗證用戶名失敗"),
@@ -284,7 +279,7 @@ public enum ResultCode {
     WITHDRAWAL_MAX_LIMIT(20095, "提現金額已超過每日最高限額"),
     USDT_RECHARGE_CHECK(20133, "在本次USDT提現前，請先進行USDT充值，謝謝！"),
     PLATFORM_RECHARGE_CHECK(20134, "在本次提現前，請先進行平台幣充值，謝謝！"),
-    DEVICE_BIND_ERROR(20096, "登錄失敗，賬戶已綁定設備號登錄"),
+    DEVICE_BIND_ERROR(20096, "登入失敗，賬戶已綁定設備號登入"),
     NAME_IS_EMPTY_ERROR(20097, "請確定姓名已設置"),
     BIND_CARD_IS_EXIST(20098, "你已經綁定過銀行卡, 不能在設置姓名"),
     REALLY_NAME_LENGTH_ERROR(20099, "真實長度在20字以內"),
@@ -329,7 +324,7 @@ public enum ResultCode {
     CAPTCHA_NOT_FOUND_SETTING(20128,"該驗證未設定SETTING"),
     CAPTCHA_VERIFICATION_FAILED(20129,"CAPTCHA 驗證失敗"),
     LOGIN_TOO_MANY_TIMES(20130, "登入過於頻繁, 請稍後再試"),
-    LOGIN_FAILED_RETRY_LOGIN(20131, "為了您帳號安全，本次登錄已失效，請重新登錄"),
+    LOGIN_FAILED_RETRY_LOGIN(20131, "為了您帳號安全，本次登入已失效，請重新登入"),
     WITHDRAW_ADDRESS_NOT_MATCH_RULE(20132, "提幣地址非協議地址格式，請核對後重新輸入"),
     LIMITWATER_ERROR(20133, "平台限制流水不足，暫時無法提現"),
     UNIDENTIFIED(20134, "尚未實名認證"),
@@ -347,7 +342,7 @@ public enum ResultCode {
     RECHARGE_OF_REDEMPTION_EXPIRED(20138, "兌換碼已過期"),
     RECHARGE_OF_REDEMPTION_IS_USED(20139, "兌換碼已被使用"),
     RECHARGE_OF_REDEMPTION_HAPPEN_ERROR(20140, "其他原因"),
-    USER_NOT_ALLOW_RECHARGE(20141, "您的賬號不可充值"),
+    USER_NOT_ALLOW_RECHARGE(20141, "您的帳號不可充值"),
     VALIDATE_RECHARGE_MERCHANT_ERROR(20142, "商戶驗證異常"),
     RECHARGE_UPPER_LIMIT(20143, "今日充值已達上限"),
     EXCEED_RECHARGE_AMOUNT(20144, "超過充值限額"),
@@ -422,7 +417,7 @@ public enum ResultCode {
     RISK_SENSTIVE_KEYWORD_IS_EXIST(50004, "敏感詞已存在"),
     RISK_USER_BLACK_IS_EXIST(50005, "用戶黑名單記錄已經存在"),
     RISK_USER_GROUP_DATA_IS_EXIST(50006, "群組下還有用戶數據"),
-    RISK_USER_LOGIN_ERROR(51000, "賬號存在風險，請輸入手機驗證碼確認操作"),
+    RISK_USER_LOGIN_ERROR(51000, "帳號存在風險，請輸入手機驗證碼確認操作"),
 
     RISK_USER_REGISTER_ERROR(52000, "註冊失敗，您的註冊行為已列入風控！"),
     RISK_BIND_CARD_ERROR(53000, "已超過當日可驗證次數，請聯繫客服"),
@@ -450,20 +445,15 @@ public enum ResultCode {
     ADMIN_USER_NOT_APPROVED(60016, "該會員有未審核的操作，請先審核相關記錄"),
     USER_LEVEL_RECORD_NOT_EXIST(60017, "用戶層級審核記錄不存在"),
     ADMIN_RECORD_NOT_EXIST_OR_APPROVED(60018, "審核記錄不存在或已審核"),
-    WITHDRAWAL_APPROVED(60019, "提現已審核"),
-    WITHDRAWAL_SUP_RECORD_NOT_EXIST(60020, "提現子記錄不存在"),
-    WITHDRAWAL_RECORD_NOT_EXIST_OR_NOTRETURN(60021, "提現記錄不存在或不可退回"),
-    WITHDRAWAL_RETURN_RECORD_NOT_EXIST_OR_APPROVED(60022, "提現退回記錄不存在或已審核"),
-    RECHARGE_DONT_RETURN(60023, "充值訂單不可撤銷"),
     USER_BALANCE_RECORD_NOT_EXSIT(60024, "用戶餘額記錄不存在"),
     USER_BALANCE_ERROR(60025, "用戶餘額大於5元，不可進行流水清零操作"),
-    ADMIN_PASSWOWRD_WRONG(60026, "提示: 您還有最後%d次(賬號將被凍結)，用戶名或密碼不正確"),
-    ADMIN_LOCK_ERROR(60027, "提示: 您的賬號已經被凍結"),
+    ADMIN_PASSWOWRD_WRONG(60026, "提示: 您還有最後%d次(帳號將被凍結)，用戶名或密碼不正確"),
+    ADMIN_LOCK_ERROR(60027, "提示: 您的帳號已經被凍結"),
     CALLBACK_RECEIVE_ERROR(60028, "電話回撥記錄不存在或已被領取"),
     CALLBACK_APPLY_ERROR(60029, "尊敬的會員您好！很抱歉，您申請3個等待的電話回撥，無法申請更多。"),
     TASK_NOT_MINE_ERROR(60030, "尚未領取該任務，操作失敗"),
     HUJIAOYI_CALL_ERROR(60031, "呼叫失敗，請稍後重試"),
-    ADMIN_BIND_SIPNUM_ERROR(60032, "賬號未綁定分機號"),
+    ADMIN_BIND_SIPNUM_ERROR(60032, "帳號未綁定分機號"),
     HUJIAOYI_HANDUP_ERROR(60033, "掛斷電話失敗，請稍後重試"),
     TELLSALE_DELETE_NOTSTART_ERROR(60034, "任務進行中或者已完成，無法刪除"),
     TELLSALE_EXT_ERROR(60035, "抽取歷史客戶池數據失敗"),
@@ -477,12 +467,9 @@ public enum ResultCode {
     RECORD_NOT_MINE_ERROR(60043, "非自己的通話記錄，無法補充"),
     TELLSALE_REGISTER_EXT_ERROR(60044, "抽取指定用戶註冊客戶池數據失敗"),
     MESSAGE_REPLY_CONTENT_LENGTH_ERROR(60045, "回復內容大於300字"),
-    ADMIN_IS_EQUALS_FIRST_OPERATOR(60046, "抱歉，您是該審核操作的一審操作人，因此無法進行二審操作。"),
     THE_TASK_IS_IN_PROGRESS(60047, "任務進行中，無法在執行"),
 
-    THE_REPORT_INTERVAL_ONLY_ONE_MONTH(60132,"此報表區間查詢僅支持最多可選擇100天"),
 
-    USERBACK_ADD_MONEY_ERROR(60101, "贈送彩金金額必須大於0"),
     USERBACK_DATETIME_ERROR(60102, "活動開始時間必須小於結束時間"),
     USERBACK_EXSIT_NAME_ERROR(60103, "活動已存在，活動名稱重復"),
     USERBACK_NOT_EXSIT_ERROR(60104, "活動不存在"),
@@ -491,7 +478,6 @@ public enum ResultCode {
     PERMISSION_APPLY_EXIST(60107, "已申請過該權限"),
     MATERIAL_INFO_NOT_EXIST(60108, "素材不存在"),
     ADVERT_INFO_NOT_EXIST(60109, "廣告不存在或已刪除"),
-
     DEPT_INFO_NOT_EXIST(60110, "部門不存在或已刪除"),
     MENU_INFO_NOT_EXIST(60111, "菜單不存在或已刪除"),
     PERSONNEL_INFO_NOT_EXIST(60112, "員工不存在或已刪除"),
@@ -502,29 +488,13 @@ public enum ResultCode {
     DEPT_INFO_ERROR(60117, "無效部門信息"),
     ROLE_INFO_ERROR(60118, "無效系統角色"),
     DUTY_ROLE_INFO_ERROR(60118, "無效職能角色"),
-    PERSONNEL_LOGIN_EXIST(60119, "已登錄過的賬號不能刪除"),
-
-    WITHDRAWAL_APPROVED_ERROR(60120, "提現訂單異常，提現金額大於凍結金額"),
-    RECHARGE_TYPE_NOT_EXIST(60121, "充值方式類型不存在"),
-
+    PERSONNEL_LOGIN_EXIST(60119, "已登入過的帳號不能刪除"),
     TESTFLIGHT_VERSION_EXIST(60122, "該版本已存在"),
     TESTFLIGHT_VERSION_ERROR(60123, "您輸入的版本號必須比當前最新的版本號【%s】更高。"),
     TESTFLIGHT_VERSION_FORMAT_ERROR(60124, "格式錯誤！版本號只能是一個整數或小數的數字，例如：1或者1.1。"),
-    WITHDRAWAL_USDT_NO_MATCH_ERROR(60125, "提現訂單類型與出款類型不匹配"),
-    WITHDRAWAL_USDT_TYPE_NOT_EXIST(60126, "數字貨幣提現協議不存在"),
     CONFIG_EXIST(60127, "設定已存在"),
     TASK_LIMIT_EXCEEDED(60128, "當前任務已有5個，如要開啓請先下架其他任務"),
     TASK_NOT_ALLOWED_DELETION(60129, "任務上架中，不可刪除"),
-
-    //站內信
-    FIND_NO_MAIL_TYPES(60128, "找不到站內信的模板類型"),
-    MEMBER_SEND_LIST_NULL(60129, "上傳資料為空或非會員名單"),
-    MARQUEE_EXIST(60127, "當前遊戲類型已有1個開啓的跑馬燈，如要開啓請先關閉其他"),
-    //遊戲注單校驗
-    VALIDATION_BET_CSV_INVALID(60130, "上傳的文件不符合規範"),
-    VALIDATION_BET_FAILED(60131, "遊戲注單校驗失敗"),
-
-    WITHDRAWAL_TYPE_NOT_EXIST(60132, "提現方式類型不存在"),
 
     //支付
     PAY_AMOUNT_ERROR(70000, "充值金額錯誤"),
@@ -536,14 +506,10 @@ public enum ResultCode {
     PAY_BANKCARD_NOT_EXIST(70006, "收款銀行卡不存在"),
     PAY_BANKCARD_EXIST(70012, "收款銀行卡已存在"),
     PAY_THIRD_PARTY_NOT_EXIST(70007, "第三方應用不存在"),
-    RECEIVABLES_NUMBER_NOT_EXIST(70008, "收款賬號不存在"),
+    RECEIVABLES_NUMBER_NOT_EXIST(70008, "收款帳號不存在"),
     PAYMENT_NOT_EXIST(70009, "不支持以上支付方式"),
     BANKCARD_NOT_EXIST(700010, "不支持以上銀行卡"),
     SIGN_ERROR(700011, "簽名錯誤"),
-    WITHDRAW_CONFIG_IS_ERROR(70012, "提現配置錯誤"),
-    PAY_CHANNNEL_IS_ERROR(70013, "充值渠道配置錯誤"),
-    PAY_ENCRYPT_IS_ERROR(70014, "充值渠道加解密錯誤"),
-    NO_ABLE_PAY_CHANNEL(70015, "沒有可用的支付方式"),
     QUERY_MERCHANT_LEFTAMOUNT_ERROR(70016, "商戶餘額查詢失敗"),
     FUND_ROUTE_NOT_EXIST(70017, "未找到路由策略配置"),
     PAY_ADDRESS_NOT_EXIST(70018, "錢包地址不存在"),
@@ -552,10 +518,7 @@ public enum ResultCode {
 
     // 提現
     WITHDRAW_MERCHANT_NOT_EXIST(71000, "未配置對應出款渠道"),
-    WITHDRAW_AMOUNT_OUT_RANGE(71001, "超出出款金額範圍"),
-    WITHDRAW_PAY_MERCHANT_NOT_EXIST(71002, "未配置出款商戶"),
     WITHDRAW_STATUS_ERROR(71003, "提現訂單已被操作[狀態異常]"),
-    WITHDRAW_UNIFY_CONSTRAINT(71004, "提現訂單必須全部出款或全部拒絕"),
     WITHDRAW_MERCHANT_TYPE_ERROR(71005, "出款渠道錯誤"),
 
 
@@ -563,60 +526,7 @@ public enum ResultCode {
     // 消息
     SMS_COUNT_ERROR(80000, "驗證碼發送過於頻繁，請稍後再試"),
 
-    // 代理
-    PROXY_NOT_EXIST_OR_APPROVED(90000, "代理申請記錄不存在或已審核"),
-    SUPERIOR_PROXY_NAME_NOT_EXIST(90002, "上級代理不存在"),
-    PROXY_NAME_NOT_EXIST(90003, "該代理不存在"),
-    PROXY_NAME_NOT_APPROVED(90009, "該代理未審核"),
-    PROXY_NAME_EXIST(90001, "該代理已經存在"),
-    PROXY_LOGIN(90005, "僅限代理登錄"),
-    SUBORDINATE_PROXY_NAME_NOT_EXIST(90006, "下級會員不存在"),
-    ADD_AMOUNT_INSUFFICIENT(90007, "上分額度不足"),
-    PROXY_NOT_APPROVED(90008, "代理審核未通過"),
-    PROXY_SUB_LIMIT(90009, "下級代理超出上限，請聯繫客服"),
-    PROXY_MOBILE_EXIST(90010, "該手機號已經被註冊"),
-    PROXY_DOMAIN_DATA_EMPTY(90011,"已無可用代理域名"),
-    PROXY_USER_ACTION_ERROR(90012,"僅供代理賬號使用"),
-    PROXY_WALLET_ERROR(90013, "上分類型不正確"),
-    PROXY_WALLET_NOT_APPROVED(90014, "額度狀態未開通"),
-    PROXY_ADD_USER_AMOUNT_ERROR(90015, "上分失敗"),
-    PROXY_ADD_USER_AMOUNT_SUCCESS(90016, "上分成功"),
-    PROXY_CREDIT_MULTIPLE_ERROR(90017, "流水倍數只能在1-1000之內"),
-    PROXY_PROMOTE_MATERIAL_NOT_EXIST(90018, "代理推廣素材不存在"),
 
-    // 用戶標籤
-    USER_TAG_NOT_EXIST(100001, "標籤不存在"),
-    USER_SUPERIOR_TAG_NOT_EXIST(100002, "父級標籤不存在"),
-    USER_SUPERIOR_TAG_CANNOT_ADD_LEVEL(100003, "父級標籤不允許新增子級人工標籤"),
-
-    // 渠道
-    SOURCE_CHANNEL_NOT_EXIST(110001, "渠道信息不存在"),
-    SOURCE_CHANNEL_NAME_EXIST(110002, "渠道名稱存在重復"),
-    SOURCE_CHANNEL_CODE_EXIST(110003, "渠道標識存在重復"),
-
-    SOURCE_CHANNEL_NAME_IS_NULL(110004, "渠道名稱不能為空"),
-    SOURCE_CHANNEL_CODE_IS_NULL(110005, "渠道標識不能為空"),
-
-
-    // 消息
-    MESSAGE_CATEGORY_EXIST_SUBCATEGORY(120001, "存在關聯子類型"),
-    MESSAGE_CATEGORY_EXIST_TEMPLATEID(120002, "存在關聯模板"),
-    MESSAGE_CATEGORY_NAME_IS_NULL(120003, "類型名稱不能為空"),
-    MESSAGE_SMS_TEMPLATEID_NAME_IS_NULL(120004, "短信模版名稱不能為空"),
-    MESSAGE_SMS_TEMPLATEID_CONTENT_IS_NULL(120005, "短信模版內容不能為空"),
-    MESSAGE_SMS_TEMPLATEID_ALICODE_IS_NULL(120006, "阿里雲模板編號不能為空"),
-
-    // 短信
-    SMS_SEND_TEMPLATEID_NOT_EXIST(130001, "模板信息不存在"),
-    SMS_INVALID_PARAM_EXIST(130002, "參數錯誤"),
-    SMS_SEND_CHANNEL_NOT_EXIST(130003, "無可用的短信發送通道"),
-    EMAIL_SEND_CHANNEL_NOT_EXIST(130004, "無可用的郵件發送通道"),
-
-    // 推廣
-    PROMOTION_CODE_NOT_EXIST(140001, "推廣碼不存在"),
-    PROMOTION_CODE_USED_EXIST(140002, "推廣碼已被推廣使用"),
-    PROMOTION_CODE_EXIST(140003, "推廣碼已存在"),
-    PROMOTION_CODE_REG_ERROR(140004, "推廣碼格式錯誤"),
 
     // Banner
     DIALOG_CONTENT_IS_EMPTY(140005, "內容不能為空"),
@@ -626,26 +536,6 @@ public enum ResultCode {
 
     //test
     TEST_EXCEPTION(666666, "測試"),
-
-    /**
-     * 金流層級
-     */
-    USER_LEVEL_GROUP_EXISTS(91000, "群組(%s)已被金流層級關聯"),
-
-    NEW_GROUP_TYPE_ERROR(150001, "群組定性設置有誤"),
-    NEW_GROUP_SORT_ERROR(150002, "群組優先級設置有誤"),
-
-    /**
-     * 提供商城接口
-     */
-    MALL_ORDER_ID_EMPTY(160005, "提交單號不得為空"),
-    MALL_ORDER_ID_RATE(160006, "同筆提交單號請求過於頻繁"),
-    MALL_ORDER_ID_REPEAT(160007, "提交單號重複"),
-    MALL_USER_ACCOUNT_BUSY(160008, "用戶帳號忙碌中"),
-    MALL_INSUFFICIENT_BALANCE(160009, "用戶商城點數餘額不足"),
-
-    INTERNAL_LETTER_USER_SEND_LETTER_LIMIT(170001, "每日最多創建併發送10條"),
-    INTERNAL_LETTER_USER_REPLIED_MESSAGE_LIMIT(170002, "每小時最多回復60次，請稍後再試"),
 
     /**
      * 2FA
