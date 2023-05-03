@@ -1,6 +1,7 @@
 package com.wasupstudio.service.Impl;
 
 import com.wasupstudio.constant.ProjectConstant;
+import com.wasupstudio.constant.UserRoleConstants;
 import com.wasupstudio.exception.BussinessException;
 import com.wasupstudio.exception.ResultCode;
 import com.wasupstudio.mapper.MemberMapper;
@@ -13,7 +14,9 @@ import com.wasupstudio.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +29,8 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
 
     @Override
     public String save(MemberDTO memberDTO) {
-        MemberEntity memberEntity = this.getAdminByEmail(memberDTO.getEmail());
-        if (memberEntity == null) {
+        if (getAdminByEmail(memberDTO.getEmail()) == null) {
+            MemberEntity memberEntity = new MemberEntity();
             memberEntity.setEmail(memberDTO.getEmail());
             memberEntity.setName(memberDTO.getName());
             memberEntity.setPwd(AesHelper.encrypt(memberDTO.getPwd()));
@@ -37,7 +40,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
             memberEntity.setGrade(memberDTO.getGrade());
             memberEntity.setRegistionTime(memberDTO.getRegistionTime());
             memberEntity.setStatus(ProjectConstant.SystemAdminStatus.NORMAL);
-            memberEntity.setRole(memberDTO.getRole());
+            memberEntity.setRole(MemberEntity.Role.valueOf(memberDTO.getRole().toString()));
             save(memberEntity);
 
             return ResultCode.SAVE_SUCCESS.getMessage();
@@ -117,8 +120,13 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
         if (isTure) {
             HashMap<String, Object> dataMap = new HashMap<>();
             dataMap.put("user", adminLoginQuery);
-            String JWTtoken = JwtTokenUtils.generateToken(dataMap); // 取得token
-            return JWTtoken;
+            memberEntity.getRole();
+            // 如果用户角色为空，则默认赋予 ROLE_USER 角色
+            if (memberEntity.getRole() == null) {
+                memberEntity.setRole(MemberEntity.Role.valueOf(UserRoleConstants.ROLE_USER));
+            }
+            String token = JwtUtils.generateToken(memberEntity, true);
+            return token;
         }
 
         return null;

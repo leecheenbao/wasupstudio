@@ -37,28 +37,6 @@ public class MemberController {
         return ResultGenerator.genSuccessResult(licenseEntity);
     }
 
-    @PostMapping("/signup")
-    public Result signup(@RequestBody @Valid MemberDTO memberDTO, BindingResult bindingResult) throws BussinessException {
-
-        if (bindingResult.hasErrors()) {
-            String errorMsg = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getField() + " " + error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return ResultGenerator.genFailResult(errorMsg);
-        }
-        return ResultGenerator.genSuccessResult(memberService.save(memberDTO));
-    }
-    @PostMapping("/login")
-    public Result login(@RequestBody @Valid MemberDTO memberDTO, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            String errorMsg = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getField() + " " + error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return ResultGenerator.genFailResult(errorMsg);
-        }
-        return ResultGenerator.genSuccessResult();
-    }
-
     @PutMapping("/{id}")
     public Result update(@PathVariable Integer id, @RequestBody @Valid MemberDTO memberDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

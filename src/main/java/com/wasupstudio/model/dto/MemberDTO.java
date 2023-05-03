@@ -15,6 +15,9 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MemberDTO implements Serializable {
+    public enum Role {
+        ROLE_USER, ROLE_ADMIN, ROLE_DISABLE
+    }
     private Integer id;
     private String email;
     private String pwd;
@@ -24,6 +27,6 @@ public class MemberDTO implements Serializable {
     private String organization;
     private Integer grade;
     private Date registionTime;
-    private Integer role;
+    private Role role;
 
 }

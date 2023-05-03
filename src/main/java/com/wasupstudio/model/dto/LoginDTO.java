@@ -20,4 +20,6 @@ public class LoginDTO {
 	@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[\\w]{6,16}$", message = "密碼必須為長度6~16位碼大小寫英文加數字")
 	@NotBlank(message = "密碼不可為空")
 	private String memPwd;
+
+	private String token;
 }

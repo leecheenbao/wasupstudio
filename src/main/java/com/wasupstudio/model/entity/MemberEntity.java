@@ -17,6 +17,9 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "wa_member")
 public class MemberEntity implements Serializable {
+    public enum Role {
+        ROLE_USER, ROLE_ADMIN, ROLE_DISABLE
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -27,7 +30,7 @@ public class MemberEntity implements Serializable {
     @Column(name = "pwd", nullable = false)
     private String pwd;
     @Column(name = "role", nullable = false)
-    private Integer role;
+    private Role role;
     @Column(name = "name", nullable = false)
     private String name;
     @Column(name = "phone", nullable = false)
