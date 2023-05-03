@@ -5,6 +5,8 @@
     <resultMap id="BaseResultMap" type="com.wasupstudio.model.entity.MemberEntity">
         <id column="id" property="id" jdbcType="INTEGER" />
         <result column="email" property="email" jdbcType="VARCHAR" />
+        <result column="pwd" property="pwd" jdbcType="VARCHAR" />
+
         <result column="name" property="name" jdbcType="INTEGER" />
         <result column="phone" property="phone" jdbcType="TIMESTAMP" />
         <result column="birthday" property="birthday" jdbcType="VARCHAR" />
@@ -13,4 +15,7 @@
         <result column="registration_time" property="registionTime" jdbcType="DATE"/>
     </resultMap>
 
+    <select id="findAccount" resultMap="BaseResultMap" resultType="com.wasupstudio.model.entity.MemberEntity">
+        SELECT * FROM wa_member WHERE email = #{email};
+    </select>
 </mapper>

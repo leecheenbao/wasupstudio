@@ -9,10 +9,7 @@ import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
 import com.wasupstudio.service.MemberService;
-import com.wasupstudio.util.AbstractService;
-import com.wasupstudio.util.AesHelper;
-import com.wasupstudio.util.BasePageInfo;
-import com.wasupstudio.util.ProjectTokenUtils;
+import com.wasupstudio.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,7 +86,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
      * @param adminLoginQuery
      */
     @Override
-    public Map login(AdminLoginQuery adminLoginQuery, AdminLoginLogQuery adminLoginLogQuery) {
+    public Map loginV2(AdminLoginQuery adminLoginQuery, AdminLoginLogQuery adminLoginLogQuery) {
         String email = adminLoginQuery.getEmail();
 
         MemberEntity memberEntity = this.getAdminByEmail(email);
@@ -111,7 +108,28 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
         return map;
     }
 
+    @Override
+    public String login(AdminLoginQuery adminLoginQuery, AdminLoginLogQuery adminLoginLogQuery) {
+
+        MemberEntity memberEntity = memberMapper.findAccount(adminLoginQuery.getEmail());
+        Boolean isTure = checkoutPassword(adminLoginQuery, memberEntity);
+
+        if (isTure) {
+            HashMap<String, Object> dataMap = new HashMap<>();
+            dataMap.put("user", adminLoginQuery);
+            String JWTtoken = JwtTokenUtils.generateToken(dataMap); // 取得token
+            return JWTtoken;
+        }
+
+        return null;
+    }
 
 
+    public Boolean checkoutPassword(AdminLoginQuery adminLoginQuery, MemberEntity memberEntity){
+        String dbData = AesHelper.decrypt(memberEntity.getPwd());
+        String password = adminLoginQuery.getPassword();
+
+        return dbData.equals(password);
+    }
 }
 

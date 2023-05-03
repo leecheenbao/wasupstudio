@@ -43,12 +43,10 @@ public class LoginController {
 	 * @param adminLoginQuery
 	 * @return JSONObject
 	 */
-	@ApiOperation(value = "账号登录", notes = "账号登录接口")
+	@ApiOperation(value = "帳號登入", notes = "帳號入接口")
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "string"),
-			@ApiImplicitParam(name = "password", value = "密码", required = true, dataType = "string"),
-			@ApiImplicitParam(name = "imgCode", value = "图片验证码", dataType = "string"),
-			@ApiImplicitParam(name = "uuid", value = "图片验证码唯一ID", required = true, dataType = "string")
+			@ApiImplicitParam(name = "username", value = "用戶名", required = true, dataType = "string"),
+			@ApiImplicitParam(name = "password", value = "密碼", required = true, dataType = "string"),
 	})
 	@PostMapping(value = "/login", produces = "application/json;charset=utf-8")
 	public Result login(@RequestBody @Valid AdminLoginQuery adminLoginQuery) {
@@ -63,11 +61,9 @@ public class LoginController {
 		adminLoginQuery.setDevice_type(getHeader("device_type"));
 		adminLoginQuery.setDevice_os(getHeader("device_os"));
 
-		Map<String, Object> dataMap = memberService.login(adminLoginQuery, adminLoginLogQuery);
-		MemberEntity memberEntity = (MemberEntity) dataMap.get("member");
-		memberEntity.setLastIp(getIP());
+		String jwtToken = memberService.login(adminLoginQuery, adminLoginLogQuery);
 
-		return ResultGenerator.genSuccessResult(dataMap);
+		return ResultGenerator.genSuccessResult(jwtToken);
 
 	}
 	/**

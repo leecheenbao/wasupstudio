@@ -17,10 +17,10 @@ public class AdminLoginQuery extends BaseQuery {
 
     private String device_id;
 
-    @NotBlank(message = "账号不能为空")
+    @NotBlank(message = "帳號不能為空")
     private String email;
 
-    @NotBlank(message = "密码不能为空")
+    @NotBlank(message = "密碼不能為空")
     private String password;
 
     private String device_os;
@@ -28,6 +28,5 @@ public class AdminLoginQuery extends BaseQuery {
     private String device_name;
 
     private String device_type;
-
 
 }

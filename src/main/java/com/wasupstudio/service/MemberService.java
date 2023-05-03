@@ -20,5 +20,7 @@ public interface MemberService {
 
     void update(MemberDTO memberDTO);
 
-    Map<String, Object> login(AdminLoginQuery adminLoginQuery, AdminLoginLogQuery adminLoginLogQuery);
+    Map<String, Object> loginV2(AdminLoginQuery adminLoginQuery, AdminLoginLogQuery adminLoginLogQuery);
+
+    String login(AdminLoginQuery adminLoginQuery, AdminLoginLogQuery adminLoginLogQuery);
 }
