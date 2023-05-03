@@ -123,7 +123,7 @@ public class LoginController {
 	 * @param adminLoginQuery
 	 * @return JSONObject
 	 */
-	@ApiOperation(value = "帳號登入", notes = "帳號入接口")
+	@ApiOperation(value = "帳號登入", notes = "帳號登入接口")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "username", value = "用戶名", required = true, dataType = "string"),
 			@ApiImplicitParam(name = "password", value = "密碼", required = true, dataType = "string"),

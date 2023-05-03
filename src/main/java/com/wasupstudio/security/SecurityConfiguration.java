@@ -37,7 +37,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private SecurityProblemSupport securityProblemSupport;
 
     /**
-     * 使用 Spring Security 推荐的加密方式进行登录密码的加密
+     * 使用 Spring Security 推薦的加密方式進行登錄密碼的加密
      */
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder(){
@@ -45,12 +45,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * 此方法配置的资源路径不会进入 Spring Security 机制进行验证
+     * 此方法配置的資源路徑不會進入 Spring Security 機制進行驗證
      */
     @Override
     public void configure(WebSecurity web) {
         web.ignoring()
                 .antMatchers(HttpMethod.OPTIONS, "/**")
+                .antMatchers("/auth/**")
                 .antMatchers("/app/**/*.{js,html}")
                 .antMatchers("/v2/api-docs/**")
                 .antMatchers("/i18n/**")
@@ -63,37 +64,37 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * 定义安全策略，设置 HTTP 访问规则
+     * 定義安全策略，設置 HTTP 訪問規則
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
-                // 当用户无权访问资源时发送 401 响应
+                // 當用戶無權訪問資源時發送 401 響應
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                // 当用户访问资源因权限不足时发送 403 响应
+                // 當用戶訪問資源因權限不足時發送 403 響應
                 .accessDeniedHandler(securityProblemSupport)
-             .and()
+                .and()
                 // 禁用 CSRF
                 .csrf().disable()
                 .headers().frameOptions().disable()
-             .and()
+                .and()
                 .logout().logoutUrl("/auth/logout").and()
                 .authorizeRequests()
-                 // 指定路径下的资源需要进行验证后才能访问
+                // 指定路徑下的資源需要進行驗證後才能訪問
                 .antMatchers("/").permitAll()
-                // 配置登录地址
+                // 配置登錄地址
                 .antMatchers(HttpMethod.POST, SecurityConstants.AUTH_LOGIN_URL).permitAll()
                 .antMatchers(HttpMethod.POST,"/api/users/register").permitAll()
-                // 其他请求需验证
+                // 其他請求需驗證
                 .anyRequest().authenticated()
-             .and()
-                // 不需要 session（不创建会话）
+                .and()
+                // 不需要 session（不創建會話）
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-             .and()
-               .apply(securityConfigurationAdapter());
+                .and()
+                .apply(securityConfigurationAdapter());
 //        super.configure(http);
     }
 
@@ -101,3 +102,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new JwtConfigurer(new JwtAuthorizationFilter(authenticationManager()));
     }
 }
+
