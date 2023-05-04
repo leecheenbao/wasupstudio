@@ -1,4 +1,4 @@
-package com.wasupstudio.util;
+package com.wasupstudio.model;
 
 import lombok.*;
 

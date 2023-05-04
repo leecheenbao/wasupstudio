@@ -1,4 +1,4 @@
-package com.wasupstudio.util;
+package com.wasupstudio.service;
 
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import tk.mybatis.mapper.entity.Condition;

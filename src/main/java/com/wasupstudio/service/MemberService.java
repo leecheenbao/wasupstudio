@@ -4,7 +4,7 @@ import com.wasupstudio.model.dto.MemberDTO;
 import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
-import com.wasupstudio.util.BasePageInfo;
+import com.wasupstudio.model.BasePageInfo;
 
 public interface MemberService {
 

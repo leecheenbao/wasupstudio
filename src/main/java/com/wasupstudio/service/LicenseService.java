@@ -2,7 +2,7 @@ package com.wasupstudio.service;
 
 import com.wasupstudio.model.dto.LicenseDTO;
 import com.wasupstudio.model.entity.LicenseEntity;
-import com.wasupstudio.util.BasePageInfo;
+import com.wasupstudio.model.BasePageInfo;
 
 import java.util.Date;
 

@@ -1,20 +1,18 @@
 package com.wasupstudio.controller;
 
-import com.wasupstudio.exception.BussinessException;
 import com.wasupstudio.exception.Result;
 import com.wasupstudio.exception.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.dto.MemberDTO;
 import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.service.MemberService;
-import com.wasupstudio.util.BasePageInfo;
+import com.wasupstudio.model.BasePageInfo;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.stream.Collectors;
 
 @Api

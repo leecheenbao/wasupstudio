@@ -1,7 +1,8 @@
-package com.wasupstudio.util;
+package com.wasupstudio.service;
 
 
 import com.wasupstudio.exception.BussinessException;
+import com.wasupstudio.mapper.CommonMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.beans.factory.annotation.Autowired;

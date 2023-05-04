@@ -1,4 +1,4 @@
-package com.wasupstudio.util;
+package com.wasupstudio.mapper;
 
 import tk.mybatis.mapper.common.*;
 import tk.mybatis.mapper.common.special.InsertListMapper;

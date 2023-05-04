@@ -7,7 +7,7 @@ import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.dto.LicenseDTO;
 import com.wasupstudio.model.entity.LicenseEntity;
 import com.wasupstudio.service.LicenseService;
-import com.wasupstudio.util.BasePageInfo;
+import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.util.DateUtils;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
