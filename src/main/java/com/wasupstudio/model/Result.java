@@ -1,6 +1,6 @@
-package com.wasupstudio.exception;
+package com.wasupstudio.model;
 
-import static org.apache.logging.log4j.message.MapMessage.MapFormat.JSON;
+import com.wasupstudio.enums.ResultCode;
 
 /**
  * 统一API响应结果封装

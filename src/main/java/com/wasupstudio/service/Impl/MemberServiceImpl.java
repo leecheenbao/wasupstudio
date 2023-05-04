@@ -2,7 +2,7 @@ package com.wasupstudio.service.Impl;
 
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.constant.UserRoleConstants;
-import com.wasupstudio.exception.ResultCode;
+import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.mapper.MemberMapper;
 import com.wasupstudio.model.dto.MemberDTO;
 import com.wasupstudio.model.entity.MemberEntity;

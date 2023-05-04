@@ -1,5 +1,8 @@
 package com.wasupstudio.exception;
 
+import com.wasupstudio.enums.ResultCode;
+import com.wasupstudio.model.Result;
+
 /**
  * 响应结果生成工具
  */

@@ -1,8 +1,8 @@
 package com.wasupstudio.controller;
 
 import com.google.gson.Gson;
-import com.wasupstudio.exception.Result;
-import com.wasupstudio.exception.ResultCode;
+import com.wasupstudio.model.Result;
+import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.dto.LicenseDTO;
 import com.wasupstudio.model.entity.LicenseEntity;

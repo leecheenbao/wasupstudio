@@ -1,4 +1,4 @@
-package com.wasupstudio.exception;
+package com.wasupstudio.enums;
 
 /**
  * 響應碼枚舉，參考HTTP狀態碼的語義

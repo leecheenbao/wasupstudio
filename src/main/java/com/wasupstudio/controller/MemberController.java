@@ -1,7 +1,7 @@
 package com.wasupstudio.controller;
 
-import com.wasupstudio.exception.Result;
-import com.wasupstudio.exception.ResultCode;
+import com.wasupstudio.model.Result;
+import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.dto.MemberDTO;
 import com.wasupstudio.model.entity.MemberEntity;

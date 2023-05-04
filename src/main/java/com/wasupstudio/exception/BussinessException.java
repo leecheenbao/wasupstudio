@@ -1,6 +1,8 @@
 package com.wasupstudio.exception;
 
 
+import com.wasupstudio.enums.ResultCode;
+
 /**
  * 业务异常
  */
