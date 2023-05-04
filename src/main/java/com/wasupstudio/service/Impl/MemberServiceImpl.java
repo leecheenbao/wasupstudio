@@ -10,7 +10,7 @@ import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
 import com.wasupstudio.service.MemberService;
 import com.wasupstudio.service.AbstractService;
-import com.wasupstudio.util.AesHelper;
+import com.wasupstudio.util.AesUtils;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.util.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
             MemberEntity memberEntity = new MemberEntity();
             memberEntity.setEmail(memberDTO.getEmail());
             memberEntity.setName(memberDTO.getName());
-            memberEntity.setPwd(AesHelper.encrypt(memberDTO.getPwd()));
+            memberEntity.setPwd(AesUtils.encrypt(memberDTO.getPwd()));
             memberEntity.setPhone(memberDTO.getPhone());
             memberEntity.setBirthday(memberDTO.getBirthday());
             memberEntity.setOrganization(memberDTO.getOrganization());
@@ -124,7 +124,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
 
 
     public Boolean checkoutPassword(AdminLoginQuery adminLoginQuery, MemberEntity memberEntity){
-        String dbData = AesHelper.decrypt(memberEntity.getPwd());
+        String dbData = AesUtils.decrypt(memberEntity.getPwd());
         String password = adminLoginQuery.getPassword();
 
         return dbData.equals(password);

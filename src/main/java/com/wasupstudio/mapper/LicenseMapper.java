@@ -1,6 +1,7 @@
 package com.wasupstudio.mapper;
 
 import com.wasupstudio.model.entity.LicenseEntity;
+import com.wasupstudio.util.CommonMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultMap;
