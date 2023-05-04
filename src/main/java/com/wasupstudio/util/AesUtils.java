@@ -5,8 +5,8 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 
 /** AES 加解密 **/
-public class AesHelper {
-	private static String TAG = AesHelper.class.getSimpleName();
+public class AesUtils {
+	private static String TAG = AesUtils.class.getSimpleName();
 	private static int KEY_LENGTH = KeyLength.KEY128;
 	private static String secKey = "m79p*H0**Yhu*CV8";
 
@@ -128,9 +128,9 @@ public class AesHelper {
 	
 	public static void main(String[] args) {
 		String str = "807sugardd";
-		System.out.println(AesHelper.encrypt(str));
+		System.out.println(AesUtils.encrypt(str));
 		
 		String content = "B50FF00E7B016D33F39155109E5D0C7B";
-		System.out.println(AesHelper.decrypt(content));
+		System.out.println(AesUtils.decrypt(content));
 	}
 }
