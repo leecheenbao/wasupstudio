@@ -56,11 +56,10 @@ public class ScriptServiceImpl extends AbstractService<ScriptEntity> implements 
     public void update(ScriptDTO scriptDTO) {
         ScriptEntity scriptEntity = this.findOne(scriptDTO.getScriptId());
         if (scriptEntity != null){
-            scriptEntity.setScriptId(scriptEntity.getScriptId());
+            scriptEntity.setScriptId(scriptDTO.getScriptId());
             scriptEntity.setTitle(scriptDTO.getTitle());
-            scriptEntity.setAuthor(scriptEntity.getAuthor());
-            scriptEntity.setDescription(scriptEntity.getDescription());
-            scriptEntity.setCreateTime(new Date());
+            scriptEntity.setAuthor(scriptDTO.getAuthor());
+            scriptEntity.setDescription(scriptDTO.getDescription());
             scriptEntity.setUpdateTime(new Date());
 
             this.update(scriptEntity);
