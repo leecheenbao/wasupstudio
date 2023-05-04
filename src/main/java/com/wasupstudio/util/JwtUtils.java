@@ -131,5 +131,14 @@ public class JwtUtils {
         }
     }
 
+    public static String getMemberAuthorities() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getAuthorities();
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        } else {
+            return principal.toString();
+        }
+    }
 }
 

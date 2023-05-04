@@ -57,7 +57,6 @@ public class ScriptController {
             return ResultGenerator.genFailResult(errorMsg);
         }
         scriptService.save(scriptDTO);
-        Gson gson = new Gson();
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
     }
 
