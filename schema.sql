@@ -59,28 +59,29 @@ CREATE TABLE wa_license (
 
 -- 創建「訂單」表
 CREATE TABLE wa_orders (
-                           order_id INT NOT NULL AUTO_INCREMENT,
-                           user_id INT NOT NULL,
-                           recipient VARCHAR(255) NOT NULL,
-                           phone VARCHAR(255) NOT NULL,
-                           address VARCHAR(255) NOT NULL,
-                           total_price DECIMAL(10,2) NOT NULL,
-                           status VARCHAR(255) NOT NULL,
-                           create_time TIMESTAMP NOT NULL,
-                           update_time TIMESTAMP NOT NULL,
+                           order_id INT NOT NULL AUTO_INCREMENT COMMENT '訂單編號',
+                           user_id INT NOT NULL COMMENT '用戶編號',
+                           recipient VARCHAR(255) NOT NULL COMMENT '收件人姓名',
+                           phone VARCHAR(255) NOT NULL COMMENT '收件人電話',
+                           address VARCHAR(255) NOT NULL COMMENT '收件地址',
+                           total_price DECIMAL(10,2) NOT NULL COMMENT '總價格',
+                           status VARCHAR(255) NOT NULL COMMENT '訂單狀態',
+                           create_time TIMESTAMP NOT NULL COMMENT '訂單創建時間',
+                           update_time TIMESTAMP NOT NULL COMMENT '訂單更新時間',
                            PRIMARY KEY (order_id)
-);
-
+) COMMENT='訂單表';
 
 -- 創建「訂單明細」表
 CREATE TABLE wa_order_items (
-                                order_item_id INT NOT NULL AUTO_INCREMENT,
-                                order_id INT NOT NULL,
-                                product_id INT NOT NULL,
-                                price DECIMAL(10,2) NOT NULL,
-                                quantity INT NOT NULL,
-                                PRIMARY KEY (order_item_id)
-);
+                                order_item_id INT NOT NULL AUTO_INCREMENT COMMENT '訂單項目編號',
+                                order_id INT NOT NULL COMMENT '訂單編號',
+                                product_id INT NOT NULL COMMENT '產品編號',
+                                price DECIMAL(10,2) NOT NULL COMMENT '產品價格',
+                                quantity INT NOT NULL COMMENT '產品數量',
+                                PRIMARY KEY (order_item_id),
+                                FOREIGN KEY (order_id) REFERENCES wa_orders(order_id)
+) COMMENT='訂單明細表';
+
 
 -- 建立劇本表
 CREATE TABLE wa_script (
