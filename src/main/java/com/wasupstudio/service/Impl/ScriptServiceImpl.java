@@ -28,6 +28,7 @@ public class ScriptServiceImpl extends AbstractService<ScriptEntity> implements 
         scriptEntity.setDescription(scriptDTO.getDescription());
         scriptEntity.setStatus(scriptDTO.getStatus());
         scriptEntity.setCreateTime(new Date());
+        scriptEntity.setEndTime(scriptDTO.getEndTime());
         scriptEntity.setUpdateTime(new Date());
         save(scriptEntity);
     }

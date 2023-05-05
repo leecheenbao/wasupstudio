@@ -7,6 +7,7 @@ import com.wasupstudio.model.Result;
 import com.wasupstudio.model.dto.ScriptDTO;
 import com.wasupstudio.model.entity.ScriptEntity;
 import com.wasupstudio.service.ScriptService;
+import com.wasupstudio.util.DateUtils;
 import com.wasupstudio.util.JwtUtils;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 @Api(tags = "劇本相關 Script API")
@@ -57,6 +59,10 @@ public class ScriptController {
                     .collect(Collectors.joining(", "));
             return ResultGenerator.genFailResult(errorMsg);
         }
+
+        // 取得指定日期的結束時間
+        Date endTime = DateUtils.getEndDate(scriptDTO.getEndTime());
+        scriptDTO.setEndTime(endTime);
         scriptService.save(scriptDTO);
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
     }
