@@ -24,10 +24,7 @@ import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
 import com.wasupstudio.service.MemberService;
 import com.wasupstudio.util.HttpServletRequestUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +43,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api(tags = "LoginController")
+@Api(tags = "Login API", value = "Login 相關 API")
 @RestController
 @RequestMapping("/auth")
 public class LoginController {
@@ -70,6 +67,10 @@ public class LoginController {
 	private MemberService memberService;
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	@ApiOperation(value = "Google註冊", notes = "如果提供了code，則會使用Google API進行註冊，否則會重定向到Google的OAuth授權頁面")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "code", value = "授權碼", required = false, dataType = "String", paramType = "query")
+	})
 	@PostMapping("/google-signup")
 	public Result google_signup(@RequestParam(value = "code" ,required = false) String code) throws IOException, GeneralSecurityException {
 		if (code != null) {
@@ -106,6 +107,10 @@ public class LoginController {
 		return getGoogleOAuth(SIGNUP_REDIRECT_URI);
 	}
 
+	@ApiOperation(value = "Google登錄", notes = "如果提供了code，則會使用Google API進行登錄，否則會重定向到Google的OAuth授權頁面")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "code", value = "授權碼", required = false, dataType = "String", paramType = "query")
+	})
 	@GetMapping("/google-login")
 	public Result googleLogin(@RequestParam(value = "code" ,required = false) String code) throws Exception {
 
@@ -197,15 +202,17 @@ public class LoginController {
 		return ResultGenerator.genSuccessResult(userInfo);
 	}
 	/**
-	 * 會員登入
-	 * 
-	 * @param adminLoginQuery
-	 * @return JSONObject
+	 * 用戶登入
+	 *
+	 * @param adminLoginQuery 用戶登入條件
+	 * @return 登入結果
 	 */
-	@ApiOperation(value = "帳號登入", notes = "帳號登入接口")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "username", value = "用戶名", required = true, dataType = "string"),
-			@ApiImplicitParam(name = "password", value = "密碼", required = true, dataType = "string"),
+	@ApiOperation(value = "用戶登入", notes = "使用用戶信箱和密碼進行登入")
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "登入成功", response = LoginDTO.class),
+			@ApiResponse(code = 400, message = "請求參數不正確", response = Result.class),
+			@ApiResponse(code = 401, message = "認證失敗", response = Result.class),
+			@ApiResponse(code = 500, message = "伺服器內部錯誤", response = Result.class)
 	})
 	@PostMapping(value = "/login", produces = "application/json;charset=utf-8")
 	public Result login(@RequestBody @Valid AdminLoginQuery adminLoginQuery) {
@@ -228,6 +235,12 @@ public class LoginController {
 
 	}
 
+	/**
+	 * 用戶註冊
+	 *
+	 * @return 登入結果
+	 */
+	@ApiOperation(value = "會員註冊", notes = "使用會員資料進行註冊，回傳成功或失敗訊息")
 	@PostMapping("/signup")
 	public Result signup(@RequestBody @Valid MemberDTO memberDTO, BindingResult bindingResult) throws BussinessException {
 
@@ -250,7 +263,7 @@ public class LoginController {
 	}
 
 	/**
-	 * 获取header头信息_**字段
+	 * 獲取header信息字段
 	 *
 	 * @param filed
 	 * @return
@@ -261,7 +274,7 @@ public class LoginController {
 	}
 
 	/**
-	 * 取当前URL
+	 * 取得當前URL
 	 *
 	 * @return
 	 */
@@ -276,3 +289,4 @@ public class LoginController {
 		return url;
 	}
 }
+

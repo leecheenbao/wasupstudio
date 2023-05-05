@@ -10,6 +10,7 @@ import com.wasupstudio.service.LicenseService;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.util.DateUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,10 @@ import javax.validation.Valid;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-@Api
+/**
+ * License Controller API
+ */
+@Api(tags = "License Controller API")
 @RestController
 @RequestMapping("/api/license")
 public class LicenseController {
@@ -26,13 +30,26 @@ public class LicenseController {
     @Autowired
     private LicenseService licenseService;
 
+    /**
+     * 查詢所有License數據
+     *
+     * @return Result 結果
+     */
     @GetMapping
+    @ApiOperation(value = "查詢所有License數據")
     public Result getAllData() {
         BasePageInfo pageInfo = licenseService.findAllData();
         return ResultGenerator.genSuccessResult(pageInfo);
     }
 
+    /**
+     * 根據id查詢License數據
+     *
+     * @param id id
+     * @return Result 結果
+     */
     @GetMapping("/{id}")
+    @ApiOperation(value = "根據id查詢License數據")
     public Result getOneData(@PathVariable Integer id) {
         LicenseEntity licenseEntity = licenseService.findOne(id);
         if (licenseEntity == null){
@@ -41,7 +58,14 @@ public class LicenseController {
         return ResultGenerator.genSuccessResult(licenseEntity);
     }
 
+    /**
+     * 根據激活時間查詢License數據
+     *
+     * @param licenseDTO License DTO
+     * @return Result 結果
+     */
     @PostMapping("/getLicenseByActTime")
+    @ApiOperation(value = "根據激活時間查詢License數據")
     public Result getDataByTime(@RequestBody @Valid LicenseDTO licenseDTO) {
         String startTime = licenseDTO.getStartTime() + " 00:00:00";
         String endTime = licenseDTO.getEndTime() + " 23:59:59";
@@ -53,7 +77,15 @@ public class LicenseController {
         return ResultGenerator.genSuccessResult(pageInfo);
     }
 
+    /**
+     * 新增License數據
+     *
+     * @param licenseDTO      License DTO
+     * @param bindingResult   綁定結果
+     * @return Result 結果
+     */
     @PostMapping
+    @ApiOperation(value = "新增License數據")
     public Result save(@RequestBody @Valid LicenseDTO licenseDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String errorMsg = bindingResult.getFieldErrors().stream()
@@ -66,7 +98,16 @@ public class LicenseController {
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
     }
 
+    /**
+     * 更新License數據
+     *
+     * @param id              id
+     * @param licenseDTO      License DTO
+     * @param bindingResult   綁定結果
+     * @return Result 結果
+     */
     @PutMapping("/{id}")
+    @ApiOperation(value = "更新License數據")
     public Result update(@PathVariable Integer id, @RequestBody @Valid LicenseDTO licenseDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String errorMsg = bindingResult.getFieldErrors().stream()
