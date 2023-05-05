@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.stream.Collectors;
 
-@Api(tags = "Script")
+@Api(tags = "劇本相關 Script API")
 @RestController
 @RequestMapping("/api/script")
 public class ScriptController {
@@ -24,14 +24,14 @@ public class ScriptController {
     @Autowired
     private ScriptService scriptService;
 
-    @ApiOperation(value = "Get all script data")
+    @ApiOperation(value = "取得劇本資料")
     @GetMapping
     public Result getAllData() {
         BasePageInfo pageInfo = scriptService.findAllData();
         return ResultGenerator.genSuccessResult(pageInfo);
     }
 
-    @ApiOperation(value = "Get a script by ID")
+    @ApiOperation(value = "取得單一劇本資料")
     @ApiImplicitParam(name = "id", value = "Script ID", required = true, dataType = "int", paramType = "path")
     @GetMapping("/{id}")
     public Result getOneData(@PathVariable Integer id) {
@@ -42,7 +42,7 @@ public class ScriptController {
         return ResultGenerator.genSuccessResult(scriptEntity);
     }
 
-    @ApiOperation(value = "Create a new script")
+    @ApiOperation(value = "新增一筆劇本資料")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 400, message = "Bad Request")
@@ -61,7 +61,7 @@ public class ScriptController {
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
     }
 
-    @ApiOperation(value = "Update an existing script")
+    @ApiOperation(value = "更新一筆劇本資料")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "Script ID", required = true, dataType = "int", paramType = "path"),
             @ApiImplicitParam(name = "scriptDTO", value = "Script DTO", required = true, dataType = "ScriptDTO", paramType = "body")

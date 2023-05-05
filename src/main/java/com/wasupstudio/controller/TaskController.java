@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.stream.Collectors;
 
-@Api(tags = "Task API", value = "Task 相關 API")
+@Api(tags = "任務相關 Task API")
 @RestController
 @RequestMapping("/api/task")
 public class TaskController {
@@ -30,17 +30,17 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @ApiOperation(value = "取得所有 Task 資料", notes = "取得所有 Task 資料，並回傳一個 BasePageInfo 物件")
+    @ApiOperation(value = "取得所有 任務資料", notes = "取得所有 任務資料，並回傳一個 BasePageInfo 物件")
     @GetMapping
     public Result getAllData() {
         BasePageInfo pageInfo = taskService.findAllData();
         return ResultGenerator.genSuccessResult(pageInfo);
     }
 
-    @ApiOperation(value = "取得單一 Task 資料", notes = "根據 Task ID 取得單一 Task 資料")
+    @ApiOperation(value = "取得單一筆任務資料", notes = "根據 Task ID 取得單一 任務資料")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "回傳該 Task 資料"),
-            @ApiResponse(code = 404, message = "該 Task 資料不存在")
+            @ApiResponse(code = 200, message = "回傳該 任務資料"),
+            @ApiResponse(code = 404, message = "該 任務資料不存在")
     })
     @GetMapping("/{id}")
     public Result getOneData(@PathVariable Integer id) {
@@ -51,7 +51,7 @@ public class TaskController {
         return ResultGenerator.genSuccessResult(taskEntity);
     }
 
-    @ApiOperation(value = "新增一筆 Task 資料", notes = "新增一筆 Task 資料，並回傳 Result 結果")
+    @ApiOperation(value = "新增一筆任務資料", notes = "新增一筆 任務資料，並回傳 Result 結果")
     @PostMapping
     public Result save(@RequestBody @Valid TaskDTO taskDTO, BindingResult bindingResult) {
         String account = JwtUtils.getMemberAccount();
@@ -66,7 +66,7 @@ public class TaskController {
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
     }
 
-    @ApiOperation(value = "更新一筆 Task 資料", notes = "根據 Task ID 更新一筆 Task 資料，並回傳 Result 結果")
+    @ApiOperation(value = "更新一筆任務資料", notes = "根據 Task ID 更新一筆 任務資料，並回傳 Result 結果")
     @PutMapping("/{id}")
     public Result update(@PathVariable Integer id, @RequestBody @Valid TaskDTO taskDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

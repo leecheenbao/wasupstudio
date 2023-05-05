@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 /**
  * License Controller API
  */
-@Api(tags = "License Controller API")
+@Api(tags = "啟動碼相關 License Controller API")
 @RestController
 @RequestMapping("/api/license")
 public class LicenseController {
@@ -31,25 +31,25 @@ public class LicenseController {
     private LicenseService licenseService;
 
     /**
-     * 查詢所有License數據
+     * 查詢所有啟動碼數據
      *
      * @return Result 結果
      */
     @GetMapping
-    @ApiOperation(value = "查詢所有License數據")
+    @ApiOperation(value = "查詢所有啟動碼數據")
     public Result getAllData() {
         BasePageInfo pageInfo = licenseService.findAllData();
         return ResultGenerator.genSuccessResult(pageInfo);
     }
 
     /**
-     * 根據id查詢License數據
+     * 根據id查詢啟動碼數據
      *
      * @param id id
      * @return Result 結果
      */
     @GetMapping("/{id}")
-    @ApiOperation(value = "根據id查詢License數據")
+    @ApiOperation(value = "根據id查詢啟動碼數據")
     public Result getOneData(@PathVariable Integer id) {
         LicenseEntity licenseEntity = licenseService.findOne(id);
         if (licenseEntity == null){
@@ -59,13 +59,13 @@ public class LicenseController {
     }
 
     /**
-     * 根據激活時間查詢License數據
+     * 根據激活時間查詢啟動碼數據
      *
      * @param licenseDTO License DTO
      * @return Result 結果
      */
     @PostMapping("/getLicenseByActTime")
-    @ApiOperation(value = "根據激活時間查詢License數據")
+    @ApiOperation(value = "根據激活時間查詢啟動碼數據")
     public Result getDataByTime(@RequestBody @Valid LicenseDTO licenseDTO) {
         String startTime = licenseDTO.getStartTime() + " 00:00:00";
         String endTime = licenseDTO.getEndTime() + " 23:59:59";
@@ -78,14 +78,14 @@ public class LicenseController {
     }
 
     /**
-     * 新增License數據
+     * 新增啟動碼數據
      *
      * @param licenseDTO      License DTO
      * @param bindingResult   綁定結果
      * @return Result 結果
      */
     @PostMapping
-    @ApiOperation(value = "新增License數據")
+    @ApiOperation(value = "新增啟動碼數據")
     public Result save(@RequestBody @Valid LicenseDTO licenseDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String errorMsg = bindingResult.getFieldErrors().stream()
@@ -99,7 +99,7 @@ public class LicenseController {
     }
 
     /**
-     * 更新License數據
+     * 更新啟動碼數據
      *
      * @param id              id
      * @param licenseDTO      License DTO
@@ -107,7 +107,7 @@ public class LicenseController {
      * @return Result 結果
      */
     @PutMapping("/{id}")
-    @ApiOperation(value = "更新License數據")
+    @ApiOperation(value = "更新啟動碼數據")
     public Result update(@PathVariable Integer id, @RequestBody @Valid LicenseDTO licenseDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String errorMsg = bindingResult.getFieldErrors().stream()

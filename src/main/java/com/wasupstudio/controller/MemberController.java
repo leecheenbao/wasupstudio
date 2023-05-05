@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.stream.Collectors;
 
-@Api(value = "Member API", tags = {"Member API"})
+@Api(tags = "用戶相關 Member API")
 @RestController
 @RequestMapping("/api/member")
 public class MemberController {

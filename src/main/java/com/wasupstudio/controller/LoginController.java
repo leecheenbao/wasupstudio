@@ -43,7 +43,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api(tags = "Login API", value = "Login 相關 API")
+@Api(tags = "權限相關 API")
 @RestController
 @RequestMapping("/auth")
 public class LoginController {
