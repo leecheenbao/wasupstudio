@@ -223,7 +223,12 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.12.4</version>
         </dependency>
-
+        <!--金流相關-->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-ext-jdk16</artifactId>
+            <version>1.45</version>
+        </dependency>
 
     </dependencies>
 
