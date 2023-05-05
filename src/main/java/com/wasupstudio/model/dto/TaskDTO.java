@@ -10,27 +10,30 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 劇本資料表
- * @TableName script
+ * 任務資料表
+ * @TableName task
  */
 @Data
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScriptDTO implements Serializable {
-    private Integer scriptId;
+public class TaskDTO implements Serializable {
 
-    private String title;
+    private Integer taskId;
 
-    private String author;
+    private String taskName;
 
     private String description;
+
+    private Integer priority;
 
     private Date createTime;
 
     private Date updateTime;
 
     private Integer status;
+
+    private String author;
 
 }
 

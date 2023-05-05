@@ -26,6 +26,7 @@ public class ScriptServiceImpl extends AbstractService<ScriptEntity> implements 
         scriptEntity.setTitle(scriptDTO.getTitle());
         scriptEntity.setAuthor(scriptDTO.getAuthor());
         scriptEntity.setDescription(scriptDTO.getDescription());
+        scriptEntity.setStatus(scriptDTO.getStatus());
         scriptEntity.setCreateTime(new Date());
         scriptEntity.setUpdateTime(new Date());
         save(scriptEntity);
@@ -60,6 +61,7 @@ public class ScriptServiceImpl extends AbstractService<ScriptEntity> implements 
             scriptEntity.setTitle(scriptDTO.getTitle());
             scriptEntity.setAuthor(scriptDTO.getAuthor());
             scriptEntity.setDescription(scriptDTO.getDescription());
+            scriptEntity.setStatus(scriptDTO.getStatus());
             scriptEntity.setUpdateTime(new Date());
 
             this.update(scriptEntity);
