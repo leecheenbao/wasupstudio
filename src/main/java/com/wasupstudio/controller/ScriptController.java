@@ -50,7 +50,7 @@ public class ScriptController {
             @ApiResponse(code = 400, message = "Bad Request")
     })
     @PostMapping
-    public Result save(@RequestBody @Valid ScriptDTO scriptDTO, BindingResult bindingResult) {
+    public Result save(@RequestBody ScriptDTO scriptDTO, BindingResult bindingResult) {
         String account = JwtUtils.getMemberAccount();
         scriptDTO.setAuthor(account);
         if (bindingResult.hasErrors()) {
@@ -60,9 +60,7 @@ public class ScriptController {
             return ResultGenerator.genFailResult(errorMsg);
         }
 
-        // 取得指定日期的結束時間
-        Date endTime = DateUtils.getEndDate(scriptDTO.getEndTime());
-        scriptDTO.setEndTime(endTime);
+
         scriptService.save(scriptDTO);
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
     }
@@ -77,7 +75,7 @@ public class ScriptController {
             @ApiResponse(code = 400, message = "Bad Request")
     })
     @PutMapping("/{id}")
-    public Result update(@PathVariable Integer id, @RequestBody @Valid ScriptDTO scriptDTO, BindingResult bindingResult) {
+    public Result update(@PathVariable Integer id, @RequestBody ScriptDTO scriptDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String errorMsg = bindingResult.getFieldErrors().stream()
                     .map(error -> error.getField() + " " + error.getDefaultMessage())

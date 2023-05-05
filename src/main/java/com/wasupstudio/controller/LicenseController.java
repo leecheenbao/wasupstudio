@@ -67,13 +67,12 @@ public class LicenseController {
     @PostMapping("/getLicenseByActTime")
     @ApiOperation(value = "根據激活時間查詢啟動碼數據")
     public Result getDataByTime(@RequestBody @Valid LicenseDTO licenseDTO) {
-        String startTime = licenseDTO.getStartTime() + " 00:00:00";
-        String endTime = licenseDTO.getEndTime() + " 23:59:59";
-        Date start = DateUtils.parse(startTime, DateUtils.YYYY_MM_DD_HH_MM_SS);
-        Date end = DateUtils.parse(endTime, DateUtils.YYYY_MM_DD_HH_MM_SS);
-        DateUtils.getDaysBetween(start,end);
+        Date startTime = DateUtils.getEndDate(licenseDTO.getStartTime());
+        Date endTime = DateUtils.getEndDate(licenseDTO.getEndTime());
 
-        BasePageInfo pageInfo = licenseService.findByACTDate(start, end);
+        DateUtils.getDaysBetween(startTime,endTime);
+
+        BasePageInfo pageInfo = licenseService.findByACTDate(startTime, endTime);
         return ResultGenerator.genSuccessResult(pageInfo);
     }
 

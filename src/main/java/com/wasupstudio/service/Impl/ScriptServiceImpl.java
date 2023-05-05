@@ -7,6 +7,7 @@ import com.wasupstudio.model.entity.LicenseEntity;
 import com.wasupstudio.model.entity.ScriptEntity;
 import com.wasupstudio.service.AbstractService;
 import com.wasupstudio.service.ScriptService;
+import com.wasupstudio.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,9 @@ public class ScriptServiceImpl extends AbstractService<ScriptEntity> implements 
     @Override
     public void save(ScriptDTO scriptDTO) {
 
+        // 取得指定日期的結束時間
+        Date endTime = DateUtils.getEndDate(scriptDTO.getEndTime());
+
         ScriptEntity scriptEntity = new ScriptEntity();
         scriptEntity.setScriptId(scriptDTO.getScriptId());
         scriptEntity.setTitle(scriptDTO.getTitle());
@@ -28,7 +32,7 @@ public class ScriptServiceImpl extends AbstractService<ScriptEntity> implements 
         scriptEntity.setDescription(scriptDTO.getDescription());
         scriptEntity.setStatus(scriptDTO.getStatus());
         scriptEntity.setCreateTime(new Date());
-        scriptEntity.setEndTime(scriptDTO.getEndTime());
+        scriptEntity.setEndTime(endTime);
         scriptEntity.setUpdateTime(new Date());
         save(scriptEntity);
     }
@@ -58,11 +62,15 @@ public class ScriptServiceImpl extends AbstractService<ScriptEntity> implements 
     public void update(ScriptDTO scriptDTO) {
         ScriptEntity scriptEntity = this.findOne(scriptDTO.getScriptId());
         if (scriptEntity != null){
+            // 取得指定日期的結束時間
+            Date endTime = DateUtils.getEndDate(scriptDTO.getEndTime());
+
             scriptEntity.setScriptId(scriptDTO.getScriptId());
             scriptEntity.setTitle(scriptDTO.getTitle());
             scriptEntity.setAuthor(scriptDTO.getAuthor());
             scriptEntity.setDescription(scriptDTO.getDescription());
             scriptEntity.setStatus(scriptDTO.getStatus());
+            scriptEntity.setEndTime(endTime);
             scriptEntity.setUpdateTime(new Date());
 
             this.update(scriptEntity);

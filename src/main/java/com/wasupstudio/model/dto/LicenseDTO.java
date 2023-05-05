@@ -2,6 +2,8 @@ package com.wasupstudio.model.dto;
 
 import lombok.*;
 
+import java.util.Date;
+
 @Setter
 @Getter
 @Builder
@@ -13,6 +15,6 @@ public class LicenseDTO {
     String customerName;
     String customerEmail;
     Integer activated;
-    String startTime;
-    String endTime;
+    Date startTime;
+    Date endTime;
 }
