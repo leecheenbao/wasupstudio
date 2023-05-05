@@ -21,7 +21,7 @@ import java.util.Collections;
 public class WebCorsConfig implements WebMvcConfigurer {
 
     /**
-     * 设置swagger为默认主页
+     * 設置swagger為默認主頁
      */
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -38,7 +38,7 @@ public class WebCorsConfig implements WebMvcConfigurer {
         config.setAllowedOrigins(Collections.singletonList("*"));
         config.setAllowedMethods(Collections.singletonList("*"));
         config.setAllowedHeaders(Collections.singletonList("*"));
-        // 暴露 header 中的其他属性给客户端应用程序
+        // 暴露 header 中的其他屬性給客戶端應用程序
         config.setExposedHeaders(Arrays.asList(
                 "Authorization", "X-Total-Count", "Link",
                 "Access-Control-Allow-Origin",
