@@ -35,7 +35,7 @@ public class CashFlowController {
     protected CashFlowData createOrderList() throws IOException, ParseException {
         CashFlowData cashFlowData = new CashFlowData();
         CashFlowUtils cashFlowUtils = new CashFlowUtils();
-
+        // 前端頁面會送來未加密過的資訊，利用這個API把資訊加密之後送到三方
         return cashFlowData;
     }
 
@@ -43,7 +43,7 @@ public class CashFlowController {
     @PostMapping(value = "/callback")
     protected Result getReturnData(CashFlowReturnData cashFlowReturnData) {
         BasePageInfo pageInfo = new BasePageInfo<>();
-        //實作callback方法
+        //接收三方收到的訊息然後解密處理實作callback方法
         return ResultGenerator.genSuccessResult(pageInfo);
     }
 
