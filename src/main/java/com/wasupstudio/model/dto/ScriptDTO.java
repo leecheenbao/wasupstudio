@@ -8,6 +8,7 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 劇本資料表
@@ -33,6 +34,8 @@ public class ScriptDTO implements Serializable {
     private Date updateTime;
 
     private Integer status;
+
+    private List<MediaDTO> mediaDTO;
 
 }
 
