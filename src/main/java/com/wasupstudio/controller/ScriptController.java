@@ -1,21 +1,20 @@
 package com.wasupstudio.controller;
 
+import com.wasupstudio.converter.ScriptConverter;
 import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
 import com.wasupstudio.model.dto.ScriptDTO;
 import com.wasupstudio.model.entity.ScriptEntity;
+import com.wasupstudio.service.MediaService;
 import com.wasupstudio.service.ScriptService;
-import com.wasupstudio.util.DateUtils;
 import com.wasupstudio.util.JwtUtils;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.Date;
 import java.util.stream.Collectors;
 
 @Api(tags = "劇本相關 Script API")
@@ -25,6 +24,12 @@ public class ScriptController {
 
     @Autowired
     private ScriptService scriptService;
+
+    @Autowired
+    private MediaService mediaService;
+
+    @Autowired
+    private ScriptConverter scriptConverter;
 
     @ApiOperation(value = "取得劇本資料")
     @GetMapping
@@ -41,7 +46,10 @@ public class ScriptController {
         if (scriptEntity == null){
             return ResultGenerator.genSuccessResult(ResultCode.DATA_NOT_EXIST.getMessage());
         }
-        return ResultGenerator.genSuccessResult(scriptEntity);
+        ScriptDTO scriptDTO = scriptConverter.map(scriptEntity);
+        scriptDTO.setMediaDTO(mediaService.findByScriptId(id));
+
+        return ResultGenerator.genSuccessResult(scriptDTO);
     }
 
     @ApiOperation(value = "新增一筆劇本資料")
