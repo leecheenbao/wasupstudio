@@ -125,7 +125,7 @@ public class CashFlowUtils {
     }
 
     /* 將dataInfo組成藍新要求的格式 */
-    public String getDataInfo(Map<String, Object> map) {
+    public String getDataInfo(Map<String, String> map) {
         Set<String> keys = map.keySet();
 
         StringBuffer sb = new StringBuffer();
