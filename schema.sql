@@ -95,6 +95,18 @@ CREATE TABLE wa_script (
                            PRIMARY KEY (script_id)
 ) COMMENT='劇本表';
 
+-- 建立媒體資料表
+CREATE TABLE wa_media (
+                          media_id INT NOT NULL AUTO_INCREMENT COMMENT '媒體唯一 ID',
+                          script_id INT NOT NULL COMMENT '所屬劇本的 ID',
+                          media_type ENUM('image', 'video') NOT NULL COMMENT '媒體類型，可以是圖片或影片',
+                          file_path VARCHAR(255) NOT NULL COMMENT '媒體檔案路徑',
+                          create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '媒體創建時間',
+                          update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '媒體更新時間',
+                          PRIMARY KEY (media_id),
+                          FOREIGN KEY (script_id) REFERENCES wa_script (script_id)
+) COMMENT='媒體資料表';
+
 -- 任務表，存儲任務的基本信息
 CREATE TABLE wa_task (
                          task_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '任務ID',
