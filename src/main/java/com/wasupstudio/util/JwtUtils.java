@@ -2,6 +2,7 @@ package com.wasupstudio.util;
 
 import com.wasupstudio.constant.SecurityConstants;
 import com.wasupstudio.constant.UserRoleConstants;
+import com.wasupstudio.model.entity.MemberEntity;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
@@ -13,10 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.xml.bind.DatatypeConverter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -37,12 +35,11 @@ public class JwtUtils {
     /**
      * 根據用戶名和用戶角色生成 token
      *
-     * @param username   用戶名
-     * @param role       用戶角色
+     * @param member   用戶
      * @param isRemember 是否記住我
      * @return 返回生成的 token
      */
-    public static String generateToken(String username, String role, boolean isRemember) {
+    public static String generateToken(MemberEntity member, boolean isRemember) {
         byte[] jwtSecretKey = DatatypeConverter.parseBase64Binary(SecurityConstants.JWT_SECRET_KEY);
         // 過期時間
         long expiration = isRemember ? SecurityConstants.EXPIRATION_REMEMBER_TIME : SecurityConstants.EXPIRATION_TIME;
@@ -51,8 +48,9 @@ public class JwtUtils {
                 // 生成簽證信息
                 .setHeaderParam("typ", SecurityConstants.TOKEN_TYPE)
                 .signWith(Keys.hmacShaKeyFor(jwtSecretKey), SignatureAlgorithm.HS256)
-                .setSubject(username)
-                .claim(SecurityConstants.TOKEN_ROLE_CLAIM, role)
+                .setSubject(member.getEmail())
+//                .claim(SecurityConstants.TOKEN_ROLE_CLAIM, member.getRole())
+                .claim(SecurityConstants.TOKEN_MEMBER_INFO, member)
                 .setIssuer(SecurityConstants.TOKEN_ISSUER)
                 .setIssuedAt(new Date())
                 .setAudience(SecurityConstants.TOKEN_AUDIENCE)
@@ -140,5 +138,34 @@ public class JwtUtils {
             return principal.toString();
         }
     }
+
+    public static MemberEntity getMember() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Claims claims = getTokenBody(authentication.getCredentials().toString());
+        Map<String, Object> map = (Map<String, Object>) claims.get(SecurityConstants.TOKEN_MEMBER_INFO);
+
+        if (map != null) {
+            Long timestamp = (Long) map.get("birthday");
+            Date birthday = new Date(timestamp);
+
+            MemberEntity memberEntity = new MemberEntity();
+            memberEntity.setId((Integer) map.get("id"));
+            memberEntity.setPhone((String) map.get("phone"));
+            memberEntity.setEmail((String) map.get("email"));
+            memberEntity.setStatus((Integer) map.get("status"));
+            memberEntity.setGrade((Integer) map.get("grade"));
+            memberEntity.setOrganization((String) map.get("organization"));
+            memberEntity.setBirthday(birthday);
+
+            memberEntity.setRole(MemberEntity.Role.valueOf((String) map.get("role")));
+            memberEntity.setName((String) map.get("name"));
+
+            return memberEntity;
+        }
+
+        return null;
+    }
+
 }
+
 

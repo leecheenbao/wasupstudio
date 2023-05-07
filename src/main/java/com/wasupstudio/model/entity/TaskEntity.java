@@ -29,11 +29,16 @@ public class TaskEntity implements Serializable {
     @Column(name = "task_name", nullable = false)
     private String taskName;
 
+    @Column(name = "member_id", nullable = false)
+    private Integer memberId;
     @Column(name = "description", nullable = false)
     private String description;
 
     @Column(name = "priority", nullable = false)
     private Integer priority;
+
+    @Column(name = "estimated_participants", nullable = false)
+    private Integer estimatedParticipants;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_time", nullable = false, updatable = false)

@@ -111,8 +111,10 @@ CREATE TABLE wa_media (
 CREATE TABLE wa_task (
                          task_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '任務ID',
                          task_name VARCHAR(255) NOT NULL COMMENT '任務名稱',
+                         member_Id INTEGER NOT NULL COMMENT '任務所屬會員',
                          description TEXT COMMENT '任務描述',
                          priority INTEGER DEFAULT 0 COMMENT '任務優先級',
+                         estimated_participants INTEGER DEFAULT 0 COMMENT '預計參與人數',
                          status INTEGER DEFAULT 0 COMMENT '任務狀態 0:開啟任務 1:進行中 2:完成',
                          create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '創建時間',
                          update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新時間',
@@ -120,7 +122,7 @@ CREATE TABLE wa_task (
 );
 
 -- 任務分配表，存儲任務分配的信息
-CREATE TABLE task_assignment (
+CREATE TABLE wa_task_assignment (
                                  id INT PRIMARY KEY AUTO_INCREMENT COMMENT '分配ID',
                                  task_id INT NOT NULL COMMENT '任務ID',
                                  assignee_id INT NOT NULL COMMENT '受分配人ID',

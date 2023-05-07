@@ -34,6 +34,7 @@ public class ScriptController {
     @ApiOperation(value = "取得劇本資料")
     @GetMapping
     public Result getAllData() {
+        JwtUtils.getMember();
         BasePageInfo pageInfo = scriptService.findAllData();
         return ResultGenerator.genSuccessResult(pageInfo);
     }

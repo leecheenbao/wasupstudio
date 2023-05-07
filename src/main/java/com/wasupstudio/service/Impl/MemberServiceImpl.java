@@ -2,6 +2,7 @@ package com.wasupstudio.service.Impl;
 
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.constant.UserRoleConstants;
+import com.wasupstudio.converter.MemberConverter;
 import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.mapper.MemberMapper;
 import com.wasupstudio.model.dto.MemberDTO;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,6 +27,9 @@ import java.util.List;
 public class MemberServiceImpl extends AbstractService<MemberEntity> implements MemberService {
     @Autowired
     public MemberMapper memberMapper;
+
+    @Autowired
+    public MemberConverter memberConverter;
 
     @Override
     public String save(MemberDTO memberDTO) {
@@ -76,7 +81,9 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
             memberEntity.setBirthday(memberDTO.getBirthday());
             memberEntity.setOrganization(memberDTO.getOrganization());
             memberEntity.setGrade(memberDTO.getGrade());
+            memberEntity.setLastIp(memberDTO.getLastIp());
             memberEntity.setRegistionTime(memberDTO.getRegistionTime());
+            memberEntity.setLastLogin(memberDTO.getLastLogin());
         }
 
         this.update(memberEntity);
@@ -86,17 +93,19 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
     public String login(AdminLoginQuery adminLoginQuery, AdminLoginLogQuery adminLoginLogQuery) {
 
         MemberEntity memberEntity = memberMapper.findAccount(adminLoginQuery.getEmail());
-        Boolean isTure = checkoutPassword(adminLoginQuery, memberEntity);
+        memberEntity.setLastIp(adminLoginLogQuery.getIp());
+        memberEntity.setLastLogin(new Date());
 
+        Boolean isTure = checkoutPassword(adminLoginQuery, memberEntity);
         if (isTure) {
             HashMap<String, Object> dataMap = new HashMap<>();
             dataMap.put("user", adminLoginQuery);
-            memberEntity.getRole();
             // 如果用户角色为空，则默认赋予 ROLE_USER 角色
             if (memberEntity.getRole() == null) {
                 memberEntity.setRole(MemberEntity.Role.valueOf(UserRoleConstants.ROLE_USER));
             }
-            String token = JwtUtils.generateToken(memberEntity.getEmail(),memberEntity.getRole().name(), true);
+            String token = JwtUtils.generateToken(memberEntity, true);
+            update(memberConverter.ItemToDTO(memberEntity));
             return token;
         }
 
@@ -106,16 +115,16 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
     @Override
     public String login(String mail) {
         MemberEntity memberEntity = memberMapper.findAccount(mail);
+        memberEntity.setLastLogin(new Date());
 
         if (memberEntity != null) {
             HashMap<String, Object> dataMap = new HashMap<>();
             dataMap.put("user", memberEntity);
-            memberEntity.getRole();
             // 如果用户角色为空，则默认赋予 ROLE_USER 角色
             if (memberEntity.getRole() == null) {
                 memberEntity.setRole(MemberEntity.Role.valueOf(UserRoleConstants.ROLE_USER));
             }
-            String token = JwtUtils.generateToken(memberEntity.getEmail(),memberEntity.getRole().name(), true);
+            String token = JwtUtils.generateToken(memberEntity, true);
             return token;
         }
 

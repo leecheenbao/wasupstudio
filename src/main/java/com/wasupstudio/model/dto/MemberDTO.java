@@ -28,5 +28,8 @@ public class MemberDTO implements Serializable {
     private Integer grade;
     private Date registionTime;
     private Role role;
+    private String lastIp;
+    private Date lastLogin;
+
 
 }
