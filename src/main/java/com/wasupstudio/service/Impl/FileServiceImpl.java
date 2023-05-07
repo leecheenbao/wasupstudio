@@ -40,15 +40,21 @@ public class FileServiceImpl implements FileService {
 
     private static final String UPLOAD_DIRECTORY = ProjectConstant.FilePath.MAINPATH;
 
-
+    public static void main(String[] args) {
+        System.out.println(File.separator);
+        System.out.println(File.pathSeparator);
+        System.out.println(File.separatorChar);
+    }
     public String saveFile(MultipartFile file) throws IOException {
         String originalFilename = file.getOriginalFilename();
-        FileUtils.validateFileExtension(originalFilename);
 
-        String fileName = System.currentTimeMillis() + FileUtils.getFileExtension(originalFilename);
+        String fileName = System.currentTimeMillis()
+                + "." + FileUtils.getFileExtension(originalFilename);
 
         // 創建上傳目錄
-        String filePath = UPLOAD_DIRECTORY  + fileName;
+        String filePath = UPLOAD_DIRECTORY
+                + FileUtils.checkFileType(originalFilename)
+                + File.separator + fileName;
 
         // 創建目標目錄（如果不存在）
         File directory = new File(UPLOAD_DIRECTORY);
@@ -67,7 +73,9 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public boolean removeFile(String id) {
+    public boolean removeFile(String filePath) {
+        File file = new File(filePath);
+        file.delete();
         return false;
     }
 

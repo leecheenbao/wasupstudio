@@ -19,7 +19,7 @@ import java.util.Date;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "wa_midea")
+@Table(name = "wa_media")
 public class MediaEntity implements Serializable {
 
     @Id

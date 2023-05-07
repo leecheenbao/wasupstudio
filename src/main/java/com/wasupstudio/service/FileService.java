@@ -9,6 +9,6 @@ public interface FileService {
 
     String saveFile(MultipartFile file) throws IOException;
 
-    boolean removeFile(String id);
+    boolean removeFile(String filePath);
 
 }

@@ -8,6 +8,7 @@ import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
 import com.wasupstudio.model.dto.MediaDTO;
 import com.wasupstudio.model.dto.ScriptDTO;
+import com.wasupstudio.model.entity.MediaEntity;
 import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.entity.ScriptEntity;
 import com.wasupstudio.service.FileService;
@@ -17,6 +18,7 @@ import com.wasupstudio.util.FileUtils;
 import com.wasupstudio.util.JwtUtils;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -108,53 +110,46 @@ public class ScriptController {
         return ResultGenerator.genSuccessResult(ResultCode.SAVE_SUCCESS.getMessage());
     }
 
-    @PostMapping("/upload/{id}")
-    public Result file(@PathVariable Integer id, @RequestParam MediaDTO mediaDTO, @RequestParam(value = "file") MultipartFile file) {
-        mediaDTO.setScriptId(id);
-        // 处理文件上传
-        if (!file.isEmpty()) {
-            try {
-                // 获取文件字节数组
-                byte[] fileBytes = file.getBytes();
-
-                // 进行文件处理操作，例如保存到服务器或者进行其他操作
-
-                // 更新脚本等其他逻辑...
-
-                return ResultGenerator.genSuccessResult(ResultCode.SAVE_SUCCESS.getMessage());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // 如果没有上传文件或发生异常，返回错误结果
-        return ResultGenerator.genFailResult(ResultCode.UPLOAD_ERROR.getMessage());
-    }
-
     @ApiOperation(value = "上傳文件", notes = "上傳文件接口")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "file", value = "文件", required = true, dataType = "MultipartFile"),
     })
-    @PostMapping("/upload")
+    @PostMapping("/upload/{scriptId}")
     @ResponseBody
-    public Result handleFileUpload(@RequestParam("file") MultipartFile file) throws IOException {
+    @Transactional
+    public Result handleFileUpload(@PathVariable Integer scriptId, @RequestParam("file") MultipartFile file) throws IOException {
         if (FileUtils.validateFileSize(file)){
             return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_MAX_ERROR.getMessage());
         }
         if (FileUtils.validateFileExtension(file.getOriginalFilename())){
             return ResultGenerator.genSuccessResult((ResultCode.UPLOAD_FORMAT_ERROR.getMessage()));
         }
-        String path = fileService.saveFile(file);
+        String filePath = fileService.saveFile(file);
+        String mediaType = FileUtils.checkFileType(file.getOriginalFilename());
+        MediaDTO mediaDTO = new MediaDTO();
+        mediaDTO.setScriptId(scriptId);
+        mediaDTO.setFilePath(filePath);
+        mediaDTO.setMediaType(mediaType);
+        mediaService.save(mediaDTO);
         return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_SUCCESS.getMessage());
     }
 
-    @ApiOperation(value = "上傳影片", notes = "上傳影片接口")
+    @ApiOperation(value = "刪除檔案", notes = "刪除檔案接口")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "file", value = "文件", required = true, dataType = "MultipartFile"),
+            @ApiImplicitParam(name = "scriptId", value = "劇本ID", required = true, dataType = "Integer"),
+            @ApiImplicitParam(name = "mediaId", value = "影音ID", required = true, dataType = "Integer")
     })
-    @PostMapping("/upload/video")
+    @DeleteMapping("/media/{scriptId}/{mediaId}")
     @ResponseBody
-    public Result uploadVideo(@RequestParam("file") MultipartFile file) {
+    @Transactional
+    public Result handleFileDelete(@PathVariable Integer scriptId, @PathVariable Integer mediaId) throws IOException {
+
+        MediaDTO mediaDTO = mediaService.findByScriptIdAndMediaId(scriptId, mediaId);
+        if (mediaDTO == null) {
+            return ResultGenerator.genSuccessResult(ResultCode.MATERIAL_INFO_NOT_EXIST.getMessage());
+        }
+        fileService.removeFile(mediaDTO.getFilePath());
+        mediaService.delete(scriptId, mediaId);
         return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_SUCCESS.getMessage());
     }
 }

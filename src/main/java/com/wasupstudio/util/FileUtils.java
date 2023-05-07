@@ -14,7 +14,8 @@ import java.text.DecimalFormat;
 public class FileUtils {
 
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-
+    private static final long MAX_IMAGE_SIZE = 20971520;
+    private static final long MAX_VIDEO_SIZE = 31457280;
     // 定義有效的影音文件副檔名
     private static final String[] VALID_VIDEO_TYPES = {"mp4", ".avi", ".mkv"};
     // 定義有效的圖片文件副檔名
@@ -96,7 +97,7 @@ public class FileUtils {
         return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + units[digitGroups];
     }
 
-    public String checkFileType(String originFileName){
+    public static String checkFileType(String originFileName){
 
         // 獲取檔案副檔名
         String fileExtension = getFileExtension(originFileName);
