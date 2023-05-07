@@ -37,5 +37,7 @@ public class TaskDTO implements Serializable {
 
     private String author;
 
+    private Integer memberId;
+
 }
 

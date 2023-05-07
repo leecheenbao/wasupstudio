@@ -6,6 +6,7 @@ import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
 import com.wasupstudio.model.dto.ScriptDTO;
 import com.wasupstudio.model.dto.TaskDTO;
+import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.entity.ScriptEntity;
 import com.wasupstudio.model.entity.TaskEntity;
 import com.wasupstudio.service.ScriptService;
@@ -55,7 +56,9 @@ public class TaskController {
     @PostMapping
     public Result save(@RequestBody @Valid TaskDTO taskDTO, BindingResult bindingResult) {
         String account = JwtUtils.getMemberAccount();
+        MemberEntity member = JwtUtils.getMember();
         taskDTO.setAuthor(account);
+        taskDTO.setMemberId(member.getId());
         if (bindingResult.hasErrors()) {
             String errorMsg = bindingResult.getFieldErrors().stream()
                     .map(error -> error.getField() + " " + error.getDefaultMessage())

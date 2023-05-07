@@ -29,6 +29,8 @@ public class TaskEntity implements Serializable {
     @Column(name = "task_name", nullable = false)
     private String taskName;
 
+    @Column(name = "member_id", nullable = false)
+    private Integer memberId;
     @Column(name = "description", nullable = false)
     private String description;
 

@@ -29,6 +29,7 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
         taskEntity.setPriority(taskDTO.getPriority());
         taskEntity.setDescription(taskDTO.getDescription());
         taskEntity.setAuthor(taskDTO.getAuthor());
+        taskEntity.setMemberId(taskDTO.getMemberId());
         taskEntity.setEstimatedParticipants(taskDTO.getEstimatedParticipants());
         taskEntity.setStatus(taskDTO.getStatus());
         taskEntity.setCreateTime(new Date());

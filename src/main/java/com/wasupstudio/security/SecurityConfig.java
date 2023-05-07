@@ -37,8 +37,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private SecurityProblemSupport securityProblemSupport;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
     /**
      * 使用 Spring Security 推薦的加密方式進行登錄密碼的加密
      */

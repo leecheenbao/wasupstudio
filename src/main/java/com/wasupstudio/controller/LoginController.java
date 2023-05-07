@@ -112,7 +112,7 @@ public class LoginController {
 			@ApiImplicitParam(name = "code", value = "授權碼", required = false, dataType = "String", paramType = "query")
 	})
 	@GetMapping("/google-login")
-	public Result googleLogin(@RequestParam(value = "code" ,required = false) String code) throws Exception {
+	public Result googleLogin(@RequestParam(value = "code" ,required = false) String code, HttpServletRequest request) throws Exception {
 
 		if (code != null) {
 			GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
@@ -151,6 +151,7 @@ public class LoginController {
 			LoginDTO loginDTO = new LoginDTO();
 			loginDTO.setToken(jwtToken);
 			loginDTO.setMemMail(userInfo.getEmail());
+			loginDTO.setToken(request.getRemoteAddr());
 			return ResultGenerator.genSuccessResult(loginDTO);
 		}
 

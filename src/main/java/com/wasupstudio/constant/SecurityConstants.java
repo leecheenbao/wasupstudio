@@ -41,6 +41,7 @@ public final class SecurityConstants {
      */
     public static final String TOKEN_TYPE = "JWT";
 
+    public static final String TOKEN_MEMBER_INFO = "memberInfo";
     public static final String TOKEN_ROLE_CLAIM = "role";
     public static final String TOKEN_ISSUER = "security";
     public static final String TOKEN_AUDIENCE = "security-all";

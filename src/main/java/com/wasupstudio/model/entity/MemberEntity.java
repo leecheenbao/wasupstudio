@@ -51,4 +51,6 @@ public class MemberEntity implements Serializable {
     @Column(name = "lastIp", nullable = false)
     private String lastIp;
 
+    @Column(name = "lastLogin")
+    private Date lastLogin;
 }
