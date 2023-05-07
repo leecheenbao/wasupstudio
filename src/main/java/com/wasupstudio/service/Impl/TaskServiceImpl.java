@@ -29,6 +29,7 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
         taskEntity.setPriority(taskDTO.getPriority());
         taskEntity.setDescription(taskDTO.getDescription());
         taskEntity.setAuthor(taskDTO.getAuthor());
+        taskEntity.setEstimatedParticipants(taskDTO.getEstimatedParticipants());
         taskEntity.setStatus(taskDTO.getStatus());
         taskEntity.setCreateTime(new Date());
         taskEntity.setUpdateTime(new Date());
@@ -63,6 +64,7 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
             taskEntity.setTaskName(taskDTO.getTaskName());
             taskEntity.setPriority(taskDTO.getPriority());
             taskEntity.setDescription(taskDTO.getDescription());
+            taskEntity.setEstimatedParticipants(taskDTO.getEstimatedParticipants());
             taskEntity.setAuthor(taskDTO.getAuthor());
             taskEntity.setStatus(taskDTO.getStatus());
             taskEntity.setUpdateTime(new Date());

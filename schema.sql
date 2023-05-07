@@ -114,6 +114,7 @@ CREATE TABLE wa_task (
                          description TEXT COMMENT '任務描述',
                          priority INTEGER DEFAULT 0 COMMENT '任務優先級',
                          status INTEGER DEFAULT 0 COMMENT '任務狀態 0:開啟任務 1:進行中 2:完成',
+                         estimated_participants INTEGER DEFAULT 0 COMMENT '預計參與人數',
                          create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '創建時間',
                          update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新時間',
                          author VARCHAR(255) NOT NULL COMMENT '最後編輯者'

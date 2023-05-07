@@ -35,6 +35,9 @@ public class TaskEntity implements Serializable {
     @Column(name = "priority", nullable = false)
     private Integer priority;
 
+    @Column(name = "estimated_participants", nullable = false)
+    private Integer estimatedParticipants;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_time", nullable = false, updatable = false)
     private Date createTime;
