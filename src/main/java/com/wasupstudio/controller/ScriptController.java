@@ -1,6 +1,7 @@
 package com.wasupstudio.controller;
 
 import com.wasupstudio.converter.ScriptConverter;
+import com.wasupstudio.enums.FileTypeEnum;
 import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.BasePageInfo;
@@ -12,6 +13,7 @@ import com.wasupstudio.model.entity.ScriptEntity;
 import com.wasupstudio.service.FileService;
 import com.wasupstudio.service.MediaService;
 import com.wasupstudio.service.ScriptService;
+import com.wasupstudio.util.FileUtils;
 import com.wasupstudio.util.JwtUtils;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,7 +109,7 @@ public class ScriptController {
     }
 
     @PostMapping("/upload/{id}")
-    public Result file(@PathVariable Integer id, @RequestBody MediaDTO mediaDTO, @RequestParam(value = "file") MultipartFile file) {
+    public Result file(@PathVariable Integer id, @RequestParam MediaDTO mediaDTO, @RequestParam(value = "file") MultipartFile file) {
         mediaDTO.setScriptId(id);
         // 处理文件上传
         if (!file.isEmpty()) {
@@ -136,7 +138,13 @@ public class ScriptController {
     @PostMapping("/upload")
     @ResponseBody
     public Result handleFileUpload(@RequestParam("file") MultipartFile file) throws IOException {
-
+        if (FileUtils.validateFileSize(file)){
+            return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_MAX_ERROR.getMessage());
+        }
+        if (FileUtils.validateFileExtension(file.getOriginalFilename())){
+            return ResultGenerator.genSuccessResult((ResultCode.UPLOAD_FORMAT_ERROR.getMessage()));
+        }
+        String path = fileService.saveFile(file);
         return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_SUCCESS.getMessage());
     }
 

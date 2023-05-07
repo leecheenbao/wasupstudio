@@ -377,75 +377,10 @@ public enum ResultCode {
     PLATFORM_ADDRESS_EXISTS(20159, "該錢包地址已被其他人使用"),
     BIND_CARD_ID_NUMBER_FORMAT_ERROR(20160,"您輸入的身份證號碼格式不正確"),
     INVALID_PLATFORM_ADDRESS(20161, "平台地址錯誤"),
-    PLATFORM_EXCHANGE_CLOSED(20162, "該交易所已下架"),
 
-    //遊戲
-    CREATE_ACCOUNT_ERROR(40002, "創建用戶失敗"),
-    GET_HISTORY_ERROR(40003, "獲取記錄失敗"),
-    CHECK_BALANCE_ERROR(40004, "檢查餘額失敗"),
-    LOGIN_ERROR(40005, "登陸遊戲失敗，請稍後嘗試"),
-    GAME_GET_BET_ERROR(40000, "獲取投注記錄失敗"),
-    GAME_LOGIN_ERROR(40001, "遊戲平入失敗，請稍後嘗試"),
-    GAME_CREATE_ACCOUNT_ERROR(40006, "創建用戶失敗"),
-    GAME_GET_HISTORY_ERROR(40007, "獲取記錄失敗"),
-    GAME_CHECK_BALANCE_ERROR(40008, "無法檢查餘額，請聯繫客服處理"),
-    GAME_WITHDRAW_ERROR(40009, "提款失敗，請稍後嘗試"),
-    GAME_DEPOSIT_ERROR(40010, "存款失敗，請稍後嘗試"),
-    GAME_URLCHECK_ERROR(40011, "獲取遊戲鏈接失敗"),
-    GAME_HISTORY_ERROR(40012, "獲取投注記錄失敗"),
-    GAME_TRANSFER_ERROR(40013, "轉賬失敗，請稍後嘗試"),
-    GAME_MAINTAIN_ERROR(40014, "該遊戲正在維護，請稍後再試"),
-    GAME_USER_NOT_EXIST(40015, "您的餘額為0，請充值後進行操作"),
-    GAME_MERCHANT_NOT_EXIST(40016, "第三方商戶信息不存在"),
-    GAME_NOT_EXIST(40017, "遊戲信息不存在"),
-    GAME_TRANSFER_ORDER_NOT_EXIST(40018, "轉賬訂單不存在"),
-    GAME_ERROR(40019, "遊戲已經關閉！"),
-    GAME_DUPLICATE_HIT_ERROR(40020, "當前遊戲類型已有1個主打遊戲，如要開啓請先關閉其他"),
-    GAME_MAINTAIN_TIME_ERROR(40021, "請先配置遊戲維護時間"),
-    GAME_MAINTAIN_BUFFER_TIME_ERROR(40022, "遊戲維護緩衝時間配置錯誤"),
-    GAME_MAINTAIN_MB_INTRO_IMAGES_FORMAT_ERROR(40023, "遊戲介紹圖配置錯誤"),
-
-    //直播
-    SOLAR_TECH_EPGS_AUTH_ERROR(41001, "賽事信息接口授權失敗"),
-    SOLAR_TECH_EPGS_GET_ERROR(41002, "賽事信息接口獲取失敗"),
-
-    //風控
-    RISK_DIMENSION_NOT_EXIST(50000, "緯度不能為空"),
-    RISK_TYPE_NOT_EXIST(50001, "類型不能為空"),
-    RISK_BLACKLIST_MOBILE_ERROR(50002, "您的賬戶存在異常，請與客服聯繫"),
-    RISK_BLACKLIST_USERNAME_ERROR(50003, "您的賬戶存在異常，請與客服聯繫"),
-    RISK_SENSTIVE_KEYWORD_IS_EXIST(50004, "敏感詞已存在"),
-    RISK_USER_BLACK_IS_EXIST(50005, "用戶黑名單記錄已經存在"),
-    RISK_USER_GROUP_DATA_IS_EXIST(50006, "群組下還有用戶數據"),
-    RISK_USER_LOGIN_ERROR(51000, "帳號存在風險，請輸入手機驗證碼確認操作"),
-
-    RISK_USER_REGISTER_ERROR(52000, "註冊失敗，您的註冊行為已列入風控！"),
-    RISK_BIND_CARD_ERROR(53000, "已超過當日可驗證次數，請聯繫客服"),
-
-    RISK_SMS_LIMITS_ERROR(52001, "您已於24小時內超過發送過多短信，且沒有驗證成功，請聯繫客服！"),
-    RISK_MOBILE_SMS_ERROR(52002, "驗證碼不正確"),
 
 
     //後台
-    ADMIN_POST_NOT_EXIST(60001, "該崗位不存在"),
-    COMMISSION_NOT_EXIST(60002, "傭金配置不存在"),
-    COMMISSION_REPORT_NOT_EXIST_OR_EXAMINE(60003, "返傭記錄不存在或已審核"),
-    COMMISSION_REPORT_NOT_EXIST(60004, "返傭記錄不存在"),
-    OPERATION_RECORD_NOT_EXIST_OR_EXAMINE(60005, "操作記錄不存在或已審核"),
-    RECHARGE_ORDER_NOT_EXIST(60006, "該充值訂到不存在，請與客服進行聯繫"),
-    SUPPLEMENT_ORDER_NOT_EXIST_OR_APPROVED(60007, "補單申請不存在或已審核"),
-    SUPPLEMENT_ORDER_APPROVED(60008, "補單申請已審核"),
-    ADMIN_POST_EXIST(60009, "崗位已存在"),
-    ADMIN_MENU_NOT_EXIST(60010, "菜單不存在"),
-    ADMIN_COPY_POST_NOT_EXIST(60011, "被複製的崗位不存在"),
-    NOTICE_NOT_EXIST_OR_DELET(60012, "公告不存在或已刪除"),
-    POPUP_NOT_EXIST_OR_DELET(60013, "用戶彈窗不存在或已刪除"),
-    USER_LEVEL_NOT_EXIST(60014, "用戶VIP層級不存在"),
-    DEFAULT_LEVEL_DONT_DELET(60015, "無法刪除默認層級"),
-    ADMIN_USER_NOT_APPROVED(60016, "該會員有未審核的操作，請先審核相關記錄"),
-    USER_LEVEL_RECORD_NOT_EXIST(60017, "用戶層級審核記錄不存在"),
-    ADMIN_RECORD_NOT_EXIST_OR_APPROVED(60018, "審核記錄不存在或已審核"),
-    USER_BALANCE_RECORD_NOT_EXSIT(60024, "用戶餘額記錄不存在"),
     USER_BALANCE_ERROR(60025, "用戶餘額大於5元，不可進行流水清零操作"),
     ADMIN_PASSWOWRD_WRONG(60026, "提示: 您還有最後%d次(帳號將被凍結)，用戶名或密碼不正確"),
     ADMIN_LOCK_ERROR(60027, "提示: 您的帳號已經被凍結"),
@@ -455,12 +390,6 @@ public enum ResultCode {
     HUJIAOYI_CALL_ERROR(60031, "呼叫失敗，請稍後重試"),
     ADMIN_BIND_SIPNUM_ERROR(60032, "帳號未綁定分機號"),
     HUJIAOYI_HANDUP_ERROR(60033, "掛斷電話失敗，請稍後重試"),
-    TELLSALE_DELETE_NOTSTART_ERROR(60034, "任務進行中或者已完成，無法刪除"),
-    TELLSALE_EXT_ERROR(60035, "抽取歷史客戶池數據失敗"),
-    TELLSALE_EDIT_NOTSTART_ERROR(60036, "任務進行中或者已完成，無法修改"),
-    TELLSALE_RECEIVE_ERROR(60037, "超出最大領取數量限制，最大數量30"),
-    TELLSALE_NOT_START_ERROR(60038, "當前沒有正在進行的任務池，領取失敗"),
-    TELLSALE_RECOVERY_MUTI_ERROR(60039, "重復申請回收，申請失敗"),
     TELLSALE_RECEIVE_END_ERROR(60040, "任務已經被領取完，領取失敗"),
     TASK_NOT_HANDLER_ERROR(60041, "任務並未在處理中狀態，操作失敗"),
     TASK_IS_FINISH_ERROR(60042, "任務已經完成，操作失敗"),
@@ -496,32 +425,6 @@ public enum ResultCode {
     TASK_LIMIT_EXCEEDED(60128, "當前任務已有5個，如要開啓請先下架其他任務"),
     TASK_NOT_ALLOWED_DELETION(60129, "任務上架中，不可刪除"),
 
-    //支付
-    PAY_AMOUNT_ERROR(70000, "充值金額錯誤"),
-    PAY_WITHDRAW_MAX_SUB_ERROR(70001, "拆單已經超過最大數限制"),
-    ORDER_IS_DISPATH_ERROR(70002, "訂單已被分配"),
-    PAY_AMOUNT_LIMIT_ERROR(70003, "充值金額有誤"),
-    PAY_CHANNEL_NOT_EXIST(70004, "該充值渠道不存在，請嘗試其他渠道"),
-    PAY_BANK_NOT_SUPPORT(70005, "收款銀行不支持"),
-    PAY_BANKCARD_NOT_EXIST(70006, "收款銀行卡不存在"),
-    PAY_BANKCARD_EXIST(70012, "收款銀行卡已存在"),
-    PAY_THIRD_PARTY_NOT_EXIST(70007, "第三方應用不存在"),
-    RECEIVABLES_NUMBER_NOT_EXIST(70008, "收款帳號不存在"),
-    PAYMENT_NOT_EXIST(70009, "不支持以上支付方式"),
-    BANKCARD_NOT_EXIST(700010, "不支持以上銀行卡"),
-    SIGN_ERROR(700011, "簽名錯誤"),
-    QUERY_MERCHANT_LEFTAMOUNT_ERROR(70016, "商戶餘額查詢失敗"),
-    FUND_ROUTE_NOT_EXIST(70017, "未找到路由策略配置"),
-    PAY_ADDRESS_NOT_EXIST(70018, "錢包地址不存在"),
-    NEED_CURRENCY_TYPE(70019,"安全支付需要選擇幣種"),
-
-
-    // 提現
-    WITHDRAW_MERCHANT_NOT_EXIST(71000, "未配置對應出款渠道"),
-    WITHDRAW_STATUS_ERROR(71003, "提現訂單已被操作[狀態異常]"),
-    WITHDRAW_MERCHANT_TYPE_ERROR(71005, "出款渠道錯誤"),
-
-
 
     // 消息
     SMS_COUNT_ERROR(80000, "驗證碼發送過於頻繁，請稍後再試"),
@@ -545,8 +448,7 @@ public enum ResultCode {
     OTP_VERIFY_LIMITS_ERROR(180003, "認證碼嘗試太過頻繁"),
     AUDIT_2FA_ORDERID_NOT_EXIST(180004,"關閉雙重驗證申請單不存在"),
     AUDIT_2FA_APPROVING_OR_ALREADYCLOSE(180005,"雙重驗證已關閉或申請中"),
-    AUDIT_2FA_ALREADYAUDIT(180006,"此申請單已審核")
-    ;
+    AUDIT_2FA_ALREADYAUDIT(180006,"此申請單已審核");
 
     private int code;
     private String message;

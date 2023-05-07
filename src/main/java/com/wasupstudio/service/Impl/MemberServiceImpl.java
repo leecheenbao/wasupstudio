@@ -49,7 +49,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
 
             return ResultCode.SAVE_SUCCESS.getMessage();
         }
-        return ResultCode.CREATE_ACCOUNT_ERROR.getMessage() + ":" + ResultCode.SAVE_REPEAT_FAILD.getMessage();
+        return ResultCode.SAVE_REPEAT_FAILD.getMessage();
     }
 
     @Override

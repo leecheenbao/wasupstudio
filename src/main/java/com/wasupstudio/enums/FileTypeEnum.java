@@ -8,7 +8,7 @@ import java.util.Map;
 
 public enum FileTypeEnum {
 
-    PDF("pdf","/pdf/","PDF文件"),
+    PDF("docs","/docs/","文件檔"),
     IMAGE("image","/image/","圖片檔"),
     VIDEO("video","/video/", "影音檔")
     ;
@@ -19,8 +19,10 @@ public enum FileTypeEnum {
 
     String desc;
 
+    String path;
     FileTypeEnum(String type,String path, String desc) {
         this.type = type;
+        this.path = path;
         this.desc = desc;
     }
 
@@ -30,6 +32,10 @@ public enum FileTypeEnum {
 
     public String getDesc() {
         return desc;
+    }
+
+    public String getPath(){
+        return path;
     }
 
     public static String getDesc(String type) {
