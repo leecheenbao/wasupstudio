@@ -20,23 +20,8 @@ import static com.wasupstudio.enums.ResultCode.UPLOAD_FORMAT_ERROR;
 @Service
 public class FileServiceImpl implements FileService {
 
-    @Resource
-    private FileService fileService;
     @Value("${img.address}")
     private String imgAddress;
-
-    @Value("${img.maxSize}")
-    private long maxSize;
-
-    @Value("${img.imgType}")
-    private String imgType;
-
-    @Value("${img.port}")
-    private String imgPort;
-
-    private static final long MAX_IMAGE_SIZE = 20971520;
-    private static final long MAX_VIDEO_SIZE = 31457280;
-
 
     private static final String UPLOAD_DIRECTORY = ProjectConstant.FilePath.MAINPATH;
 

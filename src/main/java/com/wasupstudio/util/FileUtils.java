@@ -13,9 +13,10 @@ import java.text.DecimalFormat;
 
 public class FileUtils {
 
-    private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-    private static final long MAX_IMAGE_SIZE = 20971520;
-    private static final long MAX_VIDEO_SIZE = 31457280;
+
+    public static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    public static final long MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB;
+    public static final long MAX_VIDEO_SIZE = 1024 * 1024 * 1024; // 1G;
     // 定義有效的影音文件副檔名
     private static final String[] VALID_VIDEO_TYPES = {"mp4", ".avi", ".mkv"};
     // 定義有效的圖片文件副檔名
@@ -23,7 +24,19 @@ public class FileUtils {
     // 定義有效的文件副檔名
     private static final String[] VALID_DOCS_TYPES = {"pdf", "doc", "txt"};
     public static boolean validateFileSize(MultipartFile file) {
-        return file.getSize() >= MAX_FILE_SIZE;
+        String mediaType = checkFileType(file.getOriginalFilename());
+        switch (mediaType){
+            case ProjectConstant.FileType.DOCS:{
+                return file.getSize() >= MAX_FILE_SIZE;
+            }
+            case ProjectConstant.FileType.IMAGE:{
+                return file.getSize() >= MAX_IMAGE_SIZE;
+            }
+            case ProjectConstant.FileType.VIDEO:{
+                return file.getSize() >= MAX_VIDEO_SIZE;
+            }
+        }
+        return true;
     }
 
     public static boolean validateFileExtension(String fileName) {
@@ -88,7 +101,7 @@ public class FileUtils {
         FileUtils.validateFileSize(file);
     }
 
-    private String readableFileSize(long size) {
+    public static String readableFileSize(long size) {
         if (size <= 0) {
             return "0";
         }
@@ -141,4 +154,5 @@ public class FileUtils {
         return false;
     }
 }
+
 

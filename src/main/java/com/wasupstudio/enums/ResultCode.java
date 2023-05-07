@@ -68,7 +68,7 @@ public enum ResultCode {
     UPLOAD_FORMAT_ERROR(10007, "文件格式有誤"),
     TOKEN_FORMAT_ERROR(10008, "TOKEN格式錯誤"),
     INTENSITY_PASSWORD_ERROR(10009, "請設定至少8-16個字符、1個大寫字母、1個小寫字母和1個數字"),
-    UPLOAD_MAX_ERROR(10010, "文件圖片過大，請勿超過%s"),
+    UPLOAD_MAX_ERROR(10010, "%s過大，請勿超過%s"),
     NOT_AUTH_ERROR(10011, "該帳號無權限訪問"),
 
     OPERATION_INVALID(10012, "此操作無效，請重新嘗試"),
@@ -465,6 +465,11 @@ public enum ResultCode {
 
     public String getMessage() {
         return message;
+    }
+
+    public String getFormattedMessage(String text, String variable) {
+
+        return String.format(message, text, variable);
     }
 }
 

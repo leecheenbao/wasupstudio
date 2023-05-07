@@ -118,11 +118,13 @@ public class ScriptController {
     @ResponseBody
     @Transactional
     public Result handleFileUpload(@PathVariable Integer scriptId, @RequestParam("file") MultipartFile file) throws IOException {
-        if (FileUtils.validateFileSize(file)){
-            return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_MAX_ERROR.getMessage());
-        }
         if (FileUtils.validateFileExtension(file.getOriginalFilename())){
             return ResultGenerator.genSuccessResult((ResultCode.UPLOAD_FORMAT_ERROR.getMessage()));
+        }
+        if (FileUtils.validateFileSize(file)){
+            String type = FileTypeEnum.getEnum(FileUtils.checkFileType(file.getOriginalFilename())).getDesc();
+            String size = String.valueOf(FileUtils.MAX_FILE_SIZE);
+            return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_MAX_ERROR.getFormattedMessage(type,size));
         }
         String filePath = fileService.saveFile(file);
         String mediaType = FileUtils.checkFileType(file.getOriginalFilename());
