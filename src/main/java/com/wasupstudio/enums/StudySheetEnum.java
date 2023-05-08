@@ -9,7 +9,10 @@ import java.util.Map;
 public enum StudySheetEnum {
 
     TIGER_AND_RABBIT("TIGER_AND_RABBIT","虎兔篇-親子共讀任務學習單"),
-    MOUSE_AND_OX("MOUSE_AND_OX","鼠牛篇-親子共讀任務學習單")
+    MOUSE_AND_OX("MOUSE_AND_OX","鼠牛篇-親子共讀任務學習單"),
+    HORSE_AND_SHEEP("HORSE_AND_SHEEP","馬羊篇-親子共讀任務學習單"),
+    DRAGON_AND_TIGER("DRAGON_AND_TIGER","龍虎篇-親子共讀任務學習單"),
+
     ;
 
 

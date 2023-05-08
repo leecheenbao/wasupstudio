@@ -91,6 +91,18 @@ CREATE TABLE wa_script_detail (
                                   FOREIGN KEY (script_id) REFERENCES wa_script(script_id)
 ) COMMENT '劇本詳情表';
 
+-- 建立劇本結局表
+CREATE TABLE wa_script_endding (
+                                   script_endding_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '劇本結局ID',
+                                   script_id INT COMMENT '劇本ID',
+                                   advisory_time DATETIME COMMENT '建議時間',
+                                   endding_description TEXT COMMENT '結局說明',
+                                   orderly_credit BOOLEAN COMMENT '秩序配分設定 true正數 false負數',
+                                   relation_credit BOOLEAN COMMENT '關係配分設定 true正數 false負數',
+                                   file_path JSON COMMENT '教材影音檔（可儲存多個路徑）',
+                                   FOREIGN KEY (script_id) REFERENCES wa_script(script_id)
+) COMMENT '劇本結局表';
+
 -- 學習單問卷表
 CREATE TABLE wa_script_learning (
                                     learning_id INT NOT NULL AUTO_INCREMENT COMMENT '學習單問卷唯一 ID',
