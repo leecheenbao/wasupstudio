@@ -55,9 +55,8 @@ public class TaskController {
     @ApiOperation(value = "新增一筆任務資料", notes = "新增一筆 任務資料，並回傳 Result 結果")
     @PostMapping
     public Result save(@RequestBody @Valid TaskDTO taskDTO, BindingResult bindingResult) {
-        String account = JwtUtils.getMemberAccount();
         MemberEntity member = JwtUtils.getMember();
-        taskDTO.setAuthor(account);
+        taskDTO.setAuthor(member.getEmail());
         taskDTO.setMemberId(member.getId());
         if (bindingResult.hasErrors()) {
             String errorMsg = bindingResult.getFieldErrors().stream()
@@ -78,9 +77,9 @@ public class TaskController {
                     .collect(Collectors.joining(", "));
             return ResultGenerator.genFailResult(errorMsg);
         }
-        String account = JwtUtils.getMemberAccount();
-        taskDTO.setAuthor(account);
-        taskDTO.setTaskId(id);
+        MemberEntity member = JwtUtils.getMember();
+        taskDTO.setAuthor(member.getEmail());
+        taskDTO.setMemberId(member.getId());
         taskService.update(taskDTO);
         return ResultGenerator.genSuccessResult(ResultCode.SAVE_SUCCESS.getMessage());
     }

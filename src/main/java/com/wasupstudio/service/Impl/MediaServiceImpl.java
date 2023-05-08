@@ -10,6 +10,7 @@ import com.wasupstudio.service.MediaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -22,11 +23,13 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
     @Override
     public void save(MediaDTO mediaDTO) {
         // TODO 還要實作上傳功能
-        String filepath ="";
         MediaEntity mediaEntity = new MediaEntity();
         mediaEntity.setScriptId(mediaDTO.getScriptId());
-        mediaEntity.setMediaType(String.valueOf(mediaDTO.getMediaType()));
-        mediaEntity.setFilePath(filepath);
+        mediaEntity.setMediaType(mediaDTO.getMediaType());
+        mediaEntity.setFilePath(mediaDTO.getFilePath());
+        mediaEntity.setUpdateTime(new Date());
+        mediaEntity.setUpdateTime(new Date());
+        save(mediaEntity);
     }
 
     @Override
@@ -37,6 +40,15 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
     @Override
     public List<MediaDTO> findByScriptId(Integer scriptId) {
         return mediaConverter.map(mediaMapper.findByScriptId(scriptId));
+    }
+
+    @Override
+    public MediaDTO findByScriptIdAndMediaId(Integer scriptId, Integer mediaId) {
+        MediaEntity mediaEntity = mediaMapper.findByScriptIdAndMediaId(scriptId, mediaId);
+        if (mediaEntity !=null){
+            return mediaConverter.map(mediaEntity);
+        }
+        return null;
     }
 
     @Override
@@ -51,5 +63,10 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
     @Override
     public void update(MediaDTO mediaDTO) {
 
+    }
+
+    @Override
+    public void delete(Integer scriptId, Integer mediaId) {
+        deleteById(mediaId);
     }
 }

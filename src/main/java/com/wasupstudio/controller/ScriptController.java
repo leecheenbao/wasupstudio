@@ -1,20 +1,30 @@
 package com.wasupstudio.controller;
 
 import com.wasupstudio.converter.ScriptConverter;
+import com.wasupstudio.enums.FileTypeEnum;
 import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
+import com.wasupstudio.model.dto.MediaDTO;
 import com.wasupstudio.model.dto.ScriptDTO;
+import com.wasupstudio.model.entity.MediaEntity;
+import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.entity.ScriptEntity;
+import com.wasupstudio.service.FileService;
 import com.wasupstudio.service.MediaService;
 import com.wasupstudio.service.ScriptService;
+import com.wasupstudio.util.FileUtils;
 import com.wasupstudio.util.JwtUtils;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.stream.Collectors;
 
 @Api(tags = "劇本相關 Script API")
@@ -31,10 +41,12 @@ public class ScriptController {
     @Autowired
     private ScriptConverter scriptConverter;
 
+    @Autowired
+    private FileService fileService;
+
     @ApiOperation(value = "取得劇本資料")
     @GetMapping
     public Result getAllData() {
-        JwtUtils.getMember();
         BasePageInfo pageInfo = scriptService.findAllData();
         return ResultGenerator.genSuccessResult(pageInfo);
     }
@@ -60,8 +72,8 @@ public class ScriptController {
     })
     @PostMapping
     public Result save(@RequestBody ScriptDTO scriptDTO, BindingResult bindingResult) {
-        String account = JwtUtils.getMemberAccount();
-        scriptDTO.setAuthor(account);
+        MemberEntity member = JwtUtils.getMember();
+        scriptDTO.setAuthor(member.getEmail());
         if (bindingResult.hasErrors()) {
             String errorMsg = bindingResult.getFieldErrors().stream()
                     .map(error -> error.getField() + " " + error.getDefaultMessage())
@@ -91,9 +103,55 @@ public class ScriptController {
                     .collect(Collectors.joining(", "));
             return ResultGenerator.genFailResult(errorMsg);
         }
-
+        MemberEntity member = JwtUtils.getMember();
+        scriptDTO.setAuthor(member.getEmail());
         scriptDTO.setScriptId(id);
         scriptService.update(scriptDTO);
         return ResultGenerator.genSuccessResult(ResultCode.SAVE_SUCCESS.getMessage());
+    }
+
+    @ApiOperation(value = "上傳文件", notes = "上傳文件接口")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "file", value = "文件", required = true, dataType = "MultipartFile"),
+    })
+    @PostMapping("/upload/{scriptId}")
+    @ResponseBody
+    @Transactional
+    public Result handleFileUpload(@PathVariable Integer scriptId, @RequestParam("file") MultipartFile file) throws IOException {
+        if (FileUtils.validateFileExtension(file.getOriginalFilename())){
+            return ResultGenerator.genSuccessResult((ResultCode.UPLOAD_FORMAT_ERROR.getMessage()));
+        }
+        if (FileUtils.validateFileSize(file)){
+            String type = FileTypeEnum.getEnum(FileUtils.checkFileType(file.getOriginalFilename())).getDesc();
+            String size = String.valueOf(FileUtils.MAX_FILE_SIZE);
+            return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_MAX_ERROR.getFormattedMessage(type,size));
+        }
+        String filePath = fileService.saveFile(file);
+        String mediaType = FileUtils.checkFileType(file.getOriginalFilename());
+        MediaDTO mediaDTO = new MediaDTO();
+        mediaDTO.setScriptId(scriptId);
+        mediaDTO.setFilePath(filePath);
+        mediaDTO.setMediaType(mediaType);
+        mediaService.save(mediaDTO);
+        return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_SUCCESS.getMessage());
+    }
+
+    @ApiOperation(value = "刪除檔案", notes = "刪除檔案接口")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "scriptId", value = "劇本ID", required = true, dataType = "Integer"),
+            @ApiImplicitParam(name = "mediaId", value = "影音ID", required = true, dataType = "Integer")
+    })
+    @DeleteMapping("/media/{scriptId}/{mediaId}")
+    @ResponseBody
+    @Transactional
+    public Result handleFileDelete(@PathVariable Integer scriptId, @PathVariable Integer mediaId) throws IOException {
+
+        MediaDTO mediaDTO = mediaService.findByScriptIdAndMediaId(scriptId, mediaId);
+        if (mediaDTO == null) {
+            return ResultGenerator.genSuccessResult(ResultCode.MATERIAL_INFO_NOT_EXIST.getMessage());
+        }
+        fileService.removeFile(mediaDTO.getFilePath());
+        mediaService.delete(scriptId, mediaId);
+        return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_SUCCESS.getMessage());
     }
 }

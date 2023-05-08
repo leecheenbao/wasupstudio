@@ -12,4 +12,7 @@ public interface MediaMapper extends CommonMapper<MediaEntity> {
     @Select("SELECT * FROM wa_media WHERE script_id=#{scriptId}")
     List<MediaEntity> findByScriptId(Integer scriptId);
 
+    @Select("SELECT * FROM wa_media WHERE script_id=#{scriptId} AND media_id=#{mediaId}")
+    MediaEntity findByScriptIdAndMediaId(Integer scriptId, Integer mediaId);
+
 }
