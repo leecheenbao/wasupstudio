@@ -98,6 +98,7 @@ CREATE TABLE wa_script (
                            author VARCHAR(255) NOT NULL COMMENT '劇本作者',
                            description TEXT COMMENT '劇本描述',
                            create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '劇本創建時間',
+                           period INTEGER NOT NULL DEFAULT 0 COMMENT '劇本時長(天)',
                            update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '劇本更新時間',
                            status INTEGER NOT NULL DEFAULT 0 COMMENT '劇本狀態 0:正常 1:關閉',
                            PRIMARY KEY (script_id)
