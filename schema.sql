@@ -82,6 +82,14 @@ CREATE TABLE wa_order_items (
                                 FOREIGN KEY (order_id) REFERENCES wa_orders(order_id)
 ) COMMENT='訂單明細表';
 
+-- 建立商品管理表
+CREATE TABLE wa_products (
+                             product_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '商品ID',
+                             name VARCHAR(255) NOT NULL COMMENT '商品名稱',
+                             price DECIMAL(10, 2) NOT NULL COMMENT '商品價格',
+                             quantity INT NOT NULL COMMENT '商品數量 -1為無限量'
+) COMMENT '商品管理表';
+
 
 -- 建立劇本表
 CREATE TABLE wa_script (
