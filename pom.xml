@@ -247,6 +247,14 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- MAIL相關的依賴項 -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>

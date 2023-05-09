@@ -11,7 +11,7 @@ CREATE TABLE wa_member (
                            role VARCHAR(20) NOT NULL COMMENT '使用者角色',
                            lastIp VARCHAR(50) COMMENT '登入IP',
                            lastLogin TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '最後登入時間',
-                           status INT NOT NULL COMMENT '帳號狀態',
+                           status INT NOT NULL COMMENT '帳號狀態 0:未啟用 1:啟用 2:停用',
                            registration_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '存儲註冊時間的欄位，使用 TIMESTAMP 型別，預設為當前時間'
 );
 
@@ -154,7 +154,7 @@ CREATE TABLE wa_task (
                          description TEXT COMMENT '任務描述',
                          priority INTEGER DEFAULT 0 COMMENT '任務優先級',
                          estimated_participants INTEGER DEFAULT 0 COMMENT '預計參與人數',
-                         status INTEGER DEFAULT 0 COMMENT '任務狀態 0:開啟任務 1:進行中 2:完成',
+                         status INTEGER DEFAULT 0 COMMENT '任務狀態 0:開啟任務 1:進行中 2:完成(包含結束)',
                          create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '創建時間',
                          update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新時間',
                          author VARCHAR(255) NOT NULL COMMENT '最後編輯者'
