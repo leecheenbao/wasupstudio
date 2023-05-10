@@ -39,9 +39,8 @@ public class ScriptEntity implements Serializable {
     @Column(name = "create_time", nullable = false, updatable = false)
     private Date createTime;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "end_time", nullable = false)
-    private Date endTime;
+    @Column(name = "period", nullable = false)
+    private Integer period;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "update_time", nullable = false)

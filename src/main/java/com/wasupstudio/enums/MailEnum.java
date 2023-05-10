@@ -6,14 +6,13 @@ import com.beust.jcommander.internal.Maps;
 import java.util.List;
 import java.util.Map;
 
-public enum StudySheetEnum {
-
-    TIGER_AND_RABBIT("TIGER_AND_RABBIT","虎兔篇-親子共讀任務學習單"),
-    MOUSE_AND_OX("MOUSE_AND_OX","鼠牛篇-親子共讀任務學習單"),
-    HORSE_AND_SHEEP("HORSE_AND_SHEEP","馬羊篇-親子共讀任務學習單"),
-    DRAGON_AND_TIGER("DRAGON_AND_TIGER","龍虎篇-親子共讀任務學習單"),
-
-    ;
+public enum MailEnum {
+    MAIL_SUBTITLE_SINGN("MAIL_SUBTITLE_SINGN","歡迎加入S&B！"),
+    MAIL_SUBTITLE_FORGET("MAIL_SUBTITLE_FORGET","S&B【忘記密碼】"),
+    MAIL_SUBTITLE_CONNECT("MAIL_SUBTITLE_CONNECT","S&B【來自用戶的問題】"),
+    MAIL_SUBTITLE_REPORT_SEND("MAIL_SUBTITLE_REPORT_SEND","S&B【你的檢舉已經成立】"),
+    MAIL_SUBTITLE_REPORT_REC("MAIL_SUBTITLE_REPORT_REC","S&B【你的行為已經被檢舉】")
+            ;
 
 
 
@@ -21,7 +20,7 @@ public enum StudySheetEnum {
 
     String desc;
 
-    StudySheetEnum(String type, String desc) {
+    MailEnum(String type, String desc) {
         this.type = type;
         this.desc = desc;
     }
