@@ -11,16 +11,16 @@ import java.util.Properties;
 
 public class MailUtil {
 
-	@Value("${MAIL_USERNAME}")
-	private String user ;
-	@Value("${MAIL_PASSWORD}")
-	private String pwd;
 	@Value("${MAIL_USER}")
-	private String from;
+	private static String user ;
+	@Value("${MAIL_PASSWORD}")
+	private static String pwd;
+	@Value("${MAIL_USER}")
+	private static String from;
 	private static final String MAIL_SIGNUP_URL = "http://localhost:8080/wasupstudio/api/signup";
 	private static final String MAIL_FORGET_URL = "http://localhost:8080/wasupstudio/api/forget";
 
-	public void sendMail(String action, String memUuid, String mailTo) throws Exception {
+	public static void sendMail(String action, String memUuid, String mailTo) throws Exception {
 		try {
 
 			Session mailSession = Session.getInstance(setMailProperties(), new javax.mail.Authenticator() {
@@ -29,8 +29,9 @@ public class MailUtil {
 				}
 			});
 
+
 			// 開啟Session的debug模式，這樣就可以查看到程序發送Email的運行狀態
-//			mailSession.setDebug(true);
+			mailSession.setDebug(true);
 
 			// 產生整封 email 的主體 message
 			MimeMessage message = new MimeMessage(mailSession);
@@ -38,23 +39,13 @@ public class MailUtil {
 			// 文字部份，注意 img src 部份要用 cid:接下面附檔的header
 			MimeBodyPart textPart = new MimeBodyPart();
 			StringBuffer html = new StringBuffer();
-			if (action.equals("apiuser")) {
+			if (action.equals(ProjectConstant.MailType.SIGNUP)) {
 				message.setSubject(MailEnum.MAIL_SUBTITLE_SINGN.getDesc());
 				html = mailContent_signUp(memUuid);
 			}
-			if (action.equals("forget")) {
+			if (action.equals(ProjectConstant.MailType.FORGET)) {
 				message.setSubject(MailEnum.MAIL_SUBTITLE_FORGET.getDesc());
 				html = mailContent_Forget(memUuid);
-			}
-
-			if (action.equals("report_send")) {
-				message.setSubject(MailEnum.MAIL_SUBTITLE_REPORT_SEND.getDesc());
-				html = mailContent_Report_Send(memUuid);
-			}
-
-			if (action.equals("report_rec")) {
-				message.setSubject(MailEnum.MAIL_SUBTITLE_REPORT_REC.getDesc());
-				html = mailContent_Report_Rec(memUuid);
 			}
 
 			textPart.setContent(html.toString(), "text/html; charset=UTF-8");
@@ -123,7 +114,7 @@ public class MailUtil {
 		}
 	}
 
-	public Properties setMailProperties() {
+	public static Properties setMailProperties() {
 		Properties props = new Properties();
 		props.put("mail.transport.protocol", "smtps");
 		props.put("mail.smtp.starttls.enable", "true");
@@ -138,7 +129,7 @@ public class MailUtil {
 		return props;
 	}
 
-	public StringBuffer mailContent_Forget(String memUuid) {
+	public static StringBuffer mailContent_Forget(String memUuid) {
 		StringBuffer html = new StringBuffer();
 		html.append("<h2>忘記密碼</h2><br>");
 		html.append("<p>請盡速修改你的密碼</p><");
@@ -147,7 +138,7 @@ public class MailUtil {
 		return html;
 	}
 
-	public StringBuffer mailContent_signUp(String memUuid) {
+	public static StringBuffer mailContent_signUp(String memUuid) {
 		StringBuffer html = new StringBuffer();
 		html.append(
 				"<body width='100%' style='margin: 0; padding: 0 !important; background: #f3f3f5; mso-line-height-rule: exactly;'>"
@@ -219,24 +210,6 @@ public class MailUtil {
 		html.append("<h3>聯絡信箱：" + mail + "</h3><br>");
 		html.append("<h3>聯繫內容：</h3><br>");
 		html.append("<div>" + content + "</div><br>");
-		return html;
-	}
-
-	public StringBuffer mailContent_Report_Send(String memUuid) {
-		StringBuffer html = new StringBuffer();
-		html.append("<h2>您檢舉的案件已經成立</h2><br>");
-		html.append("<h3>版主會盡速處理</h3><br>");
-		html.append("<img src='cid:image'/><br>");
-
-		return html;
-	}
-
-	public StringBuffer mailContent_Report_Rec(String memUuid) {
-		StringBuffer html = new StringBuffer();
-		html.append("<h2>您的行為可能有些不妥</h2><br>");
-		html.append("<h3>請檢查是否有不當留言，或是不當的照片</h3><br>");
-		html.append("<img src='cid:image'/><br>");
-
 		return html;
 	}
 
