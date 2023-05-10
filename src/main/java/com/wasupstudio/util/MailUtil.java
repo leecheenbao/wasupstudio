@@ -11,18 +11,18 @@ import java.util.Properties;
 
 public class MailUtil {
 
-	@Value("${MAIL_USER}")
-	private static String user ;
-	@Value("${MAIL_PASSWORD}")
-	private static String pwd;
-	@Value("${MAIL_USER}")
-	private static String from;
+	private static String user = "paul.lee.2022.09@gmail.com";
+	private static String pwd = "ogeplmjxvktfyefd";
+	private static String from = "paul.lee.2022.09@gmail.com";
+
 	private static final String MAIL_SIGNUP_URL = "http://localhost:8080/wasupstudio/api/signup";
 	private static final String MAIL_FORGET_URL = "http://localhost:8080/wasupstudio/api/forget";
 
 	public static void sendMail(String action, String memUuid, String mailTo) throws Exception {
 		try {
 
+			user = "paul.lee.2022.09@gmail.com";
+			pwd = "ogeplmjxvktfyefd";
 			Session mailSession = Session.getInstance(setMailProperties(), new javax.mail.Authenticator() {
 				protected PasswordAuthentication getPasswordAuthentication() {
 					return new PasswordAuthentication(user, pwd);
@@ -31,7 +31,7 @@ public class MailUtil {
 
 
 			// 開啟Session的debug模式，這樣就可以查看到程序發送Email的運行狀態
-			mailSession.setDebug(true);
+			mailSession.setDebug(false);
 
 			// 產生整封 email 的主體 message
 			MimeMessage message = new MimeMessage(mailSession);
@@ -120,7 +120,7 @@ public class MailUtil {
 		props.put("mail.smtp.starttls.enable", "true");
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.port", "587");
-		props.put("mail.smtp.host", "mail.gandi.net");
+		props.put("mail.smtp.host", "smtp.gmail.com");
 		props.put("mail.smtp.timeout", "30000");
 		props.put("mail.smtp.connectiontimeout", "10000");
 		props.put("mail.smtp.ssl.trust", "*");
