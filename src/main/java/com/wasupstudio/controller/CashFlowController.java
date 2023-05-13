@@ -81,30 +81,34 @@ public class CashFlowController {
         .reduce(BigDecimal.ZERO, BigDecimal::add);
     long orderId = System.currentTimeMillis() / 1000; //TODO 待確定訂單編號規則
 
-    OrderEntity orderEntity = new OrderEntity();
-    orderEntity.setOrderId(orderId);
-    orderEntity.setUserId(Objects.requireNonNull(JwtUtils.getMember()).getId());
-    orderEntity.setRecipient(orderDTO.getRecipient());
-    orderEntity.setPhone(orderDTO.getPhone());
-    orderEntity.setAddress(orderDTO.getAddress());
-    orderEntity.setTotalPrice(totalPrice);
-    orderEntity.setStatus(String.valueOf(OrderStatus.UNDONE));
-    orderEntity.setCreateTime(
-        Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-    orderService.save(orderEntity);
+    saveOrder(orderDTO, totalPrice, orderId);
 
-    List<OrderItemEntity> orderItemEntities = orderDTO.getProducts().stream().map(orderItemDTO -> {
-      OrderItemEntity orderItemEntity = new OrderItemEntity();
-      orderItemEntity.setOrderId(orderId);
-      Long productId = orderItemEntity.getProductId();
-      orderItemEntity.setProductId(productId);
-      orderItemEntity.setPrice(productEntityMap.get(productId).getPrice());
-      orderItemEntity.setQuantity(orderItemEntity.getQuantity());
-      return orderItemEntity;
-    }).collect(Collectors.toList());
-    orderItemService.save(orderItemEntities);
+    saveOrderItem(orderDTO, productEntityMap, orderId);
 
     // 前端頁面會送來未加密過的資訊，利用這個API把資訊加密之後送到三方
+    return getCashFlowData(totalPrice, orderId);
+  }
+
+  @ApiOperation("藍新callback方法")
+  @PostMapping(value = "/callback")
+  protected Result getReturnData(CashFlowReturnData cashFlowReturnData) {
+    System.out.println("cashFlowReturnData = " + cashFlowReturnData);
+    BasePageInfo pageInfo = new BasePageInfo<>();
+    //接收三方收到的訊息然後解密處理實作callback方法
+    CashFlowUtils cashFlowUtils = new CashFlowUtils();
+    try {
+      Map<String, String> blueNewData = cashFlowUtils.getBlueNewData(
+          cashFlowReturnData.getTradeInfo());
+
+    } catch (UnsupportedEncodingException e) {
+      return ResultGenerator.genFailResult(ResultCode.RESPONSE_JSON_ERROR.getCode(),
+          ResultCode.RESPONSE_JSON_ERROR.getMessage());
+    }
+    return ResultGenerator.genSuccessResult(pageInfo);
+  }
+
+
+  private CashFlowData getCashFlowData(BigDecimal totalPrice, long orderId) throws Exception {
     CashFlowUtils cashFlowUtils = new CashFlowUtils();
     Map<String, Object> params = new TreeMap<>();
     params.put("MerchantID", merchantID);
@@ -132,23 +136,31 @@ public class CashFlowController {
     return cashFlowData;
   }
 
-  @ApiOperation("藍新callback方法")
-  @PostMapping(value = "/callback")
-  protected Result getReturnData(CashFlowReturnData cashFlowReturnData) {
-    System.out.println("cashFlowReturnData = " + cashFlowReturnData);
-    BasePageInfo pageInfo = new BasePageInfo<>();
-    //接收三方收到的訊息然後解密處理實作callback方法
-    CashFlowUtils cashFlowUtils = new CashFlowUtils();
-    try {
-      Map<String, String> blueNewData = cashFlowUtils.getBlueNewData(
-          cashFlowReturnData.getTradeInfo());
-
-    } catch (UnsupportedEncodingException e) {
-      return ResultGenerator.genFailResult(ResultCode.RESPONSE_JSON_ERROR.getCode(),
-          ResultCode.RESPONSE_JSON_ERROR.getMessage());
-    }
-    return ResultGenerator.genSuccessResult(pageInfo);
+  private void saveOrderItem(OrderDTO orderDTO, Map<Long, ProductEntity> productEntityMap,
+      long orderId) {
+    List<OrderItemEntity> orderItemEntities = orderDTO.getProducts().stream().map(orderItemDTO -> {
+      OrderItemEntity orderItemEntity = new OrderItemEntity();
+      orderItemEntity.setOrderId(orderId);
+      Long productId = orderItemEntity.getProductId();
+      orderItemEntity.setProductId(productId);
+      orderItemEntity.setPrice(productEntityMap.get(productId).getPrice());
+      orderItemEntity.setQuantity(orderItemEntity.getQuantity());
+      return orderItemEntity;
+    }).collect(Collectors.toList());
+    orderItemService.save(orderItemEntities);
   }
 
-
+  private void saveOrder(OrderDTO orderDTO, BigDecimal totalPrice, long orderId) {
+    OrderEntity orderEntity = new OrderEntity();
+    orderEntity.setOrderId(orderId);
+    orderEntity.setUserId(Objects.requireNonNull(JwtUtils.getMember()).getId());
+    orderEntity.setRecipient(orderDTO.getRecipient());
+    orderEntity.setPhone(orderDTO.getPhone());
+    orderEntity.setAddress(orderDTO.getAddress());
+    orderEntity.setTotalPrice(totalPrice);
+    orderEntity.setStatus(String.valueOf(OrderStatus.UNDONE));
+    orderEntity.setCreateTime(
+        Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+    orderService.save(orderEntity);
+  }
 }
