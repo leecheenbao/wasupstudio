@@ -10,6 +10,7 @@ import com.wasupstudio.model.entity.TaskEntity;
 import com.wasupstudio.service.AbstractService;
 import com.wasupstudio.service.ScriptService;
 import com.wasupstudio.service.TaskService;
+import com.wasupstudio.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,7 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
         taskEntity.setEstimatedParticipants(taskDTO.getEstimatedParticipants());
         taskEntity.setStatus(taskDTO.getStatus());
         taskEntity.setCreateTime(new Date());
-        taskEntity.setUpdateTime(new Date());
+        taskEntity.setEndTime(DateUtils.getEndDate(taskDTO.getEndTime()));
         save(taskEntity);
     }
 
@@ -68,7 +69,7 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
             taskEntity.setEstimatedParticipants(taskDTO.getEstimatedParticipants());
             taskEntity.setAuthor(taskDTO.getAuthor());
             taskEntity.setStatus(taskDTO.getStatus());
-            taskEntity.setUpdateTime(new Date());
+            taskEntity.setEndTime(DateUtils.getEndDate(taskDTO.getEndTime()));
 
             this.update(taskEntity);
         }
