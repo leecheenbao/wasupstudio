@@ -8,7 +8,6 @@ import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
 import com.wasupstudio.model.dto.MediaDTO;
 import com.wasupstudio.model.dto.ScriptDTO;
-import com.wasupstudio.model.entity.MediaEntity;
 import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.entity.ScriptEntity;
 import com.wasupstudio.service.FileService;
@@ -23,7 +22,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.stream.Collectors;
 

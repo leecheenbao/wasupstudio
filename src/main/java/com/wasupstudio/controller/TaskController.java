@@ -38,6 +38,16 @@ public class TaskController {
         return ResultGenerator.genSuccessResult(pageInfo);
     }
 
+    @ApiOperation(value = "取得自己的任務資料", notes = "取得自己的任務資料，並回傳一個 BasePageInfo 物件")
+    @GetMapping("/mytask")
+    public Result getMyData() {
+        MemberEntity member = JwtUtils.getMember();
+        Integer memberId = member.getId();
+
+        BasePageInfo pageInfo = taskService.findMyTask(memberId);
+        return ResultGenerator.genSuccessResult(pageInfo);
+    }
+
     @ApiOperation(value = "取得單一筆任務資料", notes = "根據 Task ID 取得單一 任務資料")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "回傳該 任務資料"),

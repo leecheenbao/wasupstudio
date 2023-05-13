@@ -60,6 +60,16 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
     }
 
     @Override
+    public BasePageInfo findMyTask(Integer memberId) {
+        List<TaskEntity> taskEntityList = taskMapper.getMyTask(memberId);
+        BasePageInfo basePageInfo = new BasePageInfo<>();
+        basePageInfo.setList(taskEntityList);
+        basePageInfo.setTotal(taskEntityList.size());
+
+        return basePageInfo;
+    }
+
+    @Override
     public void update(TaskDTO taskDTO) {
         TaskEntity taskEntity = this.findOne(taskDTO.getTaskId());
         if (taskEntity != null){

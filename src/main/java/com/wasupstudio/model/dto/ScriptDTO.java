@@ -29,7 +29,7 @@ public class ScriptDTO implements Serializable {
 
     private Date createTime;
 
-    private Integer period;
+    private Integer scriptPeriod;
 
     private Date updateTime;
 

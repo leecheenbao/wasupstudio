@@ -16,6 +16,8 @@ public interface TaskService {
 
     BasePageInfo findAllData();
 
+    BasePageInfo findMyTask(Integer memberId);
+
     void update(TaskDTO taskDTO);
 
 }
