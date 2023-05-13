@@ -1,36 +1,15 @@
 package com.wasupstudio.service.Impl;
 
-import com.wasupstudio.constant.ProjectConstant.OrderStatus;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.dto.OrderDTO;
 import com.wasupstudio.model.entity.OrderEntity;
 import com.wasupstudio.service.AbstractService;
 import com.wasupstudio.service.OrderService;
-import com.wasupstudio.util.JwtUtils;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
 import org.springframework.stereotype.Service;
 
 @Service
 public class OrderServiceImpl extends AbstractService<OrderEntity> implements OrderService {
-
-//  @Override
-//  public void save(OrderDTO orderDTO) {
-//    if (JwtUtils.getMember() == null) {
-//      throw new NullPointerException();
-//    }
-//    OrderEntity orderEntity = new OrderEntity();
-//    orderEntity.setUserId(JwtUtils.getMember().getId());
-//    orderEntity.setRecipient(orderDTO.getRecipient());
-//    orderEntity.setAddress(orderEntity.getAddress());
-//    orderEntity.setPhone(orderDTO.getPhone());
-//    orderEntity.setTotalPrice(orderDTO.getTotalPrice());
-//    orderEntity.setStatus(String.valueOf(OrderStatus.UNDONE));
-//    orderEntity.setCreateTime(
-//        Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-//    this.save(orderEntity);
-//  }
 
   @Override
   public OrderEntity findOne(Integer id) {

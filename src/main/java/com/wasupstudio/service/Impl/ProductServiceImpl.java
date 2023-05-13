@@ -16,7 +16,7 @@ public class ProductServiceImpl extends AbstractService<ProductEntity> implement
 
   @Override
   public List<ProductEntity> findByIds(List<String> productIds) {
-    String ids = productIds.stream().collect(Collectors.joining(","));
+    String ids = String.join(",", productIds);
     return this.findByIds(ids);
   }
 
