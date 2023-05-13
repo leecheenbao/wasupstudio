@@ -7,7 +7,7 @@ import java.util.Date;
 
 public interface OrderService {
 
-  void save(OrderDTO orderDTO);
+  void save(OrderEntity orderDTO);
 
   OrderEntity findOne(Integer id);
 

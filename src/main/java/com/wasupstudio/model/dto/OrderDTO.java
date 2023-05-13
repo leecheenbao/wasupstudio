@@ -1,7 +1,6 @@
 package com.wasupstudio.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import java.util.Date;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,9 +12,7 @@ import lombok.ToString;
 @NoArgsConstructor
 public class OrderDTO {
 
-  private Long orderId;
-
-  private String userId;
+  List<OrderItemDTO> products;
 
   private String recipient;
 
@@ -23,7 +20,16 @@ public class OrderDTO {
 
   private String address;
 
-  private Double totalPrice;
+  @Data
+  @ToString
+  @AllArgsConstructor
+  @NoArgsConstructor
+  public static class OrderItemDTO {
 
-  private String status;
+    private String productId;
+
+    private Long quantity;
+
+  }
+
 }

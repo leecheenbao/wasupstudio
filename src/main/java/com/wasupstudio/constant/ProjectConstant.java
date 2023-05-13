@@ -47,7 +47,7 @@ public final class ProjectConstant {
     public final class OrderStatus {
         public final static int SUCCESS = 0;
         public final static int FAIL = 1;
-        public final static int CANCEL = 2;
+        public final static int UNDONE = 2;
     }
 
     public final class MailType {

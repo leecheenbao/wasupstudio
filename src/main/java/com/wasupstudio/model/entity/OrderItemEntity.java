@@ -1,7 +1,6 @@
 package com.wasupstudio.model.entity;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,35 +17,24 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "wa_orders")
-public class OrderEntity {
+@Table(name = "wa_order_items")
+public class OrderItemEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "order_item_id")
+  private Long orderItemId;
+
   @Column(name = "order_id")
   private Long orderId;
 
-  @Column(name = "user_id")
-  private Integer userId;
+  @Column(name = "product_id")
+  private Long productId;
 
-  @Column(name = "recipient")
-  private String recipient;
+  @Column(name = "price")
+  private BigDecimal price;
 
-  @Column(name = "phone")
-  private String phone;
+  @Column(name = "quantity")
+  private Integer quantity;
 
-  @Column(name = "address")
-  private String address;
-
-  @Column(name = "total_price")
-  private BigDecimal totalPrice;
-
-  @Column(name = "status")
-  private String status;
-
-  @Column(name = "createTime")
-  private Date createTime;
-
-  @Column(name = "updateTime")
-  private Date updateTime;
 }
