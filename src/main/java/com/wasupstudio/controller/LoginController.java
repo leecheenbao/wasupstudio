@@ -14,16 +14,20 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfo;
+import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.exception.BussinessException;
 import com.wasupstudio.model.Result;
 import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.dto.LoginDTO;
 import com.wasupstudio.model.dto.MemberDTO;
+import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
 import com.wasupstudio.service.MemberService;
 import com.wasupstudio.util.HttpServletRequestUtils;
+import com.wasupstudio.util.JwtUtils;
+import com.wasupstudio.util.MailUtil;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -253,6 +257,36 @@ public class LoginController {
 		}
 		return ResultGenerator.genSuccessResult(memberService.save(memberDTO));
 	}
+
+
+	/**
+	 * 發送驗證信
+	 *
+	 * @return 發送結果
+	 */
+	@ApiOperation(value = "發送驗證信", notes = "註冊之後發送驗證信，可用於再次發送")
+	@PostMapping("/mail")
+	public Result sendMail(@RequestBody @Valid MemberDTO memberDTO, BindingResult bindingResult) throws Exception {
+
+		if (bindingResult.hasErrors()) {
+			String errorMsg = bindingResult.getFieldErrors().stream()
+					.map(error -> error.getField() + " " + error.getDefaultMessage())
+					.collect(Collectors.joining(", "));
+			return ResultGenerator.genFailResult(errorMsg);
+		}
+
+		/* 註冊成功發送驗證信 */
+		MemberEntity memberEntity = memberService.getAdminByEmail(memberDTO.getEmail());
+		if (memberEntity != null) {
+			String id = String.valueOf(memberEntity.getId());
+			String mail = memberEntity.getEmail();
+			MailUtil.sendMail(ProjectConstant.MailType.SIGNUP, id, mail);
+		}
+
+		return ResultGenerator.genSuccessResult();
+	}
+
+
 	/**
 	 * 獲取當前IP
 	 *

@@ -49,4 +49,10 @@ public final class ProjectConstant {
         public final static int FAIL = 1;
         public final static int CANCEL = 2;
     }
+
+    public final class MailType {
+        public final static String FORGET = "forget";
+
+        public final static String SIGNUP = "signup";
+    }
 }
