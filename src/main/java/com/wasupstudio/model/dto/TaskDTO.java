@@ -27,6 +27,8 @@ public class TaskDTO implements Serializable {
 
     private Integer priority;
 
+    private Integer scriptId;
+
     private Integer estimatedParticipants;
 
     private Date createTime;

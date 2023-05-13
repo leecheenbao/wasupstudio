@@ -31,6 +31,7 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
         taskEntity.setDescription(taskDTO.getDescription());
         taskEntity.setAuthor(taskDTO.getAuthor());
         taskEntity.setMemberId(taskDTO.getMemberId());
+        taskEntity.setScriptId(taskDTO.getScriptId());
         taskEntity.setEstimatedParticipants(taskDTO.getEstimatedParticipants());
         taskEntity.setStatus(taskDTO.getStatus());
         taskEntity.setCreateTime(new Date());
@@ -41,12 +42,6 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
     @Override
     public TaskEntity findOne(Integer id) {
         return this.findById(id);
-    }
-
-    @Override
-    public TaskEntity getScriptByTitle(String title) {
-
-        return null;
     }
 
     @Override
@@ -76,8 +71,10 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
             taskEntity.setTaskName(taskDTO.getTaskName());
             taskEntity.setPriority(taskDTO.getPriority());
             taskEntity.setDescription(taskDTO.getDescription());
-            taskEntity.setEstimatedParticipants(taskDTO.getEstimatedParticipants());
             taskEntity.setAuthor(taskDTO.getAuthor());
+            taskEntity.setMemberId(taskDTO.getMemberId());
+            taskEntity.setScriptId(taskDTO.getScriptId());
+            taskEntity.setEstimatedParticipants(taskDTO.getEstimatedParticipants());
             taskEntity.setStatus(taskDTO.getStatus());
             taskEntity.setEndTime(DateUtils.getEndDate(taskDTO.getEndTime()));
 

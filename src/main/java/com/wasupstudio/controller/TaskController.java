@@ -4,12 +4,9 @@ import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
-import com.wasupstudio.model.dto.ScriptDTO;
 import com.wasupstudio.model.dto.TaskDTO;
 import com.wasupstudio.model.entity.MemberEntity;
-import com.wasupstudio.model.entity.ScriptEntity;
 import com.wasupstudio.model.entity.TaskEntity;
-import com.wasupstudio.service.ScriptService;
 import com.wasupstudio.service.TaskService;
 import com.wasupstudio.util.JwtUtils;
 import io.swagger.annotations.Api;
@@ -62,19 +59,23 @@ public class TaskController {
         return ResultGenerator.genSuccessResult(taskEntity);
     }
 
+
+
     @ApiOperation(value = "新增一筆任務資料", notes = "新增一筆 任務資料，並回傳 Result 結果")
     @PostMapping
     public Result save(@RequestBody @Valid TaskDTO taskDTO, BindingResult bindingResult) {
-        MemberEntity member = JwtUtils.getMember();
-        taskDTO.setAuthor(member.getEmail());
-        taskDTO.setMemberId(member.getId());
         if (bindingResult.hasErrors()) {
             String errorMsg = bindingResult.getFieldErrors().stream()
                     .map(error -> error.getField() + " " + error.getDefaultMessage())
                     .collect(Collectors.joining(", "));
             return ResultGenerator.genFailResult(errorMsg);
         }
+        MemberEntity member = JwtUtils.getMember();
+        taskDTO.setAuthor(member.getEmail());
+        taskDTO.setMemberId(member.getId());
+
         taskService.save(taskDTO);
+
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
     }
 

@@ -12,8 +12,6 @@ public interface TaskService {
 
     TaskEntity findOne(Integer id);
 
-    TaskEntity getScriptByTitle(String title);
-
     BasePageInfo findAllData();
 
     BasePageInfo findMyTask(Integer memberId);

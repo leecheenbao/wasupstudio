@@ -152,6 +152,7 @@ CREATE TABLE wa_task (
                          task_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '任務ID',
                          task_name VARCHAR(255) NOT NULL COMMENT '任務名稱',
                          member_Id INTEGER NOT NULL COMMENT '任務所屬會員',
+                         script_id INT NOT NULL COMMENT '劇本ID',
                          description TEXT COMMENT '任務描述',
                          priority INTEGER DEFAULT 0 COMMENT '任務優先級',
                          estimated_participants INTEGER DEFAULT 0 COMMENT '預計參與人數',
