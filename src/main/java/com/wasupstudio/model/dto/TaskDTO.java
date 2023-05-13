@@ -31,7 +31,7 @@ public class TaskDTO implements Serializable {
 
     private Date createTime;
 
-    private Date updateTime;
+    private Date endTime;
 
     private Integer status;
 

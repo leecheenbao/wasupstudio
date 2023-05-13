@@ -157,7 +157,7 @@ CREATE TABLE wa_task (
                          estimated_participants INTEGER DEFAULT 0 COMMENT '預計參與人數',
                          status INTEGER DEFAULT 0 COMMENT '任務狀態 0:開啟任務 1:進行中 2:完成(包含結束)',
                          create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '創建時間',
-                         update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新時間',
+                         end_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '結束時間',
                          author VARCHAR(255) NOT NULL COMMENT '最後編輯者'
 );
 
@@ -172,7 +172,3 @@ CREATE TABLE wa_task_assignment (
 );
 
 
-CREATE TABLE wa_system (
-
-
-);

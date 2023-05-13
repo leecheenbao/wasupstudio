@@ -45,8 +45,8 @@ public class TaskEntity implements Serializable {
     private Date createTime;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "update_time", nullable = false)
-    private Date updateTime;
+    @Column(name = "end_time", nullable = false)
+    private Date endTime;
 
     @Column(name = "status", nullable = false)
     private Integer status;
