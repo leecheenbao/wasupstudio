@@ -1,3 +1,4 @@
+
 -- 建立會員資料表
 CREATE TABLE wa_member (
                            id INT AUTO_INCREMENT PRIMARY KEY COMMENT '主鍵欄位，用來唯一識別每一筆資料',
@@ -31,7 +32,7 @@ CREATE TABLE wa_license (
 
 -- 創建「訂單」表
 CREATE TABLE wa_orders (
-                           order_id INT NOT NULL AUTO_INCREMENT COMMENT '訂單編號',
+                           order_id INT NOT NULL COMMENT '訂單編號',
                            user_id INT NOT NULL COMMENT '用戶編號',
                            recipient VARCHAR(255) NOT NULL COMMENT '收件人姓名',
                            phone VARCHAR(255) NOT NULL COMMENT '收件人電話',
@@ -168,4 +169,10 @@ CREATE TABLE wa_task_assignment (
                                     assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '分配時間',
                                     FOREIGN KEY (task_id) REFERENCES wa_task(task_id),
                                     FOREIGN KEY (assignee_id) REFERENCES wa_member(id)
+);
+
+
+CREATE TABLE wa_system (
+
+
 );
