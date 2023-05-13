@@ -6,7 +6,10 @@ import com.wasupstudio.service.AbstractService;
 import com.wasupstudio.service.ProductService;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ProductServiceImpl extends AbstractService<ProductEntity> implements ProductService {
 
   @Override
