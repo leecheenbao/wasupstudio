@@ -42,12 +42,19 @@ public class ScriptEntity implements Serializable {
     @Column(name = "script_period", nullable = false)
     private Integer scriptPeriod;
 
+    @Column(name = "goal")
+    private String goal;
+
+    @Column(name = "tips")
+    private String tips;
+
+    @Column(name = "image")
+    private String image;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "update_time", nullable = false)
     private Date updateTime;
 
     @Column(name = "status")
     private Integer status;
-
 }
 

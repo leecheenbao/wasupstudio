@@ -10,8 +10,6 @@ public interface ScriptService {
 
     ScriptEntity findOne(Integer id);
 
-    ScriptEntity getScriptByTitle(String title);
-
     BasePageInfo findAllData();
 
     void update(ScriptDTO scriptDTO);
