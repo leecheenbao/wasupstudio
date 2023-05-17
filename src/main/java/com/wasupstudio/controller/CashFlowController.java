@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -34,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -63,22 +65,24 @@ public class CashFlowController {
   @ApiOperation("取得藍新加密資料(一般)/建立訂單")
   @PostMapping(value = "/order")
   @Transactional
-  protected CashFlowData createOrderList(OrderDTO orderDTO) throws Exception {
-
+  protected CashFlowData createOrderList(@RequestBody OrderDTO orderDTO) throws Exception {
+    System.out.println("orderDTO = " + orderDTO);
     List<String> productIds = orderDTO.getProducts().stream()
         .map(OrderItemDTO::getProductId)
         .collect(Collectors.toList());
-    List<ProductEntity> products = productService.findByIds(productIds);
-    Map<Long, ProductEntity> productEntityMap = products.stream()
+    List<ProductEntity> productEntities = productService.findByIds(productIds);
+    Map<Long, ProductEntity> productEntityMap = productEntities.stream()
         .collect(Collectors.toMap(ProductEntity::getProductId, Function.identity()));
-    BigDecimal totalPrice = products.stream()
-        .map(item -> {
-          ProductEntity product = productService.findOne(item.getProductId());
-          BigDecimal price = product.getPrice();
-          int quantity = item.getQuantity();
-          return price.multiply(BigDecimal.valueOf(quantity));
-        })
+    //根據productEntities過濾出products中的productId並找到其價格，乘上products中的數量，並加總
+    BigDecimal totalPrice = orderDTO.getProducts().stream()
+        .map(item -> productEntities.stream()
+            .filter(productEntity -> productEntity.getProductId()
+                .equals(Long.valueOf(item.getProductId()))).findFirst()
+            .map(productEntity -> productEntity.getPrice()
+                .multiply(BigDecimal.valueOf(item.getQuantity())))
+            .orElseThrow(RuntimeException::new))
         .reduce(BigDecimal.ZERO, BigDecimal::add);
+
     long orderId = System.currentTimeMillis() / 1000; //TODO 待確定訂單編號規則
 
     saveOrder(orderDTO, totalPrice, orderId);
@@ -91,7 +95,7 @@ public class CashFlowController {
 
   @ApiOperation("藍新callback方法")
   @PostMapping(value = "/callback")
-  protected Result getReturnData(CashFlowReturnData cashFlowReturnData) {
+  protected Result getReturnData(@RequestBody CashFlowReturnData cashFlowReturnData) {
     System.out.println("cashFlowReturnData = " + cashFlowReturnData);
     BasePageInfo pageInfo = new BasePageInfo<>();
     //接收三方收到的訊息然後解密處理實作callback方法
@@ -122,7 +126,7 @@ public class CashFlowController {
     params.put("Email", "a3583798@gmail.com"); //TODO 改從token來
 //    params.put("NotifyURL", "https://webhook.site/91346899-a36b-4fc6-915b-7b397a63e213");
     params.put("ReturnURL",
-        "https://c244-2001-b011-5c10-37d4-a937-1625-1e85-d80d.ngrok-free.app/wasupstudio/api/cash/callback");
+        "https://2011-2001-b011-5c0e-10c9-1cc4-2a50-809f-cf0c.ngrok-free.app/wasupstudio/api/cash/callback");
 
     String dataInfo = cashFlowUtils.getDataInfo(params);
     String tradeInfo = cashFlowUtils.encrypt(dataInfo, hashKey, hashIV);
@@ -141,10 +145,11 @@ public class CashFlowController {
     List<OrderItemEntity> orderItemEntities = orderDTO.getProducts().stream().map(orderItemDTO -> {
       OrderItemEntity orderItemEntity = new OrderItemEntity();
       orderItemEntity.setOrderId(orderId);
-      Long productId = orderItemEntity.getProductId();
+      Long productId = Long.valueOf(orderItemDTO.getProductId());
       orderItemEntity.setProductId(productId);
       orderItemEntity.setPrice(productEntityMap.get(productId).getPrice());
-      orderItemEntity.setQuantity(orderItemEntity.getQuantity());
+      orderItemEntity.setQuantity(orderItemDTO.getQuantity());
+      System.out.println("orderItemEntity = " + orderItemEntity);
       return orderItemEntity;
     }).collect(Collectors.toList());
     orderItemService.save(orderItemEntities);
@@ -160,6 +165,8 @@ public class CashFlowController {
     orderEntity.setTotalPrice(totalPrice);
     orderEntity.setStatus(String.valueOf(OrderStatus.UNDONE));
     orderEntity.setCreateTime(
+        Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+    orderEntity.setUpdateTime(
         Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
     orderService.save(orderEntity);
   }

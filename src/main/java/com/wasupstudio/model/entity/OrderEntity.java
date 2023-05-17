@@ -44,9 +44,9 @@ public class OrderEntity {
   @Column(name = "status")
   private String status;
 
-  @Column(name = "createTime")
+  @Column(name = "create_time")
   private Date createTime;
 
-  @Column(name = "updateTime")
+  @Column(name = "update_time")
   private Date updateTime;
 }
