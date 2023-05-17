@@ -4,7 +4,6 @@ import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
-import com.wasupstudio.model.dto.ScriptDTO;
 import com.wasupstudio.model.dto.TaskDTO;
 import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.entity.ScriptEntity;
@@ -31,10 +30,23 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private ScriptService scriptService;
+
     @ApiOperation(value = "取得所有 任務資料", notes = "取得所有 任務資料，並回傳一個 BasePageInfo 物件")
     @GetMapping
     public Result getAllData() {
         BasePageInfo pageInfo = taskService.findAllData();
+        return ResultGenerator.genSuccessResult(pageInfo);
+    }
+
+    @ApiOperation(value = "取得自己的任務資料", notes = "取得自己的任務資料，並回傳一個 BasePageInfo 物件")
+    @GetMapping("/mytask")
+    public Result getMyData() {
+        MemberEntity member = JwtUtils.getMember();
+        Integer memberId = member.getId();
+
+        BasePageInfo pageInfo = taskService.findMyTask(memberId);
         return ResultGenerator.genSuccessResult(pageInfo);
     }
 
@@ -52,19 +64,31 @@ public class TaskController {
         return ResultGenerator.genSuccessResult(taskEntity);
     }
 
+
+
     @ApiOperation(value = "新增一筆任務資料", notes = "新增一筆 任務資料，並回傳 Result 結果")
     @PostMapping
     public Result save(@RequestBody @Valid TaskDTO taskDTO, BindingResult bindingResult) {
-        MemberEntity member = JwtUtils.getMember();
-        taskDTO.setAuthor(member.getEmail());
-        taskDTO.setMemberId(member.getId());
         if (bindingResult.hasErrors()) {
             String errorMsg = bindingResult.getFieldErrors().stream()
                     .map(error -> error.getField() + " " + error.getDefaultMessage())
                     .collect(Collectors.joining(", "));
             return ResultGenerator.genFailResult(errorMsg);
         }
+
+        // 檢核劇本資料
+        Integer scriptId = taskDTO.getScriptId();
+        ScriptEntity scriptEntity = scriptService.findOne(scriptId);
+        if (scriptEntity == null) {
+            return ResultGenerator.genFailResult(ResultCode.SCRIPT_DATA_NOT_EXIST.getMessage());
+        }
+
+        MemberEntity member = JwtUtils.getMember();
+        taskDTO.setAuthor(member.getEmail());
+        taskDTO.setMemberId(member.getId());
+
         taskService.save(taskDTO);
+
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
     }
 
@@ -77,9 +101,18 @@ public class TaskController {
                     .collect(Collectors.joining(", "));
             return ResultGenerator.genFailResult(errorMsg);
         }
+
+        // 檢核劇本資料
+        Integer scriptId = taskDTO.getScriptId();
+        ScriptEntity scriptEntity = scriptService.findOne(scriptId);
+        if (scriptId != null && scriptEntity == null) {
+            return ResultGenerator.genFailResult(ResultCode.SCRIPT_DATA_NOT_EXIST.getMessage());
+        }
+
         MemberEntity member = JwtUtils.getMember();
         taskDTO.setAuthor(member.getEmail());
         taskDTO.setMemberId(member.getId());
+        taskDTO.setTaskId(id);
         taskService.update(taskDTO);
         return ResultGenerator.genSuccessResult(ResultCode.SAVE_SUCCESS.getMessage());
     }

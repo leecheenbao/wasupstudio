@@ -1,21 +1,19 @@
 package com.wasupstudio.service.Impl;
 
-import com.wasupstudio.mapper.ScriptMapper;
 import com.wasupstudio.mapper.TaskMapper;
 import com.wasupstudio.model.BasePageInfo;
-import com.wasupstudio.model.dto.ScriptDTO;
 import com.wasupstudio.model.dto.TaskDTO;
-import com.wasupstudio.model.entity.ScriptEntity;
 import com.wasupstudio.model.entity.TaskEntity;
 import com.wasupstudio.service.AbstractService;
-import com.wasupstudio.service.ScriptService;
 import com.wasupstudio.service.TaskService;
 import com.wasupstudio.util.DateUtils;
+import com.wasupstudio.util.ValueValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class TaskServiceImpl extends AbstractService<TaskEntity> implements TaskService {
@@ -31,6 +29,7 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
         taskEntity.setDescription(taskDTO.getDescription());
         taskEntity.setAuthor(taskDTO.getAuthor());
         taskEntity.setMemberId(taskDTO.getMemberId());
+        taskEntity.setScriptId(taskDTO.getScriptId());
         taskEntity.setEstimatedParticipants(taskDTO.getEstimatedParticipants());
         taskEntity.setStatus(taskDTO.getStatus());
         taskEntity.setCreateTime(new Date());
@@ -44,12 +43,6 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
     }
 
     @Override
-    public TaskEntity getScriptByTitle(String title) {
-
-        return null;
-    }
-
-    @Override
     public BasePageInfo findAllData() {
 
         List<TaskEntity> list = this.findAll();
@@ -60,18 +53,60 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
     }
 
     @Override
+    public BasePageInfo findMyTask(Integer memberId) {
+        List<TaskEntity> taskEntityList = taskMapper.getMyTask(memberId);
+        BasePageInfo basePageInfo = new BasePageInfo<>();
+        basePageInfo.setList(taskEntityList);
+        basePageInfo.setTotal(taskEntityList.size());
+
+        return basePageInfo;
+    }
+
+    @Override
     public void update(TaskDTO taskDTO) {
         TaskEntity taskEntity = this.findOne(taskDTO.getTaskId());
         if (taskEntity != null){
-            taskEntity.setTaskName(taskDTO.getTaskName());
-            taskEntity.setPriority(taskDTO.getPriority());
-            taskEntity.setDescription(taskDTO.getDescription());
-            taskEntity.setEstimatedParticipants(taskDTO.getEstimatedParticipants());
             taskEntity.setAuthor(taskDTO.getAuthor());
-            taskEntity.setStatus(taskDTO.getStatus());
-            taskEntity.setEndTime(DateUtils.getEndDate(taskDTO.getEndTime()));
+            taskEntity.setMemberId(taskDTO.getMemberId());
 
-            this.update(taskEntity);
+            if (!ValueValidator.isNullOrEmpty(taskDTO.getTaskName())) {
+                taskEntity.setTaskName(taskDTO.getTaskName());
+            }
+            if (!ValueValidator.isNullOrZero(taskDTO.getPriority())) {
+                taskEntity.setPriority(taskDTO.getPriority());
+            }
+            if (!ValueValidator.isNullOrEmpty(taskDTO.getDescription())) {
+                taskEntity.setDescription(taskDTO.getDescription());
+            }
+            if (!ValueValidator.isNullOrZero(taskDTO.getScriptId())) {
+                taskEntity.setScriptId(taskDTO.getScriptId());
+            }
+            if (!ValueValidator.isNullOrZero(taskDTO.getEstimatedParticipants())) {
+                taskEntity.setEstimatedParticipants(taskDTO.getEstimatedParticipants());
+            }
+            if (!ValueValidator.isNullOrZero(taskDTO.getStatus())) {
+                taskEntity.setStatus(taskDTO.getStatus());
+            }
+            if (!ValueValidator.isNullOrEmpty(taskDTO.getEndTime())){
+                taskEntity.setEndTime(DateUtils.getEndDate(taskDTO.getEndTime()));
+            }
+
+            // 判斷字段是否發生變化，避免不必要的更新操作
+            if (isTaskEntityChanged(taskEntity, taskDTO)) {
+                this.update(taskEntity);
+            }
         }
     }
+
+    // 判斷TaskEntity的字段是否發生變化
+    private boolean isTaskEntityChanged(TaskEntity taskEntity, TaskDTO taskDTO) {
+        return !Objects.equals(taskEntity.getTaskName(), taskDTO.getTaskName())
+                || !Objects.equals(taskEntity.getPriority(), taskDTO.getPriority())
+                || !Objects.equals(taskEntity.getDescription(), taskDTO.getDescription())
+                || !Objects.equals(taskEntity.getScriptId(), taskDTO.getScriptId())
+                || !Objects.equals(taskEntity.getEstimatedParticipants(), taskDTO.getEstimatedParticipants())
+                || !Objects.equals(taskEntity.getStatus(), taskDTO.getStatus())
+                || !Objects.equals(taskEntity.getEndTime(), DateUtils.getEndDate(taskDTO.getEndTime()));
+    }
 }
+

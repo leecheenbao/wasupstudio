@@ -31,6 +31,10 @@ public class TaskEntity implements Serializable {
 
     @Column(name = "member_id", nullable = false)
     private Integer memberId;
+
+    @Column(name = "script_id", nullable = false)
+    private Integer scriptId;
+
     @Column(name = "description", nullable = false)
     private String description;
 
