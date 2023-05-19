@@ -16,7 +16,7 @@ public class ScriptDetailEntity {
 
     @ManyToOne
     @JoinColumn(name = "script_id")
-    private ScriptEntity script;
+    private ScriptEntity scriptId;
 
     @Column(name = "advisory_time")
     private Integer advisoryTime;
