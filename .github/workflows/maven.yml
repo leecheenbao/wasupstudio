@@ -54,6 +54,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: docker push aibolee/wasupstudio:1.0.0
-
-
+        tags: aibolee/wasupstudio:latest
