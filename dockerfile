@@ -1,4 +1,4 @@
-FROM eclipse/ubuntu_jdk8 as build
+FROM eucm/maven
 
 WORKDIR /app
 COPY . .
