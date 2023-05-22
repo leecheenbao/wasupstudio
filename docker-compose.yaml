@@ -7,7 +7,7 @@ services:
       - '3306:3306'
     environment:
       MYSQL_ROOT_HOST: '%'
-      MYSQL_DATABASE: 'paulDev'
+      MYSQL_DATABASE: 'wasupstudio-db'
       MYSQL_ROOT_PASSWORD: '111111'
     volumes:
         - ./sql:/docker-entrypoint-initdb.d
@@ -23,6 +23,7 @@ services:
       - 80:80
     volumes:
       - ../nginx.conf:/etc/nginx/nginx.conf:ro
+
   wasupstudio-service:
      image: aibolee/wasupstudio:latest
      ports:
