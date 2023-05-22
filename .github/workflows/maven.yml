@@ -57,8 +57,8 @@ jobs:
     - name: Print env
       run: echo "${env}"
 
-    - name: Print short SHA
-      run: echo "Short SHA is ${{ SHORT_SHA }}"
+#    - name: Print short SHA
+#      run: echo "Short SHA is ${{ SHORT_SHA }}"
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
