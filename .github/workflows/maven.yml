@@ -51,11 +51,11 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-#    - name: Get short SHA
-#      run: echo "SHORT_SHA=${{ GITHUB_SHA::8 }}" >> $env:GITHUB_ENV
-#
-#    - name: Print short SHA
-#      run: echo "Short SHA is ${{ env.SHORT_SHA }}"
+    - name: Get short SHA
+      run: echo "SHORT_SHA=${ GITHUB_SHA::8 }" >> $env:GITHUB_ENV
+
+    - name: Print short SHA
+      run: echo "Short SHA is ${{ env.SHORT_SHA }}"
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
@@ -63,6 +63,5 @@ jobs:
         context: .
         push: true
         platforms: linux/amd64,linux/arm64
-#        tags: aibolee/wasupstudio:${{ env.SHORT_SHA }}
-        tags: aibolee/wasupstudio:${{ github.sha }}-${{ github.sha.substring(0, 8) }}-linux-amd64, aibolee/wasupstudio:${{ github.sha }}-${{ github.sha.substring(0, 8) }}-linux-arm64
+        tags: aibolee/wasupstudio:${{ env.SHORT_SHA }}
 
