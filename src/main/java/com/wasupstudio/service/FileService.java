@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public interface FileService {
 
-    String uploadFile(byte[] file, String fileName) throws IOException;
+    String uploadFile(byte[] file, String fileName, String mediaType) throws IOException;
 
     boolean removeFile(String filePath) throws IOException;
 

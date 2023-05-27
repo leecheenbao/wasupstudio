@@ -126,12 +126,11 @@ public class ScriptController {
             String size = String.valueOf(FileUtils.MAX_FILE_SIZE);
             return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_MAX_ERROR.getFormattedMessage(type,size));
         }
-//        String fileName = file.getOriginalFilename();
-        String fileName = DateUtils.currentTimeMillis() + "." +FileUtils.getFileExtension(file.getOriginalFilename());
 
+        String fileName = DateUtils.currentTimeMillis() + "." +FileUtils.getFileExtension(file.getOriginalFilename());
         String mediaType = FileUtils.checkFileType(fileName);
 
-        String filePath = fileService.uploadFile(file.getBytes(), fileName);
+        String filePath = fileService.uploadFile(file.getBytes(), fileName, mediaType);
         MediaDTO mediaDTO = new MediaDTO();
         mediaDTO.setScriptId(scriptId);
         mediaDTO.setFilePath(filePath);
