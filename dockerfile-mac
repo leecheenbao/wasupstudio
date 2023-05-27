@@ -1,4 +1,4 @@
-FROM aibolee/dockerhub:paul-wasupstudio as build
+FROM aibolee/wasupstudio:latest as build
 
 FROM openjdk:8-jre
 COPY --from=build /app/target/wasupstudio-0.0.1-SNAPSHOT.jar .

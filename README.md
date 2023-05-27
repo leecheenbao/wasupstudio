@@ -16,16 +16,16 @@
 ***
 ## 安裝與使用
 1. 下載專案的壓縮檔或使用 Git Clone 指令複製專案到本地端。
-2. 執行以下指令進行專案的編譯和打包：
-``mvn clean package``
-3. 透過以下指令啟動應用程式：
+2. 使用docker-compose啟動專案
 ````````````
-java -jar target/XXX.jar
+docker-compose up -d 
 ````````````
-4. 開啟網頁瀏覽器，並輸入以下網址開啟Swagger：
+3. 開啟網頁瀏覽器，並輸入以下網址開啟Swagger：
 ````````````
 localhost:8080/wasupstudio
 ````````````
+
+
 ---
 ## 功能項目
 * 註冊 / 登入(含Google三方)
@@ -35,4 +35,4 @@ localhost:8080/wasupstudio
 * 教材管理
   * 啟動碼管理
   * 使用者統計檢視
-* ~~金流串接~~
+* 金流串接
