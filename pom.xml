@@ -257,9 +257,8 @@
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-storage</artifactId>
-            <version>RELEASE</version>
+            <version>1.114.0</version>
         </dependency>
-
 
     </dependencies>
 

@@ -8,14 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
-
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
 
 
 public class FileUtils {
@@ -30,6 +24,7 @@ public class FileUtils {
     private static final String[] VALID_IMAGE_TYPES = {"jpg", "png", "gif", "jpeg", "bmp", "gif"};
     // 定義有效的文件副檔名
     private static final String[] VALID_DOCS_TYPES = {"pdf", "doc", "txt"};
+
     public static boolean validateFileSize(MultipartFile file) {
         String mediaType = checkFileType(file.getOriginalFilename());
         switch (mediaType){
@@ -161,22 +156,18 @@ public class FileUtils {
         return false;
     }
 
-
-    private static final String BUCKET_NAME = "your-bucket-name"; // 替換為你的存儲桶名稱
-
-    public static void uploadFile(String filePath, String fileName) throws IOException {
-//        Storage storage = StorageOptions.getDefaultInstance().getService();
-//        BlobId blobId = BlobId.of(BUCKET_NAME, fileName);
-//        Blob blob = storage.create(blobId, Files.readAllBytes(Paths.get(filePath)));
-//        System.out.println("檔案已成功上傳到 Cloud Storage：" + blob.getName());
-    }
-
     public static void main(String[] args) throws IOException {
-        String filePath = "/Users/liqingbao/workspace_backend/wasupstudio/file"; // 替換為要上傳的檔案路徑
-        String fileName = "/input.pdf"; // 替換為要上傳的檔案名稱
-        String file = filePath + filePath;
-        Files.readAllBytes(Paths.get(file));
-//        uploadFile(filePath, fileName);
+        String filePath = "/Users/liqingbao/Downloads"; // 替換為要上傳的檔案路徑
+        String fileName = "/test.png"; // 替換為要上傳的檔案名稱
+        String file = filePath + fileName;
+
+        // 上传文件
+        String bucketName = "fongff-bucket";
+        String objectName = "input.pdf";
+
+//        String url = uploadFile(file, objectName, bucketName);
+//        System.out.println(url);
+
     }
 }
 
