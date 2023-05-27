@@ -254,6 +254,12 @@
             <version>1.6.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-storage</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+
 
     </dependencies>
 

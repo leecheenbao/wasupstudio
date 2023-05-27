@@ -8,8 +8,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
+
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
+
 
 public class FileUtils {
 
@@ -152,6 +159,24 @@ public class FileUtils {
             }
         }
         return false;
+    }
+
+
+    private static final String BUCKET_NAME = "your-bucket-name"; // 替換為你的存儲桶名稱
+
+    public static void uploadFile(String filePath, String fileName) throws IOException {
+//        Storage storage = StorageOptions.getDefaultInstance().getService();
+//        BlobId blobId = BlobId.of(BUCKET_NAME, fileName);
+//        Blob blob = storage.create(blobId, Files.readAllBytes(Paths.get(filePath)));
+//        System.out.println("檔案已成功上傳到 Cloud Storage：" + blob.getName());
+    }
+
+    public static void main(String[] args) throws IOException {
+        String filePath = "/Users/liqingbao/workspace_backend/wasupstudio/file"; // 替換為要上傳的檔案路徑
+        String fileName = "/input.pdf"; // 替換為要上傳的檔案名稱
+        String file = filePath + filePath;
+        Files.readAllBytes(Paths.get(file));
+//        uploadFile(filePath, fileName);
     }
 }
 
