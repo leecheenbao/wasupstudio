@@ -27,13 +27,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,7 +65,7 @@ public class CashFlowController {
   @ApiOperation("取得藍新加密資料(一般)/建立訂單")
   @PostMapping(value = "/order")
   @Transactional
-  protected CashFlowData createOrderList(@RequestBody OrderDTO orderDTO) throws Exception {
+  protected Result createOrderList(@RequestBody OrderDTO orderDTO) throws Exception {
     System.out.println("orderDTO = " + orderDTO);
     List<String> productIds = orderDTO.getProducts().stream()
         .map(OrderItemDTO::getProductId)
@@ -90,25 +90,33 @@ public class CashFlowController {
     saveOrderItem(orderDTO, productEntityMap, orderId);
 
     // 前端頁面會送來未加密過的資訊，利用這個API把資訊加密之後送到三方
-    return getCashFlowData(totalPrice, orderId);
+    return ResultGenerator.genSuccessResult(getCashFlowData(totalPrice, orderId));
   }
 
   @ApiOperation("藍新callback方法")
   @PostMapping(value = "/callback")
-  protected Result getReturnData(@RequestBody CashFlowReturnData cashFlowReturnData) {
+  protected Result getReturnData(@ModelAttribute CashFlowReturnData cashFlowReturnData) {
     System.out.println("cashFlowReturnData = " + cashFlowReturnData);
     BasePageInfo pageInfo = new BasePageInfo<>();
     //接收三方收到的訊息然後解密處理實作callback方法
     CashFlowUtils cashFlowUtils = new CashFlowUtils();
+//    String strippadding = cashFlowUtils.removePKCS7Padding(cashFlowReturnData.getTradeInfo());
+//    System.out.println("strippadding = " + strippadding);
+    String decrypt;
     try {
+//      decrypt = cashFlowUtils.decrypt(strippadding, hashKey, hashIV);
+      decrypt = cashFlowUtils.decrypt(cashFlowReturnData.getTradeInfo(), hashKey, hashIV);
+      System.out.println("decrypt = " + decrypt);
       Map<String, String> blueNewData = cashFlowUtils.getBlueNewData(
-          cashFlowReturnData.getTradeInfo());
-
+          decrypt);
+      System.out.println("blueNewData = " + blueNewData);
     } catch (UnsupportedEncodingException e) {
       return ResultGenerator.genFailResult(ResultCode.RESPONSE_JSON_ERROR.getCode(),
           ResultCode.RESPONSE_JSON_ERROR.getMessage());
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
-    return ResultGenerator.genSuccessResult(pageInfo);
+    return ResultGenerator.genSuccessResult(decrypt);
   }
 
 
@@ -119,14 +127,16 @@ public class CashFlowController {
     params.put("RespondType", "JSON");
     params.put("TimeStamp", String.valueOf(orderId));
     params.put("Version", "2.0");
-    params.put("MerchantOrderNo", "sw" + orderId);
-    params.put("Amt", totalPrice);
+    params.put("MerchantOrderNo", "SW_" + orderId);
+    params.put("Amt", totalPrice.intValueExact());
     params.put("ItemDesc",
         Objects.requireNonNull(JwtUtils.getMember()).getId() + ":" + "sw" + orderId);
     params.put("Email", "a3583798@gmail.com"); //TODO 改從token來
-//    params.put("NotifyURL", "https://webhook.site/91346899-a36b-4fc6-915b-7b397a63e213");
-    params.put("ReturnURL",
-        "https://2011-2001-b011-5c0e-10c9-1cc4-2a50-809f-cf0c.ngrok-free.app/wasupstudio/api/cash/callback");
+    params.put("NotifyURL",
+        "https://dbd4-2001-b011-6c03-9aed-e4c7-482e-87d8-7887.ngrok-free.app/wasupstudio/api/cash/callback");
+//    params.put("ReturnURL",
+//        "https://dbd4-2001-b011-6c03-9aed-e4c7-482e-87d8-7887.ngrok-free.app/wasupstudio/api/cash/callback");
+//        "https://webhook.site/860d9743-b740-493c-b0b1-8f75ee7184d5");
 
     String dataInfo = cashFlowUtils.getDataInfo(params);
     String tradeInfo = cashFlowUtils.encrypt(dataInfo, hashKey, hashIV);
