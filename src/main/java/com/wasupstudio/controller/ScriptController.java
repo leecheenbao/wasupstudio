@@ -13,6 +13,7 @@ import com.wasupstudio.model.entity.ScriptEntity;
 import com.wasupstudio.service.FileService;
 import com.wasupstudio.service.MediaService;
 import com.wasupstudio.service.ScriptService;
+import com.wasupstudio.util.DateUtils;
 import com.wasupstudio.util.FileUtils;
 import com.wasupstudio.util.JwtUtils;
 import io.swagger.annotations.*;
@@ -22,6 +23,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
@@ -124,8 +126,11 @@ public class ScriptController {
             String size = String.valueOf(FileUtils.MAX_FILE_SIZE);
             return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_MAX_ERROR.getFormattedMessage(type,size));
         }
-        String filePath = fileService.saveFile(file);
-        String mediaType = FileUtils.checkFileType(file.getOriginalFilename());
+
+        String fileName = DateUtils.currentTimeMillis() + "." +FileUtils.getFileExtension(file.getOriginalFilename());
+        String mediaType = FileUtils.checkFileType(fileName);
+
+        String filePath = fileService.uploadFile(file.getBytes(), fileName, mediaType);
         MediaDTO mediaDTO = new MediaDTO();
         mediaDTO.setScriptId(scriptId);
         mediaDTO.setFilePath(filePath);
@@ -148,8 +153,12 @@ public class ScriptController {
         if (mediaDTO == null) {
             return ResultGenerator.genSuccessResult(ResultCode.MATERIAL_INFO_NOT_EXIST.getMessage());
         }
-        fileService.removeFile(mediaDTO.getFilePath());
+        // 取得最後一個字節獲取storage的object_name
+        String[] str = mediaDTO.getFilePath().split(File.separator);
+        String lastByte = str[str.length - 1];
+
+        fileService.removeFile(lastByte);
         mediaService.delete(scriptId, mediaId);
-        return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_SUCCESS.getMessage());
+        return ResultGenerator.genSuccessResult(ResultCode.DELETE_SUCCESS.getMessage());
     }
 }

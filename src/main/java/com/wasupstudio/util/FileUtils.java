@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
 
+
 public class FileUtils {
 
 
@@ -23,6 +24,7 @@ public class FileUtils {
     private static final String[] VALID_IMAGE_TYPES = {"jpg", "png", "gif", "jpeg", "bmp", "gif"};
     // 定義有效的文件副檔名
     private static final String[] VALID_DOCS_TYPES = {"pdf", "doc", "txt"};
+
     public static boolean validateFileSize(MultipartFile file) {
         String mediaType = checkFileType(file.getOriginalFilename());
         switch (mediaType){
@@ -152,6 +154,20 @@ public class FileUtils {
             }
         }
         return false;
+    }
+
+    public static void main(String[] args) throws IOException {
+        String filePath = "/Users/liqingbao/Downloads"; // 替換為要上傳的檔案路徑
+        String fileName = "/test.png"; // 替換為要上傳的檔案名稱
+        String file = filePath + fileName;
+
+        // 上传文件
+        String bucketName = "fongff-bucket";
+        String objectName = "input.pdf";
+
+//        String url = uploadFile(file, objectName, bucketName);
+//        System.out.println(url);
+
     }
 }
 
