@@ -1,21 +1,24 @@
 package com.wasupstudio.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Data
-@ToString
-@AllArgsConstructor
-@NoArgsConstructor
 public class CashFlowReturnData {
 
-  private String status;
-  private String merchantID;
-  private String tradeInfo = "";
-  private String tradeSha = "";
-  private String version;
-  private Integer encryptType;
-  private String period = "";
+  private String Status;
+  private String Message;
+  private Result Result;
+
+  @Data
+  public static class Result{
+    private String MerchantID;
+    private Integer Amt;
+    private String TradeNo;
+    private String MerchantOrderNo;
+    private String PaymentType;
+    private String RespondType;
+    private String PayTime;
+    private String IP;
+    private String EscrowBank;
+  }
 }

@@ -1,12 +1,15 @@
 package com.wasupstudio.controller;
 
+import static com.wasupstudio.constant.ProjectConstant.APIStatus.API_RESPONSE_IS_SUCCESS;
+
+import com.google.gson.Gson;
+import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.constant.ProjectConstant.OrderStatus;
-import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
-import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.CashFlowData;
 import com.wasupstudio.model.CashFlowReturnData;
 import com.wasupstudio.model.Result;
+import com.wasupstudio.model.dto.CashFlowReturnDataDTO;
 import com.wasupstudio.model.dto.OrderDTO;
 import com.wasupstudio.model.dto.OrderDTO.OrderItemDTO;
 import com.wasupstudio.model.entity.OrderEntity;
@@ -17,9 +20,9 @@ import com.wasupstudio.service.OrderService;
 import com.wasupstudio.service.ProductService;
 import com.wasupstudio.util.CashFlowUtils;
 import com.wasupstudio.util.JwtUtils;
+import com.wasupstudio.util.MailUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -30,6 +33,7 @@ import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +47,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = "金流相關 API")
 @RestController
 @RequestMapping("/api/cash")
+@Slf4j
 public class CashFlowController {
 
   /* 正式 */
@@ -95,28 +100,35 @@ public class CashFlowController {
 
   @ApiOperation("藍新callback方法")
   @PostMapping(value = "/callback")
-  protected Result getReturnData(@ModelAttribute CashFlowReturnData cashFlowReturnData) {
-    System.out.println("cashFlowReturnData = " + cashFlowReturnData);
-    BasePageInfo pageInfo = new BasePageInfo<>();
+  protected Result getReturnData(@ModelAttribute CashFlowReturnDataDTO cashFlowReturnDataDTO)
+      throws Exception {
     //接收三方收到的訊息然後解密處理實作callback方法
     CashFlowUtils cashFlowUtils = new CashFlowUtils();
-//    String strippadding = cashFlowUtils.removePKCS7Padding(cashFlowReturnData.getTradeInfo());
-//    System.out.println("strippadding = " + strippadding);
-    String decrypt;
-    try {
-//      decrypt = cashFlowUtils.decrypt(strippadding, hashKey, hashIV);
-      decrypt = cashFlowUtils.decrypt(cashFlowReturnData.getTradeInfo(), hashKey, hashIV);
-      System.out.println("decrypt = " + decrypt);
-      Map<String, String> blueNewData = cashFlowUtils.getBlueNewData(
-          decrypt);
-      System.out.println("blueNewData = " + blueNewData);
-    } catch (UnsupportedEncodingException e) {
-      return ResultGenerator.genFailResult(ResultCode.RESPONSE_JSON_ERROR.getCode(),
-          ResultCode.RESPONSE_JSON_ERROR.getMessage());
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+    String decrypt = cashFlowUtils.decrypt(cashFlowReturnDataDTO.getTradeInfo(), hashKey, hashIV);
+    CashFlowReturnData data = new Gson().fromJson(decrypt, CashFlowReturnData.class);
+    updateOrderStatus(data);
+    if (API_RESPONSE_IS_SUCCESS.equals(data.getStatus())) {
+      MailUtil.sendMail(ProjectConstant.MailType.LICENSING,
+          String.valueOf(Objects.requireNonNull(JwtUtils.getMember()).getId()),
+          Objects.requireNonNull(JwtUtils.getMember()).getEmail()); //TODO 增加寄出授權碼
     }
+    log.info("callback result, {}", decrypt);
     return ResultGenerator.genSuccessResult(decrypt);
+  }
+
+  private void updateOrderStatus(CashFlowReturnData data) {
+    String status = data.getStatus();
+    CashFlowReturnData.Result result = data.getResult();
+    OrderEntity orderEntity = new OrderEntity();
+    orderEntity.setOrderId(Long.parseLong(result.getMerchantOrderNo().substring(2))); //移除 SW_
+    orderEntity.setUpdateTime(
+        Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+    if (API_RESPONSE_IS_SUCCESS.equals(status)) {
+      orderEntity.setStatus(String.valueOf(OrderStatus.SUCCESS));
+    } else {
+      orderEntity.setStatus(String.valueOf(OrderStatus.FAIL));
+    }
+    orderService.update(orderEntity);
   }
 
 
@@ -130,8 +142,10 @@ public class CashFlowController {
     params.put("MerchantOrderNo", "SW_" + orderId);
     params.put("Amt", totalPrice.intValueExact());
     params.put("ItemDesc",
-        Objects.requireNonNull(JwtUtils.getMember()).getId() + ":" + "sw" + orderId);
+        Objects.requireNonNull(JwtUtils.getMember()).getId() + ":" + "sw" + orderId); //商品資訊
     params.put("Email", "a3583798@gmail.com"); //TODO 改從token來
+//    params.put("Email", Objects.requireNonNull(JwtUtils.getMember()).getEmail());
+
     params.put("NotifyURL",
         "https://dbd4-2001-b011-6c03-9aed-e4c7-482e-87d8-7887.ngrok-free.app/wasupstudio/api/cash/callback");
 //    params.put("ReturnURL",
@@ -174,10 +188,10 @@ public class CashFlowController {
     orderEntity.setAddress(orderDTO.getAddress());
     orderEntity.setTotalPrice(totalPrice);
     orderEntity.setStatus(String.valueOf(OrderStatus.UNDONE));
-    orderEntity.setCreateTime(
-        Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-    orderEntity.setUpdateTime(
-        Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+    Date date = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+    orderEntity.setCreateTime(date);
+    orderEntity.setUpdateTime(date);
     orderService.save(orderEntity);
+
   }
 }

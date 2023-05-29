@@ -57,20 +57,6 @@ public class CashFlowUtils {
         return new String(Hex.encode(encryptedText)).toUpperCase();
     }
 
-  public  String removePKCS7Padding(String string) {
-    int lastByte = string.charAt(string.length() - 1);
-    // 验证填充的有效性
-    for (int i = string.length() - 1; i >= string.length() - lastByte; i--) {
-      if (string.charAt(i) != lastByte) {
-        // 填充无效，返回原始字符串
-        return string;
-      }
-    }
-    // 去除填充
-    return string.substring(0, string.length() - lastByte);
-  }
-
-
     /**
      * 解密方法
      *

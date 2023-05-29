@@ -7,7 +7,7 @@ import java.util.Date;
 
 public interface OrderService {
 
-  void save(OrderEntity orderDTO);
+  void save(OrderEntity orderEntity);
 
   OrderEntity findOne(Integer id);
 
@@ -15,6 +15,7 @@ public interface OrderService {
 
   BasePageInfo findByACTDate(Date startTime, Date endTime);
 
-  void update(OrderDTO licenseDTO);
+  void update(OrderEntity orderEntity);
+
 
 }

@@ -1,6 +1,6 @@
 package com.wasupstudio.controller;
 
-import com.wasupstudio.model.CashFlowReturnData;
+import com.wasupstudio.model.dto.CashFlowReturnDataDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,9 +36,9 @@ public class FormController {
   }
 
   @PostMapping("/form-success")
-  public String formSuccess(@RequestBody CashFlowReturnData cashFlowReturnData) {
+  public String formSuccess(@RequestBody CashFlowReturnDataDTO cashFlowReturnDataDTO) {
     System.out.println("form success");
-    System.out.println("cashFlowReturnData = " + cashFlowReturnData);
+    System.out.println("cashFlowReturnData = " + cashFlowReturnDataDTO);
     return "form";
   }
 }
