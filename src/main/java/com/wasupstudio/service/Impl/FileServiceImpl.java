@@ -18,7 +18,7 @@ import java.io.IOException;
 @Service
 public class FileServiceImpl implements FileService {
 
-    private static final String BUCKET_NAME = "fongff-bucket";
+    private static final String BUCKET_NAME = "wasupstudio-bucket";
 
     private static final String UPLOAD_DIRECTORY = ProjectConstant.FilePath.MAINPATH;
 
