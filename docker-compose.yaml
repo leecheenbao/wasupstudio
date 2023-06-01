@@ -26,11 +26,11 @@ services:
       - 8080:8080
 
   nginx:
-    container_name: wasupstudio_aibo
+    container_name: nginx_aibo
     image: nginx:latest
     restart: always
     ports:
-      - "80:8080"
+      - "80:80"
     volumes:
       - ../nginx.conf:/etc/nginx/conf.d
 
