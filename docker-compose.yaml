@@ -1,6 +1,7 @@
 version: '3.9'
 services:
   mysql:
+    container_name: mysql_aibo
     image: mysql:latest
     restart: always
     ports:
@@ -13,16 +14,19 @@ services:
         - ./sql:/docker-entrypoint-initdb.d
         - ../mysql-data:/var/lib/mysql
   admin:
-     image: adminer
-     ports:
+    container_name: admin_aibo
+    image: adminer
+    ports:
        - 8888:8080
 
   wasupstudio-service:
+    container_name: wasupstudio_aibo
     image: aibolee/wasupstudio:latest
     ports:
       - 8080:8080
 
   nginx:
+    container_name: wasupstudio_aibo
     image: nginx:latest
     restart: always
     ports:
