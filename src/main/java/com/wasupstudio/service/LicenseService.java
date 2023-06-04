@@ -5,6 +5,7 @@ import com.wasupstudio.model.entity.LicenseEntity;
 import com.wasupstudio.model.BasePageInfo;
 
 import java.util.Date;
+import java.util.List;
 
 public interface LicenseService {
 
@@ -17,4 +18,6 @@ public interface LicenseService {
     BasePageInfo findByACTDate(Date startTime, Date endTime);
 
     void update(LicenseDTO licenseDTO);
+
+    List<LicenseEntity> findByEmailAndActivated(LicenseDTO licenseDTO);
 }

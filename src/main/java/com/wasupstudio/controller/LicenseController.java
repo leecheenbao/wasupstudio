@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -92,8 +93,15 @@ public class LicenseController {
                     .collect(Collectors.joining(", "));
             return ResultGenerator.genFailResult(errorMsg);
         }
+
+        List<LicenseEntity> list = licenseService.findByEmailAndActivated(licenseDTO);
+
+        if (!list.isEmpty()) {
+            return ResultGenerator.genFailResult(ResultCode.LICENSC_OF_REDEMPTION_TOO_MANY_TIMES.getMessage());
+        }
+
         licenseService.save(licenseDTO);
-        Gson gson = new Gson();
+
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
     }
 

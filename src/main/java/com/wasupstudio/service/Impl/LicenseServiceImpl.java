@@ -10,6 +10,7 @@ import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Condition;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -89,5 +90,11 @@ public class LicenseServiceImpl extends AbstractService<LicenseEntity> implement
             this.update(licenseEntity);
         }
 
+    }
+
+    @Override
+    public List<LicenseEntity> findByEmailAndActivated(LicenseDTO licenseDTO) {
+
+        return licenseMapper.findByCustomerEmail(licenseDTO.getCustomerEmail());
     }
 }
