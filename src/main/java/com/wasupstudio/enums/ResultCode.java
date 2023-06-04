@@ -246,52 +246,13 @@ public enum ResultCode {
     NO_BOUND_ADDRESSES(20137, "無綁定的地址"),
 
 
-    /* 人工綁卡 */
-    BIND_CARD_HAVE_UNDONE_CARD(20134,"您有進行中的【其他銀行】（人工）綁定提款銀行卡申請，請耐心等待審核結果。如有疑問，請聯繫客服。"),
-    BIND_CARD_MORE_THAN_THREE_TIMES_IN_DAY(20135, "24小時內已提交過3次人工綁定提款銀行卡"),
-    BIND_CARD_EXIST_CARD_NUMBER_OR_TELEPHONE(20136, "您嘗試綁定的銀行卡無效或已被其他賬戶使用。請檢查後重新輸入。"),
+    /* 序號 */
+    LICENSC_IS_USED(20136, "您嘗試啟動的序號無效或已被其他帳戶使用。請檢查後重新輸入。"),
     GRAPHICS_VERIFICATION_AUTH_INVALID_WITHOUT_TIME_LIMIT(20137, "很抱歉，您暫時無法繼續提交。如有疑問，請聯繫客服。"),
-    RECHARGE_OF_REDEMPTION_TOO_MANY_TIMES(20137, "尊敬的客戶，您嘗試兌換的次數過多，請稍後再試(織夢商城)"),
-    RECHARGE_OF_REDEMPTION_EXPIRED(20138, "兌換碼已過期"),
-    RECHARGE_OF_REDEMPTION_IS_USED(20139, "兌換碼已被使用"),
-    RECHARGE_OF_REDEMPTION_HAPPEN_ERROR(20140, "其他原因"),
-    USER_NOT_ALLOW_RECHARGE(20141, "您的帳號不可充值"),
-    VALIDATE_RECHARGE_MERCHANT_ERROR(20142, "商戶驗證異常"),
-    RECHARGE_UPPER_LIMIT(20143, "今日充值已達上限"),
-    EXCEED_RECHARGE_AMOUNT(20144, "超過充值限額"),
-    BANK_SUPPORT_ERROR(20145, "該商戶不支援綁定其他銀行"),
-    TEL_MAINTAIN_TEXT_GREATER_THAN_MAX(20146, "電維內文大於最大長度"),
-
-    TEL_MAINTAIN_ERROR_OF_MERCHANT(20147, "接口錯誤"),
-    TEL_MAINTAIN_PHONES_NOT_SETTING(20148, "手機號未配置正確"),
-    TEL_MAINTAIN_OF_FILE_FAILED(20149,"選擇文件不合規格"),
-
-    TEL_MAINTAIN_OF_CARRIER_FAILED(20150,"營運商配置錯誤"),
-    SPONSOR_IMAG_TURN_MIN5_MAX20(20151,"贊助商輪撥圖最少5張,最多20張"),
-    SPONSOR_STATUS_ILLEGAL(20152,"status:狀態異常,請輸入正常狀態"),
-    SPONSOR_TEAM_COLOR_ILLEGAL(20153,"teamColor:無此贊助商色系,請輸入正常色系"),
-
-    SPONSOR_HIGHLIGHTS_VIDEO_SOURCE_ILLEGAL(20154,"videoSource:無此視頻選擇,請輸入正確視頻種類"),
-
-    SPONSOR_HIGHLIGHTS_SEASON_ILLEGAL(20155,"SEASON:無此賽季選擇,請輸入正確賽季"),
-
-    SPONSOR_SPONSOR_PARTNER_ICONS_MAX20(20156,"子贊助商圖最多20張"),
-
-    SPONSOR_HIGHLIGHTS_DETAIL_TYPE_ILLEGAL(20157,"Type:請填入正確Type"),
-
-    EVERY_ONE_DISABLE(20151,"暫時無法加入【推薦計劃】"),
-    EVERY_ONE_SYS_DISABLE(20152,"功能維護中"),
-    EVERY_ONE_NO_USER(20153,"代理無法加入【推薦計劃】"),
-    EVERY_ONE_AMOUNT(20154,"尊敬的玩家，很抱歉，您的待領取金額尚未達到最低領取金額"),
-    PLATFORM_PROTOCOL_EXISTS(20155, "該交易所已綁定錢包地址"),
-    PLATFORM_EXCHANGE_NOT_EXISTS(20156, "該交易所不存在"),
-    INVALID_F_PAY_ADDRESS(20157, "FPAY 地址長度必須為17碼"),
-    INVALID_F_PAY_PREFIX(20158, "首個字母為大寫F"),
-    PLATFORM_ADDRESS_EXISTS(20159, "該錢包地址已被其他人使用"),
-    BIND_CARD_ID_NUMBER_FORMAT_ERROR(20160,"您輸入的身份證號碼格式不正確"),
-    INVALID_PLATFORM_ADDRESS(20161, "平台地址錯誤"),
-
-
+    LICENSC_OF_REDEMPTION_TOO_MANY_TIMES(20137, "該帳戶尚有未經啟動的序號，請先將其他未經啟用的序號註銷"),
+    LICENSC_OF_REDEMPTION_EXPIRED(20138, "序號已過期"),
+    LICENSC_OF_REDEMPTION_IS_USED(20139, "序號已被使用"),
+    LICENSC_OF_REDEMPTION_HAPPEN_ERROR(20140, "其他原因"),
 
     //後台
     USER_BALANCE_ERROR(60025, "用戶餘額大於5元，不可進行流水清零操作"),
@@ -310,58 +271,13 @@ public enum ResultCode {
     TELLSALE_REGISTER_EXT_ERROR(60044, "抽取指定用戶註冊客戶池數據失敗"),
     MESSAGE_REPLY_CONTENT_LENGTH_ERROR(60045, "回復內容大於300字"),
     THE_TASK_IS_IN_PROGRESS(60047, "任務進行中，無法在執行"),
-
-
-    USERBACK_DATETIME_ERROR(60102, "活動開始時間必須小於結束時間"),
-    USERBACK_EXSIT_NAME_ERROR(60103, "活動已存在，活動名稱重復"),
-    USERBACK_NOT_EXSIT_ERROR(60104, "活動不存在"),
-    USERBACK_CONFIG_ERROR(60105, "活動配置錯誤"),
-    JOB_NICKNAME_EXSIT(60106, "暱稱已存在"),
-    PERMISSION_APPLY_EXIST(60107, "已申請過該權限"),
     MATERIAL_INFO_NOT_EXIST(60108, "素材不存在"),
-    ADVERT_INFO_NOT_EXIST(60109, "廣告不存在或已刪除"),
-    DEPT_INFO_NOT_EXIST(60110, "部門不存在或已刪除"),
-    MENU_INFO_NOT_EXIST(60111, "菜單不存在或已刪除"),
-    PERSONNEL_INFO_NOT_EXIST(60112, "員工不存在或已刪除"),
-    DEPT_PERSONNEL_RELATION_NOT_EXIST(60113, "員工未與部門關聯"),
-    DEPT_SUPER_NOT_EDIT(60114, "默認超級角色不允許更新"),
-    OLD_PWD_ERROR(60115, "原密碼不正確"),
-    PERSONNEL_SUPER_NOT_EDIT(60116, "默認超級角色不允許更新"),
-    DEPT_INFO_ERROR(60117, "無效部門信息"),
-    ROLE_INFO_ERROR(60118, "無效系統角色"),
-    DUTY_ROLE_INFO_ERROR(60118, "無效職能角色"),
-    PERSONNEL_LOGIN_EXIST(60119, "已登入過的帳號不能刪除"),
-    TESTFLIGHT_VERSION_EXIST(60122, "該版本已存在"),
-    TESTFLIGHT_VERSION_ERROR(60123, "您輸入的版本號必須比當前最新的版本號【%s】更高。"),
-    TESTFLIGHT_VERSION_FORMAT_ERROR(60124, "格式錯誤！版本號只能是一個整數或小數的數字，例如：1或者1.1。"),
-    CONFIG_EXIST(60127, "設定已存在"),
-    TASK_LIMIT_EXCEEDED(60128, "當前任務已有5個，如要開啓請先下架其他任務"),
-    TASK_NOT_ALLOWED_DELETION(60129, "任務上架中，不可刪除"),
 
 
     // 消息
-    SMS_COUNT_ERROR(80000, "驗證碼發送過於頻繁，請稍後再試"),
+    SMS_COUNT_ERROR(80000, "驗證碼發送過於頻繁，請稍後再試");
 
 
-
-    // Banner
-    DIALOG_CONTENT_IS_EMPTY(140005, "內容不能為空"),
-    DIALOG_INVALID_SUMMERY_PARAM(140006, "簡介為空 or 超出長度"),
-    DIALOG_PC_AND_MB_IMAGE_IS_EMPTY(140007, "pc image and mb image 不能為空"),
-    DIALOG_CLIENT_IS_EMPTY(140009, "顯示端不能為空"),
-
-    //test
-    TEST_EXCEPTION(666666, "測試"),
-
-    /**
-     * 2FA
-     */
-    SECRET_KEY_ERROR(180001, "密鑰不正確"),
-    OTP_ERROR(180002, "認證碼不正確"),
-    OTP_VERIFY_LIMITS_ERROR(180003, "認證碼嘗試太過頻繁"),
-    AUDIT_2FA_ORDERID_NOT_EXIST(180004,"關閉雙重驗證申請單不存在"),
-    AUDIT_2FA_APPROVING_OR_ALREADYCLOSE(180005,"雙重驗證已關閉或申請中"),
-    AUDIT_2FA_ALREADYAUDIT(180006,"此申請單已審核");
 
     private int code;
     private String message;
