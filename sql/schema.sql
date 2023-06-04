@@ -14,20 +14,20 @@ CREATE TABLE wa_member (
                            lastLogin TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '最後登入時間',
                            status INT NOT NULL COMMENT '帳號狀態 0:未啟用 1:啟用 2:停用',
                            registration_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '存儲註冊時間的欄位，使用 TIMESTAMP 型別，預設為當前時間'
-);
+) COMMENT='會員資料表';
 
 -- 建立啟動碼資料表
 CREATE TABLE wa_license (
                             id int NOT NULL AUTO_INCREMENT COMMENT '序號',
                             license_key varchar(255) NOT NULL COMMENT '序號',
-                            activated tinyint(1) DEFAULT '0' COMMENT '啟用狀態',
+                            activated tinyint(1) DEFAULT '0' COMMENT '啟用狀態 0:未啟用 1:已啟用 2:已失效',
                             activation_date timestamp NULL DEFAULT NULL COMMENT '啟用日期',
                             expiration_date timestamp NOT NULL COMMENT '到期日期',
                             customer_name varchar(255) NOT NULL COMMENT '客戶姓名',
                             customer_email varchar(255) NOT NULL COMMENT '客戶信箱',
                             PRIMARY KEY (id),
                             UNIQUE KEY license_key (license_key)
-) ENGINE=InnoDB AUTO_INCREMENT=122 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='序號資料表';
+) COMMENT='序號資料表';
 
 
 -- 創建「訂單」表
