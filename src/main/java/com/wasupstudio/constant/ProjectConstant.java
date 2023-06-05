@@ -44,6 +44,12 @@ public final class ProjectConstant {
         public final static int DONE = 2;//已完成
     }
 
+    public final class MemberStatus {
+        public final static int NOT_ENABLED = 0; // 未啟用
+        public final static int ENABLED = 1;     // 啟用
+        public final static int DISABLED = 2;    // 停用
+    }
+
     public final class OrderStatus {
         public final static int SUCCESS = 0;
         public final static int FAIL = 1;

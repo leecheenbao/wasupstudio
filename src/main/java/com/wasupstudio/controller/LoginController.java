@@ -25,6 +25,7 @@ import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
 import com.wasupstudio.service.MemberService;
+import com.wasupstudio.util.AesUtils;
 import com.wasupstudio.util.HttpServletRequestUtils;
 import com.wasupstudio.util.JwtUtils;
 import com.wasupstudio.util.MailUtil;
@@ -76,7 +77,7 @@ public class LoginController {
 			@ApiImplicitParam(name = "code", value = "授權碼", required = false, dataType = "String", paramType = "query")
 	})
 	@PostMapping("/google-signup")
-	public Result google_signup(@RequestParam(value = "code" ,required = false) String code) throws IOException, GeneralSecurityException {
+	public Result google_signup(@RequestParam(value = "code" ,required = false) String code) throws Exception {
 		if (code != null) {
 			GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
 					HTTP_TRANSPORT,
@@ -105,6 +106,12 @@ public class LoginController {
 			Oauth2 oauth2 = new Oauth2.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
 			Userinfo userInfo = oauth2.userinfo().get().execute();
 
+			MemberEntity memberEntity = memberService.getAdminByEmail(userInfo.getEmail());
+			if (memberEntity != null) {
+				String mail = memberEntity.getEmail();
+				String verificationCode = AesUtils.encrypt(mail);
+				MailUtil.sendMail(ProjectConstant.MailType.SIGNUP, verificationCode, mail);
+			}
 			return ResultGenerator.genSuccessResult(userInfo);
 		}
 
@@ -247,7 +254,7 @@ public class LoginController {
 	 */
 	@ApiOperation(value = "會員註冊", notes = "使用會員資料進行註冊，回傳成功或失敗訊息")
 	@PostMapping("/signup")
-	public Result signup(@RequestBody @Valid MemberDTO memberDTO, BindingResult bindingResult) throws BussinessException {
+	public Result signup(@RequestBody @Valid MemberDTO memberDTO, BindingResult bindingResult) throws Exception {
 
 		if (bindingResult.hasErrors()) {
 			String errorMsg = bindingResult.getFieldErrors().stream()
@@ -255,7 +262,18 @@ public class LoginController {
 					.collect(Collectors.joining(", "));
 			return ResultGenerator.genFailResult(errorMsg);
 		}
-		return ResultGenerator.genSuccessResult(memberService.save(memberDTO));
+
+
+		MemberEntity memberEntity = memberService.getAdminByEmail(memberDTO.getEmail());
+		if (memberEntity == null) {
+			String mail = memberDTO.getEmail();
+			String verificationCode = AesUtils.encrypt(mail);
+			MailUtil.sendMail(ProjectConstant.MailType.SIGNUP, verificationCode, mail);
+			memberService.save(memberDTO);
+			return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
+		}
+
+		return ResultGenerator.genFailResult(ResultCode.USER_REGISTER_FAILED.getMessage());
 	}
 
 
@@ -278,14 +296,35 @@ public class LoginController {
 		/* 註冊成功發送驗證信 */
 		MemberEntity memberEntity = memberService.getAdminByEmail(memberDTO.getEmail());
 		if (memberEntity != null) {
-			String id = String.valueOf(memberEntity.getId());
 			String mail = memberEntity.getEmail();
-			MailUtil.sendMail(ProjectConstant.MailType.SIGNUP, id, mail);
+			String verificationCode = AesUtils.encrypt(mail);
+
+			MailUtil.sendMail(ProjectConstant.MailType.SIGNUP, verificationCode, mail);
 		}
 
 		return ResultGenerator.genSuccessResult();
 	}
 
+	/**
+	 * 確認驗證信
+	 *
+	 * @return 發送結果
+	 */
+	@ApiOperation(value = "確認驗證信", notes = "確認驗證信，更改啟用狀態")
+	@GetMapping("/verify/{verificationCode}")
+	public Result verifyAccount(@PathVariable String verificationCode) {
+		// 在這裡根據驗證碼進行驗證邏輯的實現
+		// 從數據庫中查詢相應的帳號，檢查驗證碼是否有效
+		MemberDTO memberDTO = memberService.findByVerificationCode(verificationCode);
+		// 如果驗證通過，將帳號的啟用狀態設置為已啟用
+		if (memberDTO != null){
+			memberDTO.setStatus(ProjectConstant.MemberStatus.ENABLED);
+			memberService.update(memberDTO);
+			return ResultGenerator.genSuccessResult(ResultCode.VALIDATAE_CODE_SUCCESS.getMessage());
+		}
+		// 返回相應的成功或失敗消息
+		return ResultGenerator.genFailResult(ResultCode.VALIDATAE_CODE_ERROR.getMessage());
+	}
 
 	/**
 	 * 獲取當前IP

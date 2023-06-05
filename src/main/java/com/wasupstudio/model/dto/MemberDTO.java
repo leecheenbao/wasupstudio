@@ -31,5 +31,9 @@ public class MemberDTO implements Serializable {
     private String lastIp;
     private Date lastLogin;
 
+    private Integer status;
+
+    private String verificationCode;
+
 
 }

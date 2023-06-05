@@ -14,6 +14,8 @@ public interface MemberService {
 
     MemberEntity getAdminByEmail(String email);
 
+    MemberDTO findByVerificationCode(String verificationCode);
+
     BasePageInfo findAllData();
 
     void update(MemberDTO memberDTO);

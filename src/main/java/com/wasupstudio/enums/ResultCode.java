@@ -93,12 +93,13 @@ public enum ResultCode {
     USER_LOGIN_FAILED(21000, "登入失敗"),
     USER_REGISTER_FAILED(22000, "註冊失敗"),
     USER_NAME_EXIST(20001, "該用戶名已存在"),
-    VALIDATAE_CODE_ERROR(20002, "驗證碼錯誤"),
+    VALIDATAE_CODE_ERROR(20002, "帳號驗證已經驗證過！"),
+    VALIDATAE_CODE_SUCCESS(20006, "帳號驗證成功！您可以登錄您的帳號了。"),
+
     USER_NAME_NOT_EXIST(20003, "該用戶名不存在"),
     PASSWOWRD_WRONG(20004, "用戶名或密碼不正確"),
     USER_NAME_ERROR(20005, "帳號必須為英文+數字且長度在6-10以內"),
     PASSWORD_ERROR(20077, "密碼不符合要求"),
-    INVITE_CODE_NOT_EXIST(20006, "該邀請碼不存在，確認後請再嘗試"),
     MOBILE_EXIST(20007, "該手機號碼已存在"),
     EMAIL_EXIST(20008, "該郵箱已存在"),
     EMAIL_NOT_EXIST(20018, "該郵箱帳號有誤，請確認後再嘗試"),
@@ -241,8 +242,6 @@ public enum ResultCode {
     WITHDRAW_ADDRESS_NOT_MATCH_RULE(20132, "提幣地址非協議地址格式，請核對後重新輸入"),
     LIMITWATER_ERROR(20133, "平台限制流水不足，暫時無法提現"),
     UNIDENTIFIED(20134, "尚未實名認證"),
-    NO_SUCCESSFUL_DIGITAL_RECHARGE(20135, "無數字貨幣充值成功"),
-    NO_SUCCESSFUL_FIAT_WITHDRAW(20136, "無傳統提款成功"),
     NO_BOUND_ADDRESSES(20137, "無綁定的地址"),
 
 

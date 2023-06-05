@@ -112,7 +112,7 @@ public class LicenseController {
         }
 
         String memberId = String.valueOf(memberEntity.getId());
-        MailUtil.sendMail(ProjectConstant.MailType.START_KEY, memberId, licenseDTO.getCustomerEmail());
+        MailUtil.sendMail(ProjectConstant.MailType.START_KEY, "" ,licenseDTO.getCustomerEmail());
         licenseService.save(licenseDTO);
 
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());

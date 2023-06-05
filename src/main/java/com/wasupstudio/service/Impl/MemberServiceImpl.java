@@ -45,6 +45,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
             memberEntity.setRegistionTime(memberDTO.getRegistionTime());
             memberEntity.setStatus(ProjectConstant.SystemAdminStatus.NORMAL);
             memberEntity.setRole(MemberEntity.Role.valueOf(memberDTO.getRole().toString()));
+            memberEntity.setVerificationCode(AesUtils.encrypt(memberDTO.getEmail()));
             save(memberEntity);
 
             return ResultCode.SAVE_SUCCESS.getMessage();
@@ -60,6 +61,11 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
     @Override
     public MemberEntity getAdminByEmail(String email) {
         return this.findBy("email", email);
+    }
+
+    @Override
+    public MemberDTO findByVerificationCode(String verificationCode) {
+        return memberConverter.ItemToDTO(memberMapper.findByVerificationCode(verificationCode));
     }
 
     @Override

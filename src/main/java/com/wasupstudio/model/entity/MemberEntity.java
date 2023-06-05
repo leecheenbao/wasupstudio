@@ -53,4 +53,7 @@ public class MemberEntity implements Serializable {
 
     @Column(name = "lastLogin")
     private Date lastLogin;
+
+    @Column(name = "verification_code")
+    private String verificationCode;
 }

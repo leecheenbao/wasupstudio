@@ -16,9 +16,10 @@ public class MailUtil {
 	private static String from = "paul.lee.2022.09@gmail.com";
 
 	private static final String MAIL_SIGNUP_URL = "http://localhost:8080/wasupstudio/api/signup";
+	private static final String MAIL_SIGNUP_VERIFY_URL = "http://localhost:8080/wasupstudio/auth/verify/";
 	private static final String MAIL_FORGET_URL = "http://localhost:8080/wasupstudio/api/forget";
 
-	public static void sendMail(String action, String memberId, String mailTo) throws Exception {
+	public static void sendMail(String action, String content, String mailTo) throws Exception {
 		try {
 
 			user = "paul.lee.2022.09@gmail.com";
@@ -41,11 +42,11 @@ public class MailUtil {
 			StringBuffer html = new StringBuffer();
 			if (action.equals(ProjectConstant.MailType.SIGNUP)) {
 				message.setSubject(MailEnum.MAIL_SUBTITLE_SINGN.getDesc());
-				html = mailContent_signUp(memberId);
+				html = mailContent_signUp(content);
 			}
 			if (action.equals(ProjectConstant.MailType.FORGET)) {
 				message.setSubject(MailEnum.MAIL_SUBTITLE_FORGET.getDesc());
-				html = mailContent_Forget(memberId);
+				html = mailContent_Forget();
 			}
 			if (action.equals(ProjectConstant.MailType.START_KEY)){
 				message.setSubject(MailEnum.MAIL_SUBTITLE_START_KEY.getDesc());
@@ -132,16 +133,16 @@ public class MailUtil {
 		return props;
 	}
 
-	public static StringBuffer mailContent_Forget(String memUuid) {
+	public static StringBuffer mailContent_Forget() {
 		StringBuffer html = new StringBuffer();
 		html.append("<h2>忘記密碼</h2><br>");
 		html.append("<p>請盡速修改你的密碼</p><");
-		html.append("<p><a href='" + MAIL_FORGET_URL + memUuid + "'>啟用請點擊連結</a></p><br>");
+		html.append("<p><a href='" + MAIL_FORGET_URL + "'>啟用請點擊連結</a></p><br>");
 		html.append("<img src='cid:image'/><br>");
 		return html;
 	}
 
-	public static StringBuffer mailContent_signUp(String memUuid) {
+	public static StringBuffer mailContent_signUp(String verificationCode) {
 		StringBuffer html = new StringBuffer();
 		html.append(
 				"<body width='100%' style='margin: 0; padding: 0 !important; background: #f3f3f5; mso-line-height-rule: exactly;'>"
@@ -168,7 +169,7 @@ public class MailUtil {
 						+ "                                    <table align='left' border='0' cellpadding='0' cellspacing='0' role='presentation'>"
 						+ "                                        <tr>"
 						+ "                                            <td class='s-btn s-btn__primary' style='border-radius: 4px; background: #0095ff;'>"
-						+ "                                                <a class='s-btn s-btn__primary' href='" + MAIL_SIGNUP_URL + memUuid + "' target='_parent' style='background: #0095FF; border: 1px solid #0077cc; box-shadow: inset 0 1px 0 0 rgba(102,191,255,.75); font-family: arial, sans-serif; font-size: 17px; line-height: 17px; color: #ffffff; text-align: center; text-decoration: none; padding: 13px 17px; display: block; border-radius: 4px; white-space: nowrap;'>啟用連結請點我</a>"
+						+ "                                                <a class='s-btn s-btn__primary' href='" + MAIL_SIGNUP_VERIFY_URL + verificationCode  + "' target='_parent' style='background: #0095FF; border: 1px solid #0077cc; box-shadow: inset 0 1px 0 0 rgba(102,191,255,.75); font-family: arial, sans-serif; font-size: 17px; line-height: 17px; color: #ffffff; text-align: center; text-decoration: none; padding: 13px 17px; display: block; border-radius: 4px; white-space: nowrap;'>啟用連結請點我</a>"
 						+ "                                            </td>"
 						+ "                                        </tr>"
 						+ "                                    </table>"
