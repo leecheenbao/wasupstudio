@@ -14,6 +14,6 @@ public interface MemberMapper extends CommonMapper<MemberEntity> {
     MemberEntity findAccount(@Param("email") String email);
 
     @ResultMap("BaseResultMap")
-    @Select("SELECT * FROM wa_member WHERE verification_code = #{vericationCode} AND status != 1")
+    @Select("SELECT * FROM wa_member WHERE verification_code = #{vericationCode}")
     MemberEntity findByVerificationCode(@Param("vericationCode") String vericationCode);
 }

@@ -317,13 +317,17 @@ public class LoginController {
 		// 從數據庫中查詢相應的帳號，檢查驗證碼是否有效
 		MemberDTO memberDTO = memberService.findByVerificationCode(verificationCode);
 		// 如果驗證通過，將帳號的啟用狀態設置為已啟用
-		if (memberDTO != null){
+		if (memberDTO.getStatus().equals(ProjectConstant.MemberStatus.NOT_ENABLED)){
 			memberDTO.setStatus(ProjectConstant.MemberStatus.ENABLED);
 			memberService.update(memberDTO);
 			return ResultGenerator.genSuccessResult(ResultCode.VALIDATAE_CODE_SUCCESS.getMessage());
+		} else if (memberDTO.getStatus().equals(ProjectConstant.MemberStatus.ENABLED)){
+			return ResultGenerator.genFailResult(ResultCode.VALIDATAE_CODE_ERROR.getMessage());
+		} else if (memberDTO.getStatus().equals(ProjectConstant.MemberStatus.DISABLED)) {
+			return ResultGenerator.genFailResult(ResultCode.USER_LOCK_ERROR.getMessage());
 		}
 		// 返回相應的成功或失敗消息
-		return ResultGenerator.genFailResult(ResultCode.VALIDATAE_CODE_ERROR.getMessage());
+		return ResultGenerator.genFailResult(ResultCode.USER_NAME_NOT_EXIST.getMessage());
 	}
 
 	/**

@@ -90,6 +90,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
             memberEntity.setLastIp(memberDTO.getLastIp());
             memberEntity.setRegistionTime(memberDTO.getRegistionTime());
             memberEntity.setLastLogin(memberDTO.getLastLogin());
+            memberEntity.setStatus(memberDTO.getStatus());
         }
 
         this.update(memberEntity);
