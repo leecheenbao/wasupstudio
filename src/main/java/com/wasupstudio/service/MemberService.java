@@ -12,7 +12,7 @@ public interface MemberService {
 
     MemberEntity findOne(Integer id);
 
-    MemberEntity getAdminByEmail(String name);
+    MemberEntity getAdminByEmail(String email);
 
     BasePageInfo findAllData();
 

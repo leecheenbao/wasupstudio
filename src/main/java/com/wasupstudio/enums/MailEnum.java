@@ -7,12 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 public enum MailEnum {
-    MAIL_SUBTITLE_SINGN("MAIL_SUBTITLE_SINGN","歡迎加入S&B！"),
-    MAIL_SUBTITLE_FORGET("MAIL_SUBTITLE_FORGET","S&B【忘記密碼】"),
-    MAIL_SUBTITLE_CONNECT("MAIL_SUBTITLE_CONNECT","S&B【來自用戶的問題】"),
-    MAIL_SUBTITLE_REPORT_SEND("MAIL_SUBTITLE_REPORT_SEND","S&B【你的檢舉已經成立】"),
-    MAIL_SUBTITLE_REPORT_REC("MAIL_SUBTITLE_REPORT_REC","S&B【你的行為已經被檢舉】")
-            ;
+    MAIL_SUBTITLE_SINGN("MAIL_SUBTITLE_SINGN","歡迎加入我們班的叢林法則！"),
+    MAIL_SUBTITLE_FORGET("MAIL_SUBTITLE_FORGET","我們班的叢林法則【忘記密碼】"),
+    MAIL_SUBTITLE_CONNECT("MAIL_SUBTITLE_CONNECT","我們班的叢林法則【來自用戶的問題】"),
+    MAIL_SUBTITLE_START_KEY("MAIL_SUBTITLE_START_KEY", "我們班的叢林法則【啟動碼寄送】")
+    ;
 
 
 

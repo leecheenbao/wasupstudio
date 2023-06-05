@@ -249,10 +249,11 @@ public enum ResultCode {
     /* 序號 */
     LICENSC_IS_USED(20136, "您嘗試啟動的序號無效或已被其他帳戶使用。請檢查後重新輸入。"),
     GRAPHICS_VERIFICATION_AUTH_INVALID_WITHOUT_TIME_LIMIT(20137, "很抱歉，您暫時無法繼續提交。如有疑問，請聯繫客服。"),
-    LICENSC_OF_REDEMPTION_TOO_MANY_TIMES(20137, "該帳戶尚有未經啟動的序號，請先將其他未經啟用的序號註銷"),
-    LICENSC_OF_REDEMPTION_EXPIRED(20138, "序號已過期"),
-    LICENSC_OF_REDEMPTION_IS_USED(20139, "序號已被使用"),
-    LICENSC_OF_REDEMPTION_HAPPEN_ERROR(20140, "其他原因"),
+    LICENSE_OF_REDEMPTION_TOO_MANY_TIMES(20137, "該帳戶尚有未經啟動的序號，請先將其他未經啟用的序號註銷"),
+    LICENSE_OF_REDEMPTION_EXPIRED(20138, "序號已過期"),
+    LICENSE_OF_REDEMPTION_IS_USED(20139, "序號已被使用"),
+    LICENSE_OF_REDEMPTION_HAPPEN_ERROR(20140, "其他原因"),
+    LICENSE_OF_ACCOUNT_NOT_FOUND(20141,"該電子信箱尚未在本平台註冊"),
 
     //後台
     USER_BALANCE_ERROR(60025, "用戶餘額大於5元，不可進行流水清零操作"),

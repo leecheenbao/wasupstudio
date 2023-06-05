@@ -1,14 +1,19 @@
 package com.wasupstudio.controller;
 
 import com.google.gson.Gson;
+import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.model.Result;
 import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.dto.LicenseDTO;
 import com.wasupstudio.model.entity.LicenseEntity;
+import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.service.LicenseService;
 import com.wasupstudio.model.BasePageInfo;
+import com.wasupstudio.service.MemberService;
 import com.wasupstudio.util.DateUtils;
+import com.wasupstudio.util.JwtUtils;
+import com.wasupstudio.util.MailUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +35,8 @@ public class LicenseController {
 
     @Autowired
     private LicenseService licenseService;
+    @Autowired
+    private MemberService memberService;
 
     /**
      * 查詢所有啟動碼數據
@@ -86,7 +93,7 @@ public class LicenseController {
      */
     @PostMapping
     @ApiOperation(value = "新增啟動碼數據")
-    public Result save(@RequestBody @Valid LicenseDTO licenseDTO, BindingResult bindingResult) {
+    public Result save(@RequestBody @Valid LicenseDTO licenseDTO, BindingResult bindingResult) throws Exception {
         if (bindingResult.hasErrors()) {
             String errorMsg = bindingResult.getFieldErrors().stream()
                     .map(error -> error.getField() + " " + error.getDefaultMessage())
@@ -95,11 +102,17 @@ public class LicenseController {
         }
 
         List<LicenseEntity> list = licenseService.findByEmailAndActivated(licenseDTO);
-
         if (!list.isEmpty()) {
-            return ResultGenerator.genFailResult(ResultCode.LICENSC_OF_REDEMPTION_TOO_MANY_TIMES.getMessage());
+            return ResultGenerator.genFailResult(ResultCode.LICENSE_OF_REDEMPTION_TOO_MANY_TIMES.getMessage());
         }
 
+        MemberEntity memberEntity = memberService.getAdminByEmail(licenseDTO.getCustomerEmail());
+        if (memberEntity == null){
+            return ResultGenerator.genFailResult(ResultCode.LICENSE_OF_ACCOUNT_NOT_FOUND.getMessage());
+        }
+
+        String memberId = String.valueOf(memberEntity.getId());
+        MailUtil.sendMail(ProjectConstant.MailType.START_KEY, memberId, licenseDTO.getCustomerEmail());
         licenseService.save(licenseDTO);
 
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());

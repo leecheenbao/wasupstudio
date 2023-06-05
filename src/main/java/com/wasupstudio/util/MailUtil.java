@@ -18,7 +18,7 @@ public class MailUtil {
 	private static final String MAIL_SIGNUP_URL = "http://localhost:8080/wasupstudio/api/signup";
 	private static final String MAIL_FORGET_URL = "http://localhost:8080/wasupstudio/api/forget";
 
-	public static void sendMail(String action, String memUuid, String mailTo) throws Exception {
+	public static void sendMail(String action, String memberId, String mailTo) throws Exception {
 		try {
 
 			user = "paul.lee.2022.09@gmail.com";
@@ -41,11 +41,14 @@ public class MailUtil {
 			StringBuffer html = new StringBuffer();
 			if (action.equals(ProjectConstant.MailType.SIGNUP)) {
 				message.setSubject(MailEnum.MAIL_SUBTITLE_SINGN.getDesc());
-				html = mailContent_signUp(memUuid);
+				html = mailContent_signUp(memberId);
 			}
 			if (action.equals(ProjectConstant.MailType.FORGET)) {
 				message.setSubject(MailEnum.MAIL_SUBTITLE_FORGET.getDesc());
-				html = mailContent_Forget(memUuid);
+				html = mailContent_Forget(memberId);
+			}
+			if (action.equals(ProjectConstant.MailType.START_KEY)){
+				message.setSubject(MailEnum.MAIL_SUBTITLE_START_KEY.getDesc());
 			}
 
 			textPart.setContent(html.toString(), "text/html; charset=UTF-8");
