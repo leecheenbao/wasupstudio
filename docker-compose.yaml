@@ -9,7 +9,7 @@ services:
     environment:
       MYSQL_ROOT_HOST: '%'
       MYSQL_DATABASE: 'wasupstudio-db'
-      MYSQL_ROOT_PASSWORD: '*#^$FGHKJB!jk'
+      MYSQL_ROOT_PASSWORD: '1160KJlkwer(&26'
     volumes:
         - ./sql:/docker-entrypoint-initdb.d
         - ../mysql-data:/var/lib/mysql
