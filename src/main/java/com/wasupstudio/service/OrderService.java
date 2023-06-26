@@ -15,5 +15,5 @@ public interface OrderService {
 
   BasePageInfo findByACTDate(Date startTime, Date endTime);
 
-  void update(OrderDTO licenseDTO);
+  void updateData(OrderEntity orderEntity);
 }

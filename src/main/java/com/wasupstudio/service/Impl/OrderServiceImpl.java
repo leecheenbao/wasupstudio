@@ -27,7 +27,7 @@ public class OrderServiceImpl extends AbstractService<OrderEntity> implements Or
   }
 
   @Override
-  public void update(OrderDTO licenseDTO) {
-
+  public void updateData(OrderEntity orderEntity) {
+    this.update(orderEntity);
   }
 }

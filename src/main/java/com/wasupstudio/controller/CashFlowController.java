@@ -128,7 +128,7 @@ public class CashFlowController {
     } else {
       orderEntity.setStatus(String.valueOf(OrderStatus.FAIL));
     }
-    orderService.update(orderEntity);
+    orderService.updateData(orderEntity);
   }
 
 
