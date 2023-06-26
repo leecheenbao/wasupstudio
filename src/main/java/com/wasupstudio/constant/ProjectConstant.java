@@ -56,5 +56,6 @@ public final class ProjectConstant {
         public final static String FORGET = "forget";
         public final static String SIGNUP = "signup";
         public final static String START_KEY = "start_key";
+        public final static String LICENSING = "licensing";
     }
 }
