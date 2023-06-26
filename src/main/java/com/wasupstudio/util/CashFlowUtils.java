@@ -97,8 +97,8 @@ public class CashFlowUtils {
         return stringBuffer.toString();
     }
 
-    private static final String hashKey = "BdYLXebBmfD4D4RrXnPBgeBDaBqpfIgH";
-    private static final String hashIV = "PmMNcmmCK3Iap6AC";
+//    private static final String hashKey = "BdYLXebBmfD4D4RrXnPBgeBDaBqpfIgH";
+//    private static final String hashIV = "PmMNcmmCK3Iap6AC";
 
     /* 將藍新的response解析 */
     public Map<String, String> getBlueNewData(String data) throws UnsupportedEncodingException {
@@ -117,7 +117,7 @@ public class CashFlowUtils {
     }
 
     /* tradeSha */
-    public String getTradeSha(String tradeInfo) {
+    public String getTradeSha(String tradeInfo,String hashKey,String hashIV) {
         String result;
         result = "HashKey=" + hashKey + "&" + tradeInfo + "&HashIV=" + hashIV;
         result = getSHA256StrJava(result).toUpperCase();
