@@ -43,7 +43,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
             memberEntity.setOrganization(memberDTO.getOrganization());
             memberEntity.setGrade(memberDTO.getGrade());
             memberEntity.setRegistionTime(memberDTO.getRegistionTime());
-            memberEntity.setStatus(ProjectConstant.SystemAdminStatus.NORMAL);
+            memberEntity.setStatus(ProjectConstant.SystemAdminStatus.DISABLE);
             memberEntity.setRole(MemberEntity.Role.valueOf(memberDTO.getRole().toString()));
             memberEntity.setVerificationCode(AesUtils.encrypt(memberDTO.getEmail()));
             save(memberEntity);
