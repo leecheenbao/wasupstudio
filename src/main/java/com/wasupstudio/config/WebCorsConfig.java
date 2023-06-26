@@ -34,8 +34,8 @@ public class WebCorsConfig implements WebMvcConfigurer {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.setAllowedOrigins(Collections.singletonList("*"));
+//        config.setAllowCredentials(true);
+        config.setAllowedOrigins(Collections.singletonList("*")); //不可跟 config.setAllowCredentials(true) 同時使用
         config.setAllowedMethods(Collections.singletonList("*"));
         config.setAllowedHeaders(Collections.singletonList("*"));
         // 暴露 header 中的其他屬性給客戶端應用程序
