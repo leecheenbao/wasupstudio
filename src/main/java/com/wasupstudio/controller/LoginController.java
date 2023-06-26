@@ -60,7 +60,10 @@ public class LoginController {
 	private String LOGIN_REDIRECT_URI;
 	@Value("${google.SIGNUP_REDIRECT_URI}")
 	private String SIGNUP_REDIRECT_URI;
-
+	@Value("${mail.verify}")
+	private static String MAIL_SIGNUP_VERIFY_URL;
+	@Value("${mail.forget}")
+	private static String MAIL_FORGET_URL;
 	private final List<String> SCOPES = Arrays.asList(
 			"https://www.googleapis.com/auth/userinfo.email",
 			"https://www.googleapis.com/auth/userinfo.profile"
@@ -76,8 +79,11 @@ public class LoginController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "code", value = "授權碼", required = false, dataType = "String", paramType = "query")
 	})
-	@PostMapping("/google-signup")
-	public Result google_signup(@RequestParam(value = "code" ,required = false) String code) throws Exception {
+	@GetMapping("/google-signup")
+	public Result google_signup(@RequestParam(value = "code" ,required = false) String code,
+								@RequestBody(required = false) MemberDTO memberDTO,
+								HttpSession session) throws Exception {
+		session.setAttribute("member", memberDTO);
 		if (code != null) {
 			GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
 					HTTP_TRANSPORT,
@@ -105,13 +111,6 @@ public class LoginController {
 			// 取得使用者資訊
 			Oauth2 oauth2 = new Oauth2.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
 			Userinfo userInfo = oauth2.userinfo().get().execute();
-
-			MemberEntity memberEntity = memberService.getAdminByEmail(userInfo.getEmail());
-			if (memberEntity != null) {
-				String mail = memberEntity.getEmail();
-				String verificationCode = AesUtils.encrypt(mail);
-				MailUtil.sendMail(ProjectConstant.MailType.SIGNUP, verificationCode, mail);
-			}
 			return ResultGenerator.genSuccessResult(userInfo);
 		}
 
@@ -183,7 +182,7 @@ public class LoginController {
 	}
 
 	@GetMapping(value = "/oauth2callback")
-	public Result handleOAuth2Callback(@RequestParam(value = "code") String code, HttpSession session) throws IOException {
+	public Result handleOAuth2Callback(@RequestParam(value = "code") String code) throws IOException {
 		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
 				HTTP_TRANSPORT,
 				JSON_FACTORY,
@@ -271,9 +270,10 @@ public class LoginController {
 			MailUtil.sendMail(ProjectConstant.MailType.SIGNUP, verificationCode, mail);
 			memberService.save(memberDTO);
 			return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
+		} else {
+			return ResultGenerator.genFailResult(ResultCode.USER_NAME_EXIST.getMessage());
 		}
 
-		return ResultGenerator.genFailResult(ResultCode.USER_REGISTER_FAILED.getMessage());
 	}
 
 

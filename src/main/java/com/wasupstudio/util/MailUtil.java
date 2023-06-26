@@ -15,9 +15,8 @@ public class MailUtil {
 	private static String pwd = "ogeplmjxvktfyefd";
 	private static String from = "paul.lee.2022.09@gmail.com";
 
-	private static final String MAIL_SIGNUP_URL = "http://localhost:8080/wasupstudio/api/signup";
-	private static final String MAIL_SIGNUP_VERIFY_URL = "http://localhost:8080/wasupstudio/auth/verify/";
-	private static final String MAIL_FORGET_URL = "http://localhost:8080/wasupstudio/api/forget";
+	private static final String MAIL_SIGNUP_VERIFY_URL = "http://wasupstudionobullying.com:8080/wasupstudio/auth/verify/";
+	private static final String MAIL_FORGET_URL = "http://wasupstudionobullying.com:8080/wasupstudio/api/forget";
 
 	public static void sendMail(String action, String content, String mailTo) throws Exception {
 		try {
