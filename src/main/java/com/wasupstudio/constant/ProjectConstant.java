@@ -8,6 +8,8 @@ package com.wasupstudio.constant;
 public final class ProjectConstant {
 
     public final class SystemAdminStatus {
+
+        public final static int NOT_ENABLED = 0;// 未啟用
         public final static int NORMAL = 1;// 正常
         public final static int DISABLE = 2;// 停用
         public final static int DELETED = 3;// 删除
@@ -42,12 +44,6 @@ public final class ProjectConstant {
         public final static int NOT_SETTLE = 0;//未開始結算
         public final static int UNDONE = 1;//未完成
         public final static int DONE = 2;//已完成
-    }
-
-    public final class MemberStatus {
-        public final static int NOT_ENABLED = 0; // 未啟用
-        public final static int ENABLED = 1;     // 啟用
-        public final static int DISABLED = 2;    // 停用
     }
 
     public final class OrderStatus {
