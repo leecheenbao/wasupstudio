@@ -60,10 +60,6 @@ public class LoginController {
 	private String LOGIN_REDIRECT_URI;
 	@Value("${google.SIGNUP_REDIRECT_URI}")
 	private String SIGNUP_REDIRECT_URI;
-	@Value("${mail.verify}")
-	private static String MAIL_SIGNUP_VERIFY_URL;
-	@Value("${mail.forget}")
-	private static String MAIL_FORGET_URL;
 	private final List<String> SCOPES = Arrays.asList(
 			"https://www.googleapis.com/auth/userinfo.email",
 			"https://www.googleapis.com/auth/userinfo.profile"
