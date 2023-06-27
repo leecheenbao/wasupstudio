@@ -29,4 +29,6 @@ public class AdminLoginQuery extends BaseQuery {
 
     private String device_type;
 
+    private Boolean isRemember = false;
+
 }

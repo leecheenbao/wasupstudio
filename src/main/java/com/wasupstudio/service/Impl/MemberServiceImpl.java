@@ -111,7 +111,11 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
             if (memberEntity.getRole() == null) {
                 memberEntity.setRole(MemberEntity.Role.valueOf(UserRoleConstants.ROLE_USER));
             }
+            // TODO 測試將remember預設為true讓token時效維持7天
             String token = JwtUtils.generateToken(memberEntity, true);
+            // TODO PROD記得改回來
+            // String token = JwtUtils.generateToken(memberEntity, adminLoginQuery.getIsRemember());
+
             update(memberConverter.ItemToDTO(memberEntity));
             return token;
         }
