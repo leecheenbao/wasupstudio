@@ -69,7 +69,6 @@ public class PdfWithQrCodeUtils {
     }
 
     public String pdfMixQrCode(String pdfFilePath) throws IOException, WriterException {
-//        String pdfFilePath = "file/input.pdf";
         int qrCodeSize = 100;
 
         // Create QR Code

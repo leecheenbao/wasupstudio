@@ -56,10 +56,11 @@ public class LoginController {
 	private  String CLIENT_ID;
 	@Value("${google.CLIENT_SECRET}")
 	private String CLIENT_SECRET;
-	@Value("${google.LOGIN_REDIRECT_URI}")
-	private String LOGIN_REDIRECT_URI;
-	@Value("${google.SIGNUP_REDIRECT_URI}")
-	private String SIGNUP_REDIRECT_URI;
+	@Value("${google.REDIRECT_URI}")
+	private String REDIRECT_URI;
+	@Value("${base.url}")
+	private String BASE_URL;
+
 	private final List<String> SCOPES = Arrays.asList(
 			"https://www.googleapis.com/auth/userinfo.email",
 			"https://www.googleapis.com/auth/userinfo.profile"
@@ -91,7 +92,7 @@ public class LoginController {
 					.setApprovalPrompt("force")
 					.build();
 			GoogleTokenResponse tokenResponse = flow.newTokenRequest(code)
-					.setRedirectUri(SIGNUP_REDIRECT_URI)
+					.setRedirectUri(BASE_URL + REDIRECT_URI)
 					.setGrantType("authorization_code")
 					.execute();
 
@@ -110,7 +111,7 @@ public class LoginController {
 			return ResultGenerator.genSuccessResult(userInfo);
 		}
 
-		return getGoogleOAuth(SIGNUP_REDIRECT_URI);
+		return getGoogleOAuth(BASE_URL + REDIRECT_URI);
 	}
 
 	@ApiOperation(value = "Google登錄", notes = "如果提供了code，則會使用Google API進行登錄，否則會重定向到Google的OAuth授權頁面")
@@ -131,7 +132,7 @@ public class LoginController {
 					.setApprovalPrompt("force")
 					.build();
 			GoogleTokenResponse tokenResponse = flow.newTokenRequest(code)
-					.setRedirectUri(LOGIN_REDIRECT_URI)
+					.setRedirectUri(BASE_URL + REDIRECT_URI)
 					.setGrantType("authorization_code")
 					.execute();
 
@@ -161,7 +162,7 @@ public class LoginController {
 			return ResultGenerator.genSuccessResult(loginDTO);
 		}
 
-		return getGoogleOAuth(LOGIN_REDIRECT_URI);
+		return getGoogleOAuth(BASE_URL + REDIRECT_URI);
 	}
 
 	private Result getGoogleOAuth(String REDIRECT_URI) throws GeneralSecurityException, IOException {
@@ -189,7 +190,7 @@ public class LoginController {
 				.setApprovalPrompt("force")
 				.build();
 		GoogleTokenResponse tokenResponse = flow.newTokenRequest(code)
-				.setRedirectUri(SIGNUP_REDIRECT_URI)
+				.setRedirectUri(BASE_URL + REDIRECT_URI)
 				.setGrantType("authorization_code")
 				.execute();
 
