@@ -30,6 +30,7 @@ import com.wasupstudio.util.HttpServletRequestUtils;
 import com.wasupstudio.util.JwtUtils;
 import com.wasupstudio.util.MailUtil;
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,7 @@ import java.util.stream.Collectors;
 @Api(tags = "權限相關 API")
 @RestController
 @RequestMapping("/auth")
+@Slf4j
 public class LoginController {
 	@Value("${google.CLIENT_ID}")
 	private  String CLIENT_ID;
@@ -70,7 +72,6 @@ public class LoginController {
 
 	@Autowired
 	private MemberService memberService;
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@ApiOperation(value = "Google註冊", notes = "如果提供了code，則會使用Google API進行註冊，否則會重定向到Google的OAuth授權頁面")
 	@ApiImplicitParams({
@@ -237,6 +238,7 @@ public class LoginController {
 
 		String jwtToken = memberService.login(adminLoginQuery, adminLoginLogQuery);
 		if (jwtToken.isEmpty()){
+			log.info("[會員登入失敗 登入資訊 adminLoginQuery:{}]", adminLoginQuery);
 			return ResultGenerator.genFailResult(ResultCode.USER_LOGIN_FAILED.getMessage());
 		}
 		LoginDTO loginDTO = new LoginDTO();
