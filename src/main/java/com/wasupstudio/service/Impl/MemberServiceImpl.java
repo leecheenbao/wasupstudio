@@ -100,7 +100,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
     public String login(AdminLoginQuery adminLoginQuery, AdminLoginLogQuery adminLoginLogQuery) {
 
         MemberEntity memberEntity = memberMapper.findAccount(adminLoginQuery.getEmail());
-        memberEntity.setLastIp(adminLoginLogQuery.getIp());
+//        memberEntity.setLastIp(adminLoginLogQuery.getIp());
         memberEntity.setLastLogin(new Date());
 
         Boolean isTure = checkoutPassword(adminLoginQuery, memberEntity);
