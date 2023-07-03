@@ -236,6 +236,9 @@ public class LoginController {
 		adminLoginQuery.setDevice_os(getHeader("device_os"));
 
 		String jwtToken = memberService.login(adminLoginQuery, adminLoginLogQuery);
+		if (jwtToken.isEmpty()){
+			return ResultGenerator.genFailResult(ResultCode.USER_LOGIN_FAILED.getMessage());
+		}
 		LoginDTO loginDTO = new LoginDTO();
 		loginDTO.setToken(jwtToken);
 		loginDTO.setMemMail(adminLoginQuery.getEmail());

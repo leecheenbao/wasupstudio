@@ -84,3 +84,13 @@ jobs:
         platforms: linux/amd64,linux/arm64
         tags: aibolee/wasupstudio:latest
 
+#    - name: SSH 到遠端 VM
+#      uses: appleboy/ssh-action@v0.1.4
+#      with:
+#          host: ${{ secrets.REMOTE_VM_HOST }}
+#          username: ${{ secrets.REMOTE_VM_USERNAME }}
+#          password: ${{ secrets.REMOTE_VM_PASSWORD }}
+#          script: |
+#            # 在遠端 VM 執行 Docker Compose 命令
+#            docker-compose pull
+#            docker-compose up -d

@@ -144,10 +144,14 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
 
 
     public Boolean checkoutPassword(AdminLoginQuery adminLoginQuery, MemberEntity memberEntity){
-        String dbData = AesUtils.decrypt(memberEntity.getPwd());
-        String password = adminLoginQuery.getPassword();
+        if (memberEntity != null){
 
-        return dbData.equals(password);
+            String dbData = AesUtils.decrypt(memberEntity.getPwd());
+            String password = adminLoginQuery.getPassword();
+
+            return dbData.equals(password);
+        }
+        return false;
     }
 }
 
