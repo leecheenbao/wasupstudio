@@ -1,11 +1,11 @@
-package com.wasupstudio.model.dto;
+package com.wasupstudio.model.query;
 
+import com.wasupstudio.model.dto.MediaDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScriptDTO implements Serializable {
+public class ScriptQuery implements Serializable {
     private Integer scriptId;
 
     private String title;
@@ -31,13 +31,15 @@ public class ScriptDTO implements Serializable {
 
     private Integer scriptPeriod;
 
-    private List<String> goal;
+    private String goal;
 
-    private List<String> tips;
+    private String tips;
 
     private Date updateTime;
 
     private Integer status;
+
+    private List<MediaDTO> mediaDTO;
 
 }
 

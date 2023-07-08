@@ -1,5 +1,6 @@
 package com.wasupstudio.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wasupstudio.converter.ScriptConverter;
 import com.wasupstudio.enums.FileTypeEnum;
 import com.wasupstudio.enums.ResultCode;
@@ -10,6 +11,7 @@ import com.wasupstudio.model.dto.MediaDTO;
 import com.wasupstudio.model.dto.ScriptDTO;
 import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.entity.ScriptEntity;
+import com.wasupstudio.model.query.ScriptQuery;
 import com.wasupstudio.service.FileService;
 import com.wasupstudio.service.MediaService;
 import com.wasupstudio.service.ScriptService;
@@ -17,6 +19,7 @@ import com.wasupstudio.util.DateUtils;
 import com.wasupstudio.util.FileUtils;
 import com.wasupstudio.util.JwtUtils;
 import io.swagger.annotations.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -59,10 +62,10 @@ public class ScriptController {
         if (scriptEntity == null){
             return ResultGenerator.genSuccessResult(ResultCode.DATA_NOT_EXIST.getMessage());
         }
-        ScriptDTO scriptDTO = scriptConverter.map(scriptEntity);
-        scriptDTO.setMediaDTO(mediaService.findByScriptId(id));
-
-        return ResultGenerator.genSuccessResult(scriptDTO);
+        ScriptQuery scriptQuery = new ScriptQuery();
+        BeanUtils.copyProperties(scriptEntity,scriptQuery);
+        scriptQuery.setMediaDTO(mediaService.findByScriptId(id));
+        return ResultGenerator.genSuccessResult(scriptQuery);
     }
 
     @ApiOperation(value = "新增一筆劇本資料")
@@ -71,7 +74,7 @@ public class ScriptController {
             @ApiResponse(code = 400, message = "Bad Request")
     })
     @PostMapping
-    public Result save(@RequestBody ScriptDTO scriptDTO, BindingResult bindingResult) {
+    public Result save(@RequestBody ScriptDTO scriptDTO, BindingResult bindingResult) throws JsonProcessingException {
         MemberEntity member = JwtUtils.getMember();
         scriptDTO.setAuthor(member.getEmail());
         if (bindingResult.hasErrors()) {
@@ -80,7 +83,6 @@ public class ScriptController {
                     .collect(Collectors.joining(", "));
             return ResultGenerator.genFailResult(errorMsg);
         }
-
 
         scriptService.save(scriptDTO);
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
