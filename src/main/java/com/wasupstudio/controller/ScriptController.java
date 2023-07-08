@@ -1,7 +1,6 @@
 package com.wasupstudio.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.wasupstudio.converter.ScriptConverter;
 import com.wasupstudio.enums.FileTypeEnum;
 import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
@@ -40,9 +39,6 @@ public class ScriptController {
 
     @Autowired
     private MediaService mediaService;
-
-    @Autowired
-    private ScriptConverter scriptConverter;
 
     @Autowired
     private FileService fileService;
