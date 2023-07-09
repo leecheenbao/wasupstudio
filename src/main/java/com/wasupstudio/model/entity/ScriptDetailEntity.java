@@ -21,8 +21,8 @@ public class ScriptDetailEntity {
     @Column(name = "advisory_time")
     private Integer advisoryTime;
 
-    @Column(name = "method_description")
-    private String methodDescription;
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "today_script")
     private String todayScript;
@@ -30,7 +30,7 @@ public class ScriptDetailEntity {
     @Column(name = "additional_info")
     private String additionalInfo;
 
-    @Column(name = "teaching_materials")
-    private String teachingMaterials;
+    @Column(name = "teaching_url")
+    private String teachingUrl;
 
 }
