@@ -6,9 +6,10 @@ import com.wasupstudio.model.entity.ScriptDetailEntity;
 import com.wasupstudio.service.AbstractService;
 import com.wasupstudio.service.ScriptDetailService;
 import com.wasupstudio.util.ValueValidator;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class ScriptDetailServiceImpl extends AbstractService<ScriptDetailEntity> implements ScriptDetailService {
 
     @Override

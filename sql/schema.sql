@@ -81,17 +81,37 @@ CREATE TABLE wa_script (
                            PRIMARY KEY (script_id)
 ) COMMENT='劇本表';
 
--- 建立劇本詳情表
+-- 建立每日劇本詳情表
 CREATE TABLE wa_script_detail (
                                   script_detail_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '劇本詳情ID',
                                   script_id INT COMMENT '劇本ID',
-                                  advisory_time INT COMMENT '建議時間',
-                                  method_description VARCHAR(255) COMMENT '方式說明',
+                                  advisory_time INT COMMENT '建議時間(分)',
+                                  description VARCHAR(255) COMMENT '方式說明',
                                   today_script TEXT COMMENT '本日劇情',
-                                  additional_info TEXT COMMENT '額外信息',
-                                  teaching_materials JSON COMMENT '教材文件（可儲存多個路徑）',
+                                  additional_info JSON COMMENT '額外信息',
+                                  teaching_url JSON COMMENT '教材文件（可儲存多個路徑）',
                                   FOREIGN KEY (script_id) REFERENCES wa_script(script_id)
-) COMMENT '劇本詳情表';
+) COMMENT '每日劇本詳情表';
+
+-- 建立學生討論內容標準表
+CREATE TABLE wa_script_student_config (
+                                          id INT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
+                                          script_detail_id INT COMMENT '每日劇本ID',
+                                          description VARCHAR(255) COMMENT '選項描述',
+                                          orderly INT COMMENT '秩序 0:不計分 1:計分',
+                                          relation INT COMMENT '關係 0:不計分 1:計分',
+                                          FOREIGN KEY (script_detail_id) REFERENCES wa_script_detail(script_detail_id)
+) COMMENT '學生討論內容標準表';
+
+-- 建立學生討論內容標準表
+CREATE TABLE wa_script_parent_config (
+                                         id INT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
+                                         script_detail_id INT COMMENT '每日劇本ID',
+                                         description VARCHAR(255) COMMENT '選項描述',
+                                         orderly INT COMMENT '秩序 0:不計分 1:計分',
+                                         relation INT COMMENT '關係 0:不計分 1:計分',
+                                         FOREIGN KEY (script_detail_id) REFERENCES wa_script_detail(script_detail_id)
+) COMMENT '家長討論內容標準表';
 
 -- 建立劇本結局表
 CREATE TABLE wa_script_endding (

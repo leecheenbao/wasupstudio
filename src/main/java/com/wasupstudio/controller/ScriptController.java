@@ -13,6 +13,7 @@ import com.wasupstudio.model.entity.ScriptEntity;
 import com.wasupstudio.model.query.ScriptQuery;
 import com.wasupstudio.service.FileService;
 import com.wasupstudio.service.MediaService;
+import com.wasupstudio.service.ScriptDetailService;
 import com.wasupstudio.service.ScriptService;
 import com.wasupstudio.util.DateUtils;
 import com.wasupstudio.util.FileUtils;
@@ -36,10 +37,10 @@ public class ScriptController {
 
     @Autowired
     private ScriptService scriptService;
-
+    @Autowired
+    private ScriptDetailService scriptDetailService;
     @Autowired
     private MediaService mediaService;
-
     @Autowired
     private FileService fileService;
 
@@ -81,6 +82,25 @@ public class ScriptController {
         }
 
         scriptService.save(scriptDTO);
+        return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
+    }
+
+    @ApiOperation(value = "新增每日劇本詳情資料")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 400, message = "Bad Request")
+    })
+    @PostMapping("/detail")
+    public Result detailSave(@RequestBody ScriptDTO scriptDTO, BindingResult bindingResult){
+        MemberEntity member = JwtUtils.getMember();
+        scriptDTO.setAuthor(member.getEmail());
+        if (bindingResult.hasErrors()) {
+            String errorMsg = bindingResult.getFieldErrors().stream()
+                    .map(error -> error.getField() + " " + error.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+            return ResultGenerator.genFailResult(errorMsg);
+        }
+        scriptDetailService.findAllData();
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
     }
 
