@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -241,9 +242,11 @@ public class LoginController {
 			log.info("[會員登入失敗 登入資訊 adminLoginQuery:{}]", adminLoginQuery);
 			return ResultGenerator.genFailResult(ResultCode.USER_LOGIN_FAILED.getMessage());
 		}
+		Authentication authentication = JwtUtils.getAuthentication(jwtToken);
 		LoginDTO loginDTO = new LoginDTO();
 		loginDTO.setToken(jwtToken);
 		loginDTO.setMemMail(adminLoginQuery.getEmail());
+		loginDTO.setRole(authentication.getAuthorities());
 		return ResultGenerator.genSuccessResult(loginDTO);
 
 	}

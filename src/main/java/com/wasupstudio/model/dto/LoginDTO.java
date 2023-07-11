@@ -4,10 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.util.Collection;
+
 @Data
 @ToString
 @AllArgsConstructor
@@ -22,4 +25,6 @@ public class LoginDTO {
 	private String memPwd;
 
 	private String token;
+
+	private Collection<? extends GrantedAuthority> role;
 }
