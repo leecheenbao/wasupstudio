@@ -41,19 +41,12 @@ public class ScriptDetailServiceImpl extends AbstractService<ScriptDetailEntity>
             if (!ValueValidator.isNullOrZero(dto.getAdvisoryTime())) {
                 scriptDetailEntity.setAdvisoryTime(dto.getAdvisoryTime());
             }
-            if (!ValueValidator.isNullOrEmpty(dto.getMethodDescription())) {
-                scriptDetailEntity.setMethodDescription(dto.getMethodDescription());
-            }
             if (!ValueValidator.isNullOrEmpty(dto.getTodayScript())) {
                 scriptDetailEntity.setTodayScript(dto.getTodayScript());
             }
 
             if (!ValueValidator.isNullOrEmpty(dto.getAdditionalInfo())) {
                 scriptDetailEntity.setAdditionalInfo(dto.getAdditionalInfo());
-            }
-
-            if (!ValueValidator.isNullOrEmpty(dto.getTeachingMaterials())) {
-                scriptDetailEntity.setTeachingMaterials(dto.getTeachingMaterials());
             }
 
         }

@@ -97,19 +97,19 @@ CREATE TABLE wa_script_detail (
 CREATE TABLE wa_script_student_config (
                                           id INT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
                                           script_detail_id INT COMMENT '每日劇本ID',
-                                          description VARCHAR(255) COMMENT '選項描述',
-                                          orderly INT COMMENT '秩序 0:不計分 1:計分',
-                                          relation INT COMMENT '關係 0:不計分 1:計分',
+                                          stu_description VARCHAR(255) COMMENT '選項描述',
+                                          stu_orderly INT COMMENT '秩序 0:不計分 1:計分',
+                                          stu_relation INT COMMENT '關係 0:不計分 1:計分',
                                           FOREIGN KEY (script_detail_id) REFERENCES wa_script_detail(script_detail_id)
 ) COMMENT '學生討論內容標準表';
 
--- 建立學生討論內容標準表
+-- 建立家長討論內容標準表
 CREATE TABLE wa_script_parent_config (
                                          id INT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
                                          script_detail_id INT COMMENT '每日劇本ID',
-                                         description VARCHAR(255) COMMENT '選項描述',
-                                         orderly INT COMMENT '秩序 0:不計分 1:計分',
-                                         relation INT COMMENT '關係 0:不計分 1:計分',
+                                         par_description VARCHAR(255) COMMENT '選項描述',
+                                         par_orderly INT COMMENT '秩序 0:不計分 1:計分',
+                                         par_relation INT COMMENT '關係 0:不計分 1:計分',
                                          FOREIGN KEY (script_detail_id) REFERENCES wa_script_detail(script_detail_id)
 ) COMMENT '家長討論內容標準表';
 

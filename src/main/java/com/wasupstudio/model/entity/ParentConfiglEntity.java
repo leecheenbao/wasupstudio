@@ -18,13 +18,13 @@ public class ParentConfiglEntity {
     @JoinColumn(name = "script_detail_id")
     private ScriptEntity scriptDetailId;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "par_description")
+    private String parDescription;
 
-    @Column(name = "orderly")
-    private Integer orderly;
+    @Column(name = "par_orderly")
+    private Integer parOrderly;
 
-    @Column(name = "relation")
-    private Integer relation;
+    @Column(name = "par_relation")
+    private Integer parRelation;
 
 }

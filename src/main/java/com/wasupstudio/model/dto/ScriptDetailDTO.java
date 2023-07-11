@@ -12,12 +12,12 @@ public class ScriptDetailDTO {
 
     private Integer advisoryTime;
 
-    private String methodDescription;
+    private String description;
 
     private String todayScript;
 
     private String additionalInfo;
 
-    private String teachingMaterials;
+    private String teachingUrl;
 
 }

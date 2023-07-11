@@ -18,13 +18,13 @@ public class StudentConfiglEntity {
     @JoinColumn(name = "script_detail_id")
     private ScriptEntity scriptDetailId;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "stu_Description")
+    private String stuDescription;
 
-    @Column(name = "orderly")
-    private Integer orderly;
+    @Column(name = "stu_orderly")
+    private Integer stuOrderly;
 
-    @Column(name = "relation")
-    private Integer relation;
+    @Column(name = "stu_relation")
+    private Integer stuRelation;
 
 }

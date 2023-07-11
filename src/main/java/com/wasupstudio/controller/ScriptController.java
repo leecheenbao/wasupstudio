@@ -11,10 +11,7 @@ import com.wasupstudio.model.dto.ScriptDTO;
 import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.entity.ScriptEntity;
 import com.wasupstudio.model.query.ScriptQuery;
-import com.wasupstudio.service.FileService;
-import com.wasupstudio.service.MediaService;
-import com.wasupstudio.service.ScriptDetailService;
-import com.wasupstudio.service.ScriptService;
+import com.wasupstudio.service.*;
 import com.wasupstudio.util.DateUtils;
 import com.wasupstudio.util.FileUtils;
 import com.wasupstudio.util.JwtUtils;
@@ -39,6 +36,11 @@ public class ScriptController {
     private ScriptService scriptService;
     @Autowired
     private ScriptDetailService scriptDetailService;
+
+    @Autowired
+    private StudentConfigService studentConfigService;
+    @Autowired
+    private ParentConfigService parentConfigService;
     @Autowired
     private MediaService mediaService;
     @Autowired
