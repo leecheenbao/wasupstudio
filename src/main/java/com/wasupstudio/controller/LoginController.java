@@ -243,10 +243,12 @@ public class LoginController {
 			return ResultGenerator.genFailResult(ResultCode.USER_LOGIN_FAILED.getMessage());
 		}
 		Authentication authentication = JwtUtils.getAuthentication(jwtToken);
+		MemberEntity memberEntity = memberService.getAdminByEmail(adminLoginQuery.getEmail());
 		LoginDTO loginDTO = new LoginDTO();
 		loginDTO.setToken(jwtToken);
 		loginDTO.setMemMail(adminLoginQuery.getEmail());
 		loginDTO.setRole(authentication.getAuthorities());
+		loginDTO.setId(memberEntity.getId());
 		return ResultGenerator.genSuccessResult(loginDTO);
 
 	}

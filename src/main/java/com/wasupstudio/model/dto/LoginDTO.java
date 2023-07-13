@@ -26,5 +26,8 @@ public class LoginDTO {
 
 	private String token;
 
+	private Integer id;
 	private Collection<? extends GrantedAuthority> role;
+
+
 }
