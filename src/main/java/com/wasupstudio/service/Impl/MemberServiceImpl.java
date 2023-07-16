@@ -46,6 +46,8 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
             memberEntity.setStatus(ProjectConstant.SystemAdminStatus.NOT_ENABLED);
             memberEntity.setRole(MemberEntity.Role.valueOf(memberDTO.getRole().toString()));
             memberEntity.setVerificationCode(AesUtils.encrypt(memberDTO.getEmail()));
+            memberEntity.setGender(memberDTO.getGender());
+            memberEntity.setCategory(memberDTO.getCategory());
             save(memberEntity);
 
             return ResultCode.SAVE_SUCCESS.getMessage();
@@ -91,6 +93,8 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
             memberEntity.setRegistionTime(memberDTO.getRegistionTime());
             memberEntity.setLastLogin(memberDTO.getLastLogin());
             memberEntity.setStatus(memberDTO.getStatus());
+            memberEntity.setCategory(memberDTO.getCategory());
+            memberEntity.setGender(memberDTO.getGender());
         }
 
         this.update(memberEntity);

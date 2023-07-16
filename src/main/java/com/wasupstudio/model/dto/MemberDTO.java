@@ -35,5 +35,9 @@ public class MemberDTO implements Serializable {
 
     private String verificationCode;
 
+    private Integer gender;
+
+    private String category;
+
 
 }

@@ -13,6 +13,8 @@ CREATE TABLE wa_member (
                            lastIp VARCHAR(50) COMMENT '登入IP',
                            lastLogin TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '最後登入時間',
                            status INT NOT NULL COMMENT '帳號狀態 0:未啟用 1:啟用 2:停用',
+                           gender INT NOT NULL COMMENT '性別 （0:女 1:男 2:其他）',
+                           category VARCHAR(50) NOT NULL COMMENT '機構種類',
                            registration_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '存儲註冊時間的欄位，使用 TIMESTAMP 型別，預設為當前時間',
                            verificationCode VARCHAR(100) COMMENT '帳號啟用驗證碼'
 ) COMMENT='會員資料表';

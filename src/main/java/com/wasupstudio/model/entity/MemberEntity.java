@@ -56,4 +56,12 @@ public class MemberEntity implements Serializable {
 
     @Column(name = "verificationCode")
     private String verificationCode;
+
+    @Column(name = "gender")
+    private Integer gender;
+
+    @Column(name = "category")
+    private String category;
+
+
 }
