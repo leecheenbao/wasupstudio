@@ -59,7 +59,7 @@ public class LicenseEntity implements Serializable {
     /**
      * 生成方式
      */
-    @Column(name = "generage")
+    @Column(name = "generate")
     private String generate;
 
 
