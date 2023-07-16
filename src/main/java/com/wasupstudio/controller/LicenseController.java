@@ -2,6 +2,7 @@ package com.wasupstudio.controller;
 
 import com.google.gson.Gson;
 import com.wasupstudio.constant.ProjectConstant;
+import com.wasupstudio.enums.LicenseEnum;
 import com.wasupstudio.model.Result;
 import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
@@ -110,6 +111,8 @@ public class LicenseController {
         if (memberEntity == null){
             return ResultGenerator.genFailResult(ResultCode.LICENSE_OF_ACCOUNT_NOT_FOUND.getMessage());
         }
+
+        licenseDTO.setGenerate(LicenseEnum.GENERAGE_BY_ADMIN.getDesc());
 
         String memberId = String.valueOf(memberEntity.getId());
         MailUtil.sendMail(ProjectConstant.MailType.START_KEY, "" ,licenseDTO.getCustomerEmail());

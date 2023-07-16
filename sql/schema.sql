@@ -28,6 +28,7 @@ CREATE TABLE wa_license (
                             expiration_date timestamp NOT NULL COMMENT '到期日期',
                             customer_name varchar(255) NOT NULL COMMENT '客戶姓名',
                             customer_email varchar(255) NOT NULL COMMENT '客戶信箱',
+                            generate varchar(255) NOT NULL COMMENT '生成方式',
                             PRIMARY KEY (id),
                             UNIQUE KEY license_key (license_key)
 ) COMMENT='序號資料表';

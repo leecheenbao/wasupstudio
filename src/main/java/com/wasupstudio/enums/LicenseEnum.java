@@ -6,11 +6,9 @@ import com.beust.jcommander.internal.Maps;
 import java.util.List;
 import java.util.Map;
 
-public enum MailEnum {
-    MAIL_SUBTITLE_SINGN("MAIL_SUBTITLE_SINGN","歡迎加入我們班的叢林法則！"),
-    MAIL_SUBTITLE_FORGET("MAIL_SUBTITLE_FORGET","我們班的叢林法則【忘記密碼】"),
-    MAIL_SUBTITLE_CONNECT("MAIL_SUBTITLE_CONNECT","我們班的叢林法則【來自用戶的問題】"),
-    MAIL_SUBTITLE_START_KEY("MAIL_SUBTITLE_START_KEY", "我們班的叢林法則【啟動碼寄送】")
+public enum LicenseEnum {
+    BUY_BY_WEB("BUY_BY_WEB","網站購買"),
+    GENERAGE_BY_ADMIN("GENERAGE_BY_ADMIN","管理者建立")
     ;
 
 
@@ -19,7 +17,7 @@ public enum MailEnum {
 
     String desc;
 
-    MailEnum(String type, String desc) {
+    LicenseEnum(String type, String desc) {
         this.type = type;
         this.desc = desc;
     }
@@ -33,7 +31,7 @@ public enum MailEnum {
     }
 
     public static String getDesc(String type) {
-        for (MailEnum ele : MailEnum.values()) {
+        for (LicenseEnum ele : LicenseEnum.values()) {
             if (type.equals(ele.getType())) {
                 return ele.getDesc();
             }
@@ -41,8 +39,8 @@ public enum MailEnum {
         return null;
     }
 
-    public static MailEnum getEnum(String type) {
-        for (MailEnum ele : MailEnum.values()) {
+    public static LicenseEnum getEnum(String type) {
+        for (LicenseEnum ele : LicenseEnum.values()) {
             if (type.equals(ele.getType())) {
                 return ele;
             }
@@ -52,7 +50,7 @@ public enum MailEnum {
 
     public static List<Map<String, Object>> getList() {
         List<Map<String, Object>> list = Lists.newArrayList();
-        for (MailEnum ele : MailEnum.values()) {
+        for (LicenseEnum ele : LicenseEnum.values()) {
             Map<String, Object> map = Maps.newHashMap();
             map.put("type", ele.getType());
             map.put("desc", ele.getDesc());

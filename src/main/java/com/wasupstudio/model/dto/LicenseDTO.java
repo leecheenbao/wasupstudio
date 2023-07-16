@@ -17,4 +17,5 @@ public class LicenseDTO {
     Integer activated;
     Date startTime;
     Date endTime;
+    String generate;
 }

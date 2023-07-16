@@ -34,6 +34,7 @@ public class LicenseServiceImpl extends AbstractService<LicenseEntity> implement
         licenseEntity.setExpirationDate(DateUtils.addDays(today, 7));
         licenseEntity.setCustomerEmail(licenseDTO.getCustomerEmail());
         licenseEntity.setCustomerName(licenseDTO.getCustomerName());
+        licenseEntity.setGenerate(licenseDTO.getGenerate());
         save(licenseEntity);
     }
 
@@ -86,7 +87,9 @@ public class LicenseServiceImpl extends AbstractService<LicenseEntity> implement
             if (!license.getActivated().equals(licenseDTO.getActivated())){
                 licenseEntity.setActivated(licenseDTO.getActivated());
             }
-
+            if (!license.getGenerate().equals(licenseDTO.getGenerate())){
+                licenseEntity.setGenerate(licenseDTO.getGenerate());
+            }
             this.update(licenseEntity);
         }
 

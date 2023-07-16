@@ -56,6 +56,13 @@ public class LicenseEntity implements Serializable {
     @Column(name = "customer_email")
     private String customerEmail;
 
+    /**
+     * 生成方式
+     */
+    @Column(name = "generage")
+    private String generate;
+
+
 
 }
 
