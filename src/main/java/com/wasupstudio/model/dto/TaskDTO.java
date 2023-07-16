@@ -41,5 +41,7 @@ public class TaskDTO implements Serializable {
 
     private Integer memberId;
 
+    private Integer learning;
+
 }
 

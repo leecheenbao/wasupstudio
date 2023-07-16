@@ -58,5 +58,8 @@ public class TaskEntity implements Serializable {
     @Column(name = "author", nullable = false)
     private String author;
 
+    @Column(name = "learning", nullable = false)
+    private Integer learning;
+
 }
 

@@ -39,6 +39,7 @@ public class ScriptServiceImpl extends AbstractService<ScriptEntity> implements 
             scriptEntity.setUpdateTime(new Date());
             scriptEntity.setGoal(goalJson);
             scriptEntity.setTips(tipsJson);
+
         }catch (JsonProcessingException e){
             // 轉換為 JSON 字符串時出錯
             e.printStackTrace();

@@ -182,6 +182,12 @@ CREATE TABLE wa_task (
                          status INTEGER DEFAULT 0 COMMENT '任務狀態 0:開啟任務 1:進行中 2:完成(包含結束)',
                          create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '創建時間',
                          end_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '結束時間',
+                         learning INTEGER DEFAULT 0 COMMENT '0:小學 (低年級)
+                             1:小學 (中年級)
+                             2:小學 (高年級)
+                             3:國中 (7年級)
+                             4:國中 (8年級)
+                             5:國中 (9年級)',
                          author VARCHAR(255) NOT NULL COMMENT '最後編輯者'
 );
 

@@ -34,6 +34,8 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
         taskEntity.setStatus(taskDTO.getStatus());
         taskEntity.setCreateTime(new Date());
         taskEntity.setEndTime(DateUtils.getEndDate(taskDTO.getEndTime()));
+        taskEntity.setLearning(taskEntity.getLearning());
+
         save(taskEntity);
     }
 
@@ -90,7 +92,9 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
             if (!ValueValidator.isNullOrEmpty(taskDTO.getEndTime())){
                 taskEntity.setEndTime(DateUtils.getEndDate(taskDTO.getEndTime()));
             }
-
+            if (!ValueValidator.isNullOrZero(taskDTO.getLearning())){
+                taskEntity.setLearning(taskDTO.getLearning());
+            }
             // 判斷字段是否發生變化，避免不必要的更新操作
             if (isTaskEntityChanged(taskEntity, taskDTO)) {
                 this.update(taskEntity);
