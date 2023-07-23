@@ -157,10 +157,15 @@ public class LoginController {
 						ResultCode.USER_LOGIN_FAILED.getMessage() + ":" +
 								ResultCode.USER_NAME_NOT_EXIST.getMessage());
 			}
+
+			Authentication authentication = JwtUtils.getAuthentication(jwtToken);
+			MemberEntity memberEntity = memberService.getAdminByEmail(userInfo.getEmail());
+
 			LoginDTO loginDTO = new LoginDTO();
 			loginDTO.setToken(jwtToken);
 			loginDTO.setMemMail(userInfo.getEmail());
-			loginDTO.setToken(request.getRemoteAddr());
+			loginDTO.setRole(authentication.getAuthorities());
+			loginDTO.setId(memberEntity.getId());
 			return ResultGenerator.genSuccessResult(loginDTO);
 		}
 
