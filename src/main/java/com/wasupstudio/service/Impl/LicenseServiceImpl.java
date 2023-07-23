@@ -77,20 +77,20 @@ public class LicenseServiceImpl extends AbstractService<LicenseEntity> implement
         LicenseEntity license = this.findOne(licenseDTO.getId());
         if (license != null){
             LicenseEntity licenseEntity = new LicenseEntity();
-            licenseEntity.setActivated(licenseDTO.getActivated());
+            license.setActivated(licenseDTO.getActivated());
             if (!license.getCustomerName().equals(licenseDTO.getCustomerName())){
-                licenseEntity.setCustomerName(licenseDTO.getCustomerName());
+                license.setCustomerName(licenseDTO.getCustomerName());
             }
             if (!license.getCustomerEmail().equals(licenseDTO.getCustomerEmail())){
-                licenseEntity.setCustomerEmail(licenseDTO.getCustomerEmail());
+                license.setCustomerEmail(licenseDTO.getCustomerEmail());
             }
             if (!license.getActivated().equals(licenseDTO.getActivated())){
-                licenseEntity.setActivated(licenseDTO.getActivated());
+                license.setActivated(licenseDTO.getActivated());
             }
             if (!license.getGenerate().equals(licenseDTO.getGenerate())){
-                licenseEntity.setGenerate(licenseDTO.getGenerate());
+                license.setGenerate(licenseDTO.getGenerate());
             }
-            this.update(licenseEntity);
+            this.update(license);
         }
 
     }
