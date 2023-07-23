@@ -95,22 +95,8 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
             if (!ValueValidator.isNullOrZero(taskDTO.getLearning())){
                 taskEntity.setLearning(taskDTO.getLearning());
             }
-            // 判斷字段是否發生變化，避免不必要的更新操作
-            if (isTaskEntityChanged(taskEntity, taskDTO)) {
-                this.update(taskEntity);
-            }
+            this.update(taskEntity);
         }
-    }
-
-    // 判斷TaskEntity的字段是否發生變化
-    private boolean isTaskEntityChanged(TaskEntity taskEntity, TaskDTO taskDTO) {
-        return !Objects.equals(taskEntity.getTaskName(), taskDTO.getTaskName())
-                || !Objects.equals(taskEntity.getPriority(), taskDTO.getPriority())
-                || !Objects.equals(taskEntity.getDescription(), taskDTO.getDescription())
-                || !Objects.equals(taskEntity.getScriptId(), taskDTO.getScriptId())
-                || !Objects.equals(taskEntity.getEstimatedParticipants(), taskDTO.getEstimatedParticipants())
-                || !Objects.equals(taskEntity.getStatus(), taskDTO.getStatus())
-                || !Objects.equals(taskEntity.getEndTime(), DateUtils.getEndDate(taskDTO.getEndTime()));
     }
 }
 
