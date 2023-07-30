@@ -16,7 +16,7 @@ public class ParentConfiglEntity {
 
     @ManyToOne
     @JoinColumn(name = "script_detail_id")
-    private ScriptEntity scriptDetailId;
+    private Integer scriptDetailId;
 
     @Column(name = "par_description")
     private String parDescription;

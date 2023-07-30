@@ -58,12 +58,14 @@ public class ScriptController {
     @GetMapping("/{id}")
     public Result getOneData(@PathVariable Integer id) {
         ScriptEntity scriptEntity = scriptService.findOne(id);
+        parentConfigService.findOne(id);
         if (scriptEntity == null){
             return ResultGenerator.genSuccessResult(ResultCode.DATA_NOT_EXIST.getMessage());
         }
         ScriptQuery scriptQuery = new ScriptQuery();
         BeanUtils.copyProperties(scriptEntity,scriptQuery);
         scriptQuery.setMediaDTO(mediaService.findByScriptId(id));
+        parentConfigService.findOne(id);
         return ResultGenerator.genSuccessResult(scriptQuery);
     }
 

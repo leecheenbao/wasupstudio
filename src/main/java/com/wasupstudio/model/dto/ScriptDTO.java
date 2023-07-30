@@ -1,5 +1,7 @@
 package com.wasupstudio.model.dto;
 
+import com.wasupstudio.model.entity.ParentConfiglEntity;
+import com.wasupstudio.model.entity.StudentConfiglEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,6 +40,10 @@ public class ScriptDTO implements Serializable {
     private Date updateTime;
 
     private Integer status;
+
+    private List<ParentConfiglDTO> parentConfigs;
+
+    private List<StudentConfigDTO> studentConfigs;
 
 }
 

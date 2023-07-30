@@ -10,6 +10,7 @@
         <result column="expiration_date" property="expirationDate" jdbcType="TIMESTAMP" />
         <result column="customer_name" property="customerName" jdbcType="VARCHAR" />
         <result column="customer_email" property="customerEmail" jdbcType="VARCHAR" />
+        <result column="generate" property="generate" jdbcType="VARCHAR" />
     </resultMap>
 
     <select id="findByACTDate" resultMap="BaseResultMap" resultType="com.wasupstudio.model.entity.LicenseEntity">

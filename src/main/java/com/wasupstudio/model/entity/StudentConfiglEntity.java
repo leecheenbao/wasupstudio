@@ -16,7 +16,7 @@ public class StudentConfiglEntity {
 
     @ManyToOne
     @JoinColumn(name = "script_detail_id")
-    private ScriptEntity scriptDetailId;
+    private Integer scriptDetailId;
 
     @Column(name = "stu_Description")
     private String stuDescription;

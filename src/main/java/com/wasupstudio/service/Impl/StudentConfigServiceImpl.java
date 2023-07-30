@@ -1,6 +1,7 @@
 package com.wasupstudio.service.Impl;
 
 import com.wasupstudio.model.BasePageInfo;
+import com.wasupstudio.model.dto.StudentConfigDTO;
 import com.wasupstudio.model.entity.ParentConfiglEntity;
 import com.wasupstudio.model.entity.StudentConfiglEntity;
 import com.wasupstudio.service.AbstractService;
@@ -16,6 +17,11 @@ public class StudentConfigServiceImpl extends AbstractService<StudentConfiglEnti
     @Override
     public void save(StudentConfiglEntity entity) {
         this.save(entity);
+    }
+
+    @Override
+    public void batchSave(List<StudentConfigDTO> list) {
+
     }
 
     @Override
