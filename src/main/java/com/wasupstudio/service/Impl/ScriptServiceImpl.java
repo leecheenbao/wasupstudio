@@ -11,7 +11,6 @@ import com.wasupstudio.service.ScriptService;
 import com.wasupstudio.util.ValueValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import springfox.documentation.spring.web.json.Json;
 
 import java.util.Date;
 import java.util.List;
@@ -22,9 +21,9 @@ public class ScriptServiceImpl extends AbstractService<ScriptEntity> implements 
     public ScriptMapper scriptMapper;
 
     @Override
-    public void save(ScriptDTO scriptDTO) {
+    public ScriptEntity save(ScriptDTO scriptDTO) {
         ScriptEntity scriptEntity = new ScriptEntity();
-        try{
+        try {
             ObjectMapper objectMapper = new ObjectMapper();
             String goalJson = objectMapper.writeValueAsString(scriptDTO.getGoal());
             String tipsJson = objectMapper.writeValueAsString(scriptDTO.getTips());
@@ -42,12 +41,15 @@ public class ScriptServiceImpl extends AbstractService<ScriptEntity> implements 
             scriptEntity.setTips(tipsJson);
             scriptEntity.setPreamble(preambleJson);
 
-        }catch (JsonProcessingException e){
-            // 轉換為 JSON 字符串時出錯
+        } catch (JsonProcessingException e) {
+            // 转换为 JSON 字符串时出错
             e.printStackTrace();
         }
 
         save(scriptEntity);
+        ScriptEntity savedScriptEntity = findOne(scriptEntity.getScriptId());
+
+        return savedScriptEntity;
     }
 
     @Override

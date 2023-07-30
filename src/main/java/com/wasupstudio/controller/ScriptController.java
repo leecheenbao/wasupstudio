@@ -14,6 +14,7 @@ import com.wasupstudio.model.dto.MediaDTO;
 import com.wasupstudio.model.dto.ScriptDTO;
 import com.wasupstudio.model.dto.ScriptDetailDTO;
 import com.wasupstudio.model.entity.MemberEntity;
+import com.wasupstudio.model.entity.ScriptDetailEntity;
 import com.wasupstudio.model.entity.ScriptEntity;
 import com.wasupstudio.model.query.ScriptQuery;
 import com.wasupstudio.service.*;
@@ -65,25 +66,29 @@ public class ScriptController {
     @GetMapping("/{id}")
     public Result getOneData(@PathVariable Integer id) {
         ScriptEntity scriptEntity = scriptService.findOne(id);
+        scriptEntity.getPreamble();
+        if (scriptEntity == null){
+            return ResultGenerator.genSuccessResult(ResultCode.DATA_NOT_EXIST.getMessage());
+        }
+
+        ScriptQuery scriptQuery = tranData(scriptEntity);
+        scriptQuery.setMediaDTO(mediaService.findByScriptId(id));
+        return ResultGenerator.genSuccessResult(scriptQuery);
+    }
+
+    public ScriptQuery tranData(ScriptEntity scriptEntity){
         Gson gson = new Gson();
         List<String> tips = gson.fromJson(scriptEntity.getTips(), new TypeToken<List<String>>() {}.getType());
         List<String> goals = gson.fromJson(scriptEntity.getGoal(), new TypeToken<List<String>>() {}.getType());
         List<String> preambles = gson.fromJson(scriptEntity.getPreamble(), new TypeToken<List<String>>() {}.getType());
 
-        scriptEntity.getPreamble();
-        if (scriptEntity == null){
-            return ResultGenerator.genSuccessResult(ResultCode.DATA_NOT_EXIST.getMessage());
-        }
         ScriptQuery scriptQuery = new ScriptQuery();
         BeanUtils.copyProperties(scriptEntity,scriptQuery);
         scriptQuery.setTips(tips);
         scriptQuery.setGoal(goals);
         scriptQuery.setPreamble(preambles);
-
-        scriptQuery.setMediaDTO(mediaService.findByScriptId(id));
-        return ResultGenerator.genSuccessResult(scriptQuery);
+        return scriptQuery;
     }
-
     @ApiOperation(value = "新增一筆劇本資料")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success"),
@@ -99,9 +104,10 @@ public class ScriptController {
                     .collect(Collectors.joining(", "));
             return ResultGenerator.genFailResult(errorMsg);
         }
+        ScriptEntity scriptEntity = scriptService.save(scriptDTO);
+        ScriptQuery scriptQuery = tranData(scriptEntity);
 
-        scriptService.save(scriptDTO);
-        return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
+        return ResultGenerator.genSuccessResult(scriptQuery);
     }
 
     @ApiOperation(value = "新增每日劇本詳情資料")
@@ -110,15 +116,31 @@ public class ScriptController {
             @ApiResponse(code = 400, message = "Bad Request")
     })
     @PostMapping("/detail")
-    public Result detailSave(@RequestBody ScriptDetailDTO scriptDetailDTO, BindingResult bindingResult){
+    public Result detailSave(@RequestBody ScriptDetailDTO scriptDetailDTO, BindingResult bindingResult) throws JsonProcessingException {
         if (bindingResult.hasErrors()) {
             String errorMsg = bindingResult.getFieldErrors().stream()
                     .map(error -> error.getField() + " " + error.getDefaultMessage())
                     .collect(Collectors.joining(", "));
             return ResultGenerator.genFailResult(errorMsg);
         }
-        scriptDetailService.save(scriptDetailDTO);
-        scriptDetailService.findAllData();
+        // 判斷詳情天數是否大於原先的script設定
+        ScriptDetailEntity scriptDetailEntity = scriptDetailService.findByPeriod(
+                scriptDetailDTO.getScriptId(),scriptDetailDTO.getPeriod());
+
+        ScriptEntity scriptEntity = scriptService.findOne(scriptDetailDTO.getScriptId());
+        if (scriptEntity != null){
+            if (scriptEntity.getScriptPeriod() - scriptDetailDTO.getPeriod() < 0) {
+                return ResultGenerator.genFailResult(ResultCode.ADD_FAILD.getMessage());
+            }
+        }
+
+        if (scriptDetailEntity == null){
+            scriptDetailService.save(scriptDetailDTO);
+        } else {
+
+            scriptDetailDTO.setScriptDetilId(scriptDetailEntity.getScriptDetailId());
+            scriptDetailService.update(scriptDetailDTO);
+        }
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
     }
 

@@ -7,7 +7,7 @@ import com.wasupstudio.model.entity.ScriptEntity;
 
 public interface ScriptService {
 
-    void save (ScriptDTO scriptDTO);
+    ScriptEntity save (ScriptDTO scriptDTO);
 
     ScriptEntity findOne(Integer id);
 

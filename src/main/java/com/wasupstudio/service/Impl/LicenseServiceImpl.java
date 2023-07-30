@@ -1,16 +1,15 @@
 package com.wasupstudio.service.Impl;
 
-import com.wasupstudio.mapper.LicenseMapper;
 import com.wasupstudio.enums.CommonStatusEnum;
+import com.wasupstudio.mapper.LicenseMapper;
+import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.dto.LicenseDTO;
 import com.wasupstudio.model.entity.LicenseEntity;
-import com.wasupstudio.service.LicenseService;
 import com.wasupstudio.service.AbstractService;
-import com.wasupstudio.model.BasePageInfo;
+import com.wasupstudio.service.LicenseService;
 import com.wasupstudio.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tk.mybatis.mapper.entity.Condition;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

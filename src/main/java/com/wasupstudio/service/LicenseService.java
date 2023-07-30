@@ -1,5 +1,6 @@
 package com.wasupstudio.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wasupstudio.model.dto.LicenseDTO;
 import com.wasupstudio.model.entity.LicenseEntity;
 import com.wasupstudio.model.BasePageInfo;

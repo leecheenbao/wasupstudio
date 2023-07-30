@@ -89,7 +89,7 @@ CREATE TABLE wa_script (
 CREATE TABLE wa_script_detail (
                                   script_detail_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '劇本詳情ID',
                                   script_id INT COMMENT '劇本ID',
-                                  period INT COMMENT '建議天數',
+                                  period INT COMMENT '實際建議天數',
                                   advisory_time INT COMMENT '建議時間(分)',
                                   description VARCHAR(255) COMMENT '方式說明',
                                   today_script TEXT COMMENT '本日劇情',

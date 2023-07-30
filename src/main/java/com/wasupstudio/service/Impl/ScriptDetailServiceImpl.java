@@ -1,25 +1,46 @@
 package com.wasupstudio.service.Impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wasupstudio.mapper.ScriptDetailMapper;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.dto.ScriptDetailDTO;
 import com.wasupstudio.model.entity.ScriptDetailEntity;
+import com.wasupstudio.model.entity.ScriptEntity;
 import com.wasupstudio.service.AbstractService;
 import com.wasupstudio.service.ScriptDetailService;
 import com.wasupstudio.util.ValueValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 @Service
 public class ScriptDetailServiceImpl extends AbstractService<ScriptDetailEntity> implements ScriptDetailService {
-
+    @Autowired
+    ScriptDetailMapper mapper;
     @Override
-    public void save(ScriptDetailDTO entity) {
-        this.save(entity);
+    public void save(ScriptDetailDTO dto) throws JsonProcessingException {
+        ScriptDetailEntity scriptDetailEntity = new ScriptDetailEntity();
+        ObjectMapper objectMapper = new ObjectMapper();
+        String additionInfoJson = objectMapper.writeValueAsString(dto.getAdditionalInfo());
+        scriptDetailEntity.setScriptId(dto.getScriptId());
+        scriptDetailEntity.setAdvisoryTime(dto.getAdvisoryTime());
+        scriptDetailEntity.setDescription(dto.getDescription());
+        scriptDetailEntity.setTodayScript(dto.getTodayScript());
+        scriptDetailEntity.setAdditionalInfo(additionInfoJson);
+        scriptDetailEntity.setTeachingUrl(dto.getTeachingUrl());
+        scriptDetailEntity.setPeriod(dto.getPeriod());
+        save(scriptDetailEntity);
     }
 
     @Override
     public ScriptDetailEntity findOne(Integer id) {
         return this.findById(id);
+    }
+
+    @Override
+    public ScriptDetailEntity findByPeriod(Integer scriptId, Integer period) {
+        return mapper.findByVerificationCode(scriptId, period);
     }
 
 
@@ -36,19 +57,22 @@ public class ScriptDetailServiceImpl extends AbstractService<ScriptDetailEntity>
     @Override
     public void update(ScriptDetailDTO dto) {
 
-        ScriptDetailEntity scriptDetailEntity = this.findOne(dto.getScriptDetilId());
-        if (scriptDetailEntity != null) {
-            if (!ValueValidator.isNullOrZero(dto.getAdvisoryTime())) {
+        try{
+            ScriptDetailEntity scriptDetailEntity = this.findOne(dto.getScriptDetilId());
+            if (scriptDetailEntity != null) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                String additionInfoJson = objectMapper.writeValueAsString(dto.getAdditionalInfo());
+
                 scriptDetailEntity.setAdvisoryTime(dto.getAdvisoryTime());
-            }
-            if (!ValueValidator.isNullOrEmpty(dto.getTodayScript())) {
+                scriptDetailEntity.setDescription(dto.getDescription());
                 scriptDetailEntity.setTodayScript(dto.getTodayScript());
+                scriptDetailEntity.setAdditionalInfo(additionInfoJson);
+                scriptDetailEntity.setTeachingUrl(dto.getTeachingUrl());
+                scriptDetailEntity.setPeriod(dto.getPeriod());
             }
-
-            if (!ValueValidator.isNullOrEmpty(dto.getAdditionalInfo())) {
-                scriptDetailEntity.setAdditionalInfo(dto.getAdditionalInfo());
-            }
-
+            update(scriptDetailEntity);
+        }catch (Exception e){
+            e.getStackTrace();
         }
     }
 }

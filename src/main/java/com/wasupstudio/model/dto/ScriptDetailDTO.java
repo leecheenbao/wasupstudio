@@ -10,15 +10,17 @@ public class ScriptDetailDTO {
 
     private Integer scriptDetilId;
 
-    private ScriptEntity scriptId;
+    private Integer scriptId;
 
     private Integer advisoryTime;
+
+    private Integer period;
 
     private String description;
 
     private String todayScript;
 
-    private String additionalInfo;
+    private List<String> additionalInfo;
 
     private String teachingUrl;
 
