@@ -94,7 +94,8 @@ public class JwtUtils {
     public static Authentication getAuthentication(String token) {
         Claims claims = getTokenBody(token);
         // 獲取用戶角色字符串
-        String role = (String) claims.get(SecurityConstants.TOKEN_ROLE_CLAIM);
+        Map<String,String> memberInfo = (Map<String, String>) claims.get(SecurityConstants.TOKEN_MEMBER_INFO);
+        String role = memberInfo.get(SecurityConstants.TOKEN_ROLE_CLAIM);
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
         if (role == null) {
