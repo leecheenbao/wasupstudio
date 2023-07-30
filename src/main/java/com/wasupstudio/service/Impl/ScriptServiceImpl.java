@@ -28,6 +28,7 @@ public class ScriptServiceImpl extends AbstractService<ScriptEntity> implements 
             ObjectMapper objectMapper = new ObjectMapper();
             String goalJson = objectMapper.writeValueAsString(scriptDTO.getGoal());
             String tipsJson = objectMapper.writeValueAsString(scriptDTO.getTips());
+            String preambleJson = objectMapper.writeValueAsString(scriptDTO.getPreamble());
 
             scriptEntity.setScriptId(scriptDTO.getScriptId());
             scriptEntity.setTitle(scriptDTO.getTitle());
@@ -39,6 +40,7 @@ public class ScriptServiceImpl extends AbstractService<ScriptEntity> implements 
             scriptEntity.setUpdateTime(new Date());
             scriptEntity.setGoal(goalJson);
             scriptEntity.setTips(tipsJson);
+            scriptEntity.setPreamble(preambleJson);
 
         }catch (JsonProcessingException e){
             // 轉換為 JSON 字符串時出錯

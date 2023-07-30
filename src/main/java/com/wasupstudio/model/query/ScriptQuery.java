@@ -31,9 +31,11 @@ public class ScriptQuery implements Serializable {
 
     private Integer scriptPeriod;
 
-    private String goal;
+    private List<String> goal;
 
-    private String tips;
+    private List<String> tips;
+
+    private List<String> preamble;
 
     private Date updateTime;
 

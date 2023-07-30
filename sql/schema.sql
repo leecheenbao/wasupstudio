@@ -78,6 +78,7 @@ CREATE TABLE wa_script (
                            script_period INTEGER NOT NULL DEFAULT 0 COMMENT '劇本時長(天)',
                            goal JSON NULL COMMENT '教學目標',
                            tips JSON NULL COMMENT '給老師的提醒',
+                           preamble JSON NULL COMMENT '前導說明',
                            image VARCHAR(255) COMMENT '劇本封面路徑',
                            update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '劇本更新時間',
                            status INTEGER NOT NULL DEFAULT 0 COMMENT '劇本狀態 0:正常 1:關閉',

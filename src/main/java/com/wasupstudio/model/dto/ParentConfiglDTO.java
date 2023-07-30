@@ -1,9 +1,6 @@
 package com.wasupstudio.model.dto;
 
-import com.wasupstudio.model.entity.ScriptEntity;
 import lombok.Data;
-
-import javax.persistence.*;
 
 @Data
 public class ParentConfiglDTO {

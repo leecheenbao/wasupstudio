@@ -49,6 +49,9 @@ public class ScriptEntity implements Serializable {
     @Column(name = "tips")
     private String tips;
 
+    @Column(name = "preamble")
+    private String preamble;
+
     @Column(name = "image")
     private String image;
     @Temporal(TemporalType.TIMESTAMP)

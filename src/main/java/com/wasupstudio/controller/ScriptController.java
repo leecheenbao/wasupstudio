@@ -1,6 +1,10 @@
 package com.wasupstudio.controller;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.wasupstudio.enums.FileTypeEnum;
 import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
@@ -8,6 +12,7 @@ import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
 import com.wasupstudio.model.dto.MediaDTO;
 import com.wasupstudio.model.dto.ScriptDTO;
+import com.wasupstudio.model.dto.ScriptDetailDTO;
 import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.entity.ScriptEntity;
 import com.wasupstudio.model.query.ScriptQuery;
@@ -16,6 +21,7 @@ import com.wasupstudio.util.DateUtils;
 import com.wasupstudio.util.FileUtils;
 import com.wasupstudio.util.JwtUtils;
 import io.swagger.annotations.*;
+import jdk.internal.org.objectweb.asm.TypeReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Api(tags = "劇本相關 Script API")
@@ -58,14 +65,22 @@ public class ScriptController {
     @GetMapping("/{id}")
     public Result getOneData(@PathVariable Integer id) {
         ScriptEntity scriptEntity = scriptService.findOne(id);
-        parentConfigService.findOne(id);
+        Gson gson = new Gson();
+        List<String> tips = gson.fromJson(scriptEntity.getTips(), new TypeToken<List<String>>() {}.getType());
+        List<String> goals = gson.fromJson(scriptEntity.getGoal(), new TypeToken<List<String>>() {}.getType());
+        List<String> preambles = gson.fromJson(scriptEntity.getPreamble(), new TypeToken<List<String>>() {}.getType());
+
+        scriptEntity.getPreamble();
         if (scriptEntity == null){
             return ResultGenerator.genSuccessResult(ResultCode.DATA_NOT_EXIST.getMessage());
         }
         ScriptQuery scriptQuery = new ScriptQuery();
         BeanUtils.copyProperties(scriptEntity,scriptQuery);
+        scriptQuery.setTips(tips);
+        scriptQuery.setGoal(goals);
+        scriptQuery.setPreamble(preambles);
+
         scriptQuery.setMediaDTO(mediaService.findByScriptId(id));
-        parentConfigService.findOne(id);
         return ResultGenerator.genSuccessResult(scriptQuery);
     }
 
@@ -95,15 +110,14 @@ public class ScriptController {
             @ApiResponse(code = 400, message = "Bad Request")
     })
     @PostMapping("/detail")
-    public Result detailSave(@RequestBody ScriptDTO scriptDTO, BindingResult bindingResult){
-        MemberEntity member = JwtUtils.getMember();
-        scriptDTO.setAuthor(member.getEmail());
+    public Result detailSave(@RequestBody ScriptDetailDTO scriptDetailDTO, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             String errorMsg = bindingResult.getFieldErrors().stream()
                     .map(error -> error.getField() + " " + error.getDefaultMessage())
                     .collect(Collectors.joining(", "));
             return ResultGenerator.genFailResult(errorMsg);
         }
+        scriptDetailService.save(scriptDetailDTO);
         scriptDetailService.findAllData();
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
     }
