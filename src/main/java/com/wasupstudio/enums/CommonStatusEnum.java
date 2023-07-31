@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum CommonStatusEnum {
 
-    DISABLE(0,"禁用"),
+    DISABLE(0,"未啟用"),
     ENABLE(1,"啓用"),
     DELETED(2,"刪除");
 
