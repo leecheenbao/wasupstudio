@@ -70,31 +70,31 @@ public class ScriptServiceImpl extends AbstractService<ScriptEntity> implements 
     @Override
     public void update(ScriptDTO scriptDTO) {
         ScriptEntity scriptEntity = this.findOne(scriptDTO.getScriptId());
-        if (scriptEntity != null){
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String goalJson = objectMapper.writeValueAsString(scriptDTO.getGoal());
+            String tipsJson = objectMapper.writeValueAsString(scriptDTO.getTips());
+            String preambleJson = objectMapper.writeValueAsString(scriptDTO.getPreamble());
 
             scriptEntity.setScriptId(scriptDTO.getScriptId());
-            if (!ValueValidator.isNullOrEmpty(scriptDTO.getTitle())){
-                scriptEntity.setTitle(scriptDTO.getTitle());
-            }
-            if (!ValueValidator.isNullOrEmpty(scriptDTO.getDescription())){
-                scriptEntity.setDescription(scriptDTO.getDescription());
-            }
-            if (!ValueValidator.isNullOrZero(scriptDTO.getScriptPeriod())){
-                scriptEntity.setScriptPeriod(scriptDTO.getScriptPeriod());
-            }
-//            if (!ValueValidator.isNullOrEmpty(scriptDTO.getTips())) {
-//                scriptEntity.setTips(scriptDTO.getTips());
-//            }
-//            if (!ValueValidator.isNullOrEmpty(scriptDTO.getGoal())) {
-//                scriptEntity.setGoal(scriptDTO.getGoal());
-//            }
-
+            scriptEntity.setTitle(scriptDTO.getTitle());
             scriptEntity.setAuthor(scriptDTO.getAuthor());
+            scriptEntity.setDescription(scriptDTO.getDescription());
             scriptEntity.setStatus(scriptDTO.getStatus());
+            scriptEntity.setCreateTime(new Date());
+            scriptEntity.setScriptPeriod(scriptDTO.getScriptPeriod());
             scriptEntity.setUpdateTime(new Date());
+            scriptEntity.setGoal(goalJson);
+            scriptEntity.setTips(tipsJson);
+            scriptEntity.setPreamble(preambleJson);
 
-            this.update(scriptEntity);
+        } catch (JsonProcessingException e) {
+            // 转换为 JSON 字符串时出错
+            e.printStackTrace();
         }
+
+        this.update(scriptEntity);
+
     }
 
 
