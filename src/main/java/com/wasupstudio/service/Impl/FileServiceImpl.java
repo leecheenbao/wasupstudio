@@ -35,8 +35,7 @@ public class FileServiceImpl implements FileService {
         blob.toBuilder().setContentType(mediaType).build().update();
 
         //返回公開訪問的地址
-        return "https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName;
-
+        return "https://storage.cloud.google.com/" + BUCKET_NAME + "/" + fileName;
     }
     @Override
     public boolean removeFile(String fileName) throws IOException {
