@@ -20,6 +20,7 @@ import com.wasupstudio.util.DateUtils;
 import com.wasupstudio.util.FileUtils;
 import com.wasupstudio.util.JwtUtils;
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Slf4j
 @Api(tags = "劇本相關 Script API")
 @RestController
 @RequestMapping("/api/script")
@@ -152,6 +153,7 @@ public class ScriptController {
     })
     @PutMapping("/{id}")
     public Result update(@PathVariable Integer id, @RequestBody ScriptDTO scriptDTO, BindingResult bindingResult) {
+        log.info("[[更改劇本資料]] id:{}, dto:{}", id, scriptDTO);
         if (bindingResult.hasErrors()) {
             String errorMsg = bindingResult.getFieldErrors().stream()
                     .map(error -> error.getField() + " " + error.getDefaultMessage())
