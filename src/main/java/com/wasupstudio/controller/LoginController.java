@@ -40,6 +40,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -324,22 +325,25 @@ public class LoginController {
 	 */
 	@ApiOperation(value = "確認驗證信", notes = "確認驗證信，更改啟用狀態")
 	@GetMapping("/verify/{verificationCode}")
-	public Result verifyAccount(@PathVariable String verificationCode) {
+	public RedirectView verifyAccount(@PathVariable String verificationCode) {
 		// 在這裡根據驗證碼進行驗證邏輯的實現
 		// 從數據庫中查詢相應的帳號，檢查驗證碼是否有效
 		MemberDTO memberDTO = memberService.findByVerificationCode(verificationCode);
-		// 如果驗證通過，將帳號的啟用狀態設置為已啟用
-		if (memberDTO.getStatus().equals(ProjectConstant.SystemAdminStatus.NOT_ENABLED)){
-			memberDTO.setStatus(ProjectConstant.SystemAdminStatus.DISABLE);
-			memberService.update(memberDTO);
-			return ResultGenerator.genSuccessResult(ResultCode.VALIDATAE_CODE_SUCCESS.getMessage());
-		} else if (memberDTO.getStatus().equals(ProjectConstant.SystemAdminStatus.NORMAL)){
-			return ResultGenerator.genFailResult(ResultCode.VALIDATAE_CODE_ERROR.getMessage());
-		} else if (memberDTO.getStatus().equals(ProjectConstant.SystemAdminStatus.DISABLE)) {
-			return ResultGenerator.genFailResult(ResultCode.USER_LOCK_ERROR.getMessage());
-		}
+//		// 如果驗證通過，將帳號的啟用狀態設置為已啟用
+//		if (memberDTO.getStatus().equals(ProjectConstant.SystemAdminStatus.NOT_ENABLED)){
+//			memberDTO.setStatus(ProjectConstant.SystemAdminStatus.DISABLE);
+//			memberService.update(memberDTO);
+//			return ResultGenerator.genSuccessResult(ResultCode.VALIDATAE_CODE_SUCCESS.getMessage());
+//		} else if (memberDTO.getStatus().equals(ProjectConstant.SystemAdminStatus.NORMAL)){
+//			return ResultGenerator.genFailResult(ResultCode.VALIDATAE_CODE_ERROR.getMessage());
+//		} else if (memberDTO.getStatus().equals(ProjectConstant.SystemAdminStatus.DISABLE)) {
+//			return ResultGenerator.genFailResult(ResultCode.USER_LOCK_ERROR.getMessage());
+//		}
 		// 返回相應的成功或失敗消息
-		return ResultGenerator.genFailResult(ResultCode.USER_NAME_NOT_EXIST.getMessage());
+
+		// 導頁
+		String redirectUrl = "http://localhost:3000/setProfile";
+		return new RedirectView(redirectUrl); // 重新導向到指定的url
 	}
 
 	/**
