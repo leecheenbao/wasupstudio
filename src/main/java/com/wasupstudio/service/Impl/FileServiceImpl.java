@@ -20,7 +20,7 @@ public class FileServiceImpl implements FileService {
 
     private static final String BUCKET_NAME = "wasupstudio-bucket";
 
-    private static final String UPLOAD_DIRECTORY = ProjectConstant.FilePath.MAINPATH;
+    private static final String BUCKET_MAIN_URL = ProjectConstant.FilePath.MAINPATH;
 
     public String uploadFile(byte[] file, String fileName, String mediaType) throws IOException {
 
@@ -35,7 +35,7 @@ public class FileServiceImpl implements FileService {
         blob.toBuilder().setContentType(mediaType).build().update();
 
         //返回公開訪問的地址
-        return "https://storage.cloud.google.com/" + BUCKET_NAME + "/" + fileName;
+        return BUCKET_MAIN_URL + BUCKET_NAME + "/" + fileName;
     }
     @Override
     public boolean removeFile(String fileName) throws IOException {

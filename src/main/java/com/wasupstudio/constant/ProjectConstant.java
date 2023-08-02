@@ -16,7 +16,7 @@ public final class ProjectConstant {
     }
 
     public final class FilePath {
-        public final static String MAINPATH = "/Users/liqingbao/upload/file/";
+        public final static String MAINPATH = "https://storage.cloud.google.com/";
 
         public final static String IMAGE = "/image/";
 

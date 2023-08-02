@@ -27,7 +27,7 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
         mediaEntity.setScriptId(mediaDTO.getScriptId());
         mediaEntity.setMediaType(mediaDTO.getMediaType());
         mediaEntity.setFilePath(mediaDTO.getFilePath());
-        mediaEntity.setUpdateTime(new Date());
+        mediaEntity.setCreateTime(new Date());
         mediaEntity.setUpdateTime(new Date());
         save(mediaEntity);
     }
