@@ -121,4 +121,3 @@ replay_pid*
 target/*
 application-dev.properties
 client_secret.json
-gcloud-key.json
