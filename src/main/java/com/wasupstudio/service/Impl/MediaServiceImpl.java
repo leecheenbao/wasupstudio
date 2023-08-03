@@ -82,7 +82,7 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
     }
 
     @Override
-    public void delete(Integer scriptId, Integer mediaId) {
-        deleteById(mediaId);
+    public void delete(Integer scriptId, String description) {
+        mediaMapper.deleteByStringIdAndDescription(scriptId, description);
     }
 }

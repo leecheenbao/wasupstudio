@@ -20,6 +20,6 @@ public interface MediaService {
 
     void update(MediaDTO mediaDTO);
 
-    void delete(Integer scriptId, Integer mediaId);
+    void delete(Integer scriptId, String description);
 
 }

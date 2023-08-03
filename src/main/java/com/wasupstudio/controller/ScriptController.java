@@ -216,14 +216,14 @@ public class ScriptController {
     @ApiOperation(value = "刪除檔案", notes = "刪除檔案接口")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "scriptId", value = "劇本ID", required = true, dataType = "Integer"),
-            @ApiImplicitParam(name = "mediaId", value = "影音ID", required = true, dataType = "Integer")
+            @ApiImplicitParam(name = "description", value = "影音ID", required = true, dataType = "String")
     })
-    @DeleteMapping("/media/{scriptId}/{mediaId}")
+    @DeleteMapping("/media/{scriptId}/{description}")
     @ResponseBody
     @Transactional
-    public Result handleFileDelete(@PathVariable Integer scriptId, @PathVariable Integer mediaId) throws IOException {
+    public Result handleFileDelete(@PathVariable Integer scriptId, @PathVariable String description) throws IOException {
 
-        MediaDTO mediaDTO = mediaService.findByScriptIdAndMediaId(scriptId, mediaId);
+        MediaDTO mediaDTO = mediaService.findByScriptIdAndDescription(scriptId, description);
         if (mediaDTO == null) {
             return ResultGenerator.genSuccessResult(ResultCode.MATERIAL_INFO_NOT_EXIST.getMessage());
         }
@@ -232,7 +232,7 @@ public class ScriptController {
         String lastByte = str[str.length - 1];
 
         fileService.removeFile(lastByte);
-        mediaService.delete(scriptId, mediaId);
+        mediaService.delete(scriptId, description);
         return ResultGenerator.genSuccessResult(ResultCode.DELETE_SUCCESS.getMessage());
     }
 }
