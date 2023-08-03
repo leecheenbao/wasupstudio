@@ -340,9 +340,9 @@ public class LoginController {
 //			return ResultGenerator.genFailResult(ResultCode.USER_LOCK_ERROR.getMessage());
 //		}
 		// 返回相應的成功或失敗消息
-
+		Integer memberId = memberDTO.getId();
 		// 導頁
-		String redirectUrl = "http://localhost:3000/setProfile";
+		String redirectUrl = "http://localhost:3000/setProfile-" + memberId;
 		return new RedirectView(redirectUrl); // 重新導向到指定的url
 	}
 
