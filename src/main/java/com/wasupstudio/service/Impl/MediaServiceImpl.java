@@ -29,6 +29,7 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
         mediaEntity.setFilePath(mediaDTO.getFilePath());
         mediaEntity.setCreateTime(new Date());
         mediaEntity.setUpdateTime(new Date());
+        mediaEntity.setDescription(mediaDTO.getDescription());
         save(mediaEntity);
     }
 
@@ -52,6 +53,14 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
     }
 
     @Override
+    public MediaDTO findByScriptIdAndDescription(Integer scriptId, String description) {
+        MediaEntity mediaEntity = mediaMapper.findByScriptIdAndDescription(scriptId, description);
+        if (mediaEntity !=null){
+            return mediaConverter.map(mediaEntity);
+        }
+        return null;    }
+
+    @Override
     public BasePageInfo findAllData() {
         List<MediaEntity> list = this.findAll();
         BasePageInfo basePageInfo = new BasePageInfo<>();
@@ -62,7 +71,14 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
 
     @Override
     public void update(MediaDTO mediaDTO) {
-
+        MediaEntity mediaEntity = new MediaEntity();
+        mediaEntity.setScriptId(mediaDTO.getScriptId());
+        mediaEntity.setMediaType(mediaDTO.getMediaType());
+        mediaEntity.setFilePath(mediaDTO.getFilePath());
+        mediaEntity.setCreateTime(new Date());
+        mediaEntity.setUpdateTime(new Date());
+        mediaEntity.setDescription(mediaDTO.getDescription());
+        update(mediaEntity);
     }
 
     @Override

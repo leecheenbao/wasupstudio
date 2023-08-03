@@ -22,13 +22,16 @@ import java.util.Date;
 @Table(name = "wa_media")
 public class MediaEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "media_id")
-    private int mediaId;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "media_id")
+//    private int mediaId;
 
     @Column(name = "script_id")
-    private int scriptId;
+    private Integer scriptId;
+    @Id
+    @Column(name = "description")
+    private String description;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "media_type")
@@ -42,6 +45,7 @@ public class MediaEntity implements Serializable {
 
     @Column(name = "update_time")
     private Date updateTime;
+
 
 
 }

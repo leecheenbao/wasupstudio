@@ -14,6 +14,7 @@ public interface MediaService {
 
     List<MediaDTO> findByScriptId(Integer scriptId);
     MediaDTO findByScriptIdAndMediaId(Integer scriptId, Integer mediaId);
+    MediaDTO findByScriptIdAndDescription(Integer scriptId, String description);
 
     BasePageInfo findAllData();
 

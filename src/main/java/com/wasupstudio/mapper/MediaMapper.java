@@ -15,4 +15,7 @@ public interface MediaMapper extends CommonMapper<MediaEntity> {
     @Select("SELECT * FROM wa_media WHERE script_id=#{scriptId} AND media_id=#{mediaId}")
     MediaEntity findByScriptIdAndMediaId(Integer scriptId, Integer mediaId);
 
+    @Select("SELECT * FROM wa_media WHERE script_id=#{scriptId} AND description=#{description}")
+    MediaEntity findByScriptIdAndDescription(Integer scriptId, String description);
+
 }

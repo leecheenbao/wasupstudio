@@ -163,13 +163,13 @@ CREATE TABLE wa_script_question_option (
 
 -- 建立媒體資料表
 CREATE TABLE wa_media (
-                          media_id INT NOT NULL AUTO_INCREMENT COMMENT '媒體唯一 ID',
                           script_id INT NOT NULL COMMENT '所屬劇本的 ID',
+                          description VARCHAR(50) NOT NULL COMMENT '圖片所屬位置說明 cover:封面, day-1:劇本第一日',
                           media_type ENUM('image', 'video','docs') NOT NULL COMMENT '媒體類型，可以是圖片或影片文件',
                           file_path VARCHAR(255) NOT NULL COMMENT '媒體檔案路徑',
                           create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '媒體創建時間',
                           update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '媒體更新時間',
-                          PRIMARY KEY (media_id)
+                          PRIMARY KEY (script_id, description)
 ) COMMENT='媒體資料表';
 
 

@@ -169,12 +169,16 @@ public class ScriptController {
 
     @ApiOperation(value = "上傳文件", notes = "上傳文件接口")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "description", value = "圖片位置說明", required = true, dataType = "String"),
             @ApiImplicitParam(name = "file", value = "文件", required = true, dataType = "MultipartFile"),
+
     })
     @PostMapping("/upload/{scriptId}")
     @ResponseBody
     @Transactional
-    public Result handleFileUpload(@PathVariable Integer scriptId, @RequestParam("file") MultipartFile file) throws IOException {
+    public Result handleFileUpload(@PathVariable Integer scriptId,
+                                   @RequestParam("description") String description,
+                                   @RequestParam("file") MultipartFile file) throws IOException {
         if (FileUtils.validateFileExtension(file.getOriginalFilename())){
             return ResultGenerator.genSuccessResult((ResultCode.UPLOAD_FORMAT_ERROR.getMessage()));
         }
@@ -188,11 +192,24 @@ public class ScriptController {
         String mediaType = FileUtils.checkFileType(fileName);
 
         String filePath = fileService.uploadFile(file.getBytes(), fileName, mediaType);
-        MediaDTO mediaDTO = new MediaDTO();
-        mediaDTO.setScriptId(scriptId);
-        mediaDTO.setFilePath(filePath);
-        mediaDTO.setMediaType(mediaType);
-        mediaService.save(mediaDTO);
+        MediaDTO mediaDTO = mediaService.findByScriptIdAndDescription(scriptId, description);
+        if (mediaDTO!=null) {
+            // 取得最後一個字節獲取storage的object_name
+            String[] str = mediaDTO.getFilePath().split(File.separator);
+            String lastByte = str[str.length - 1];
+            fileService.removeFile(lastByte);
+            mediaDTO.setFilePath(filePath);
+            mediaDTO.setMediaType(mediaType);
+            mediaDTO.setDescription(description);
+            mediaService.update(mediaDTO);
+        } else {
+            mediaDTO = new MediaDTO();
+            mediaDTO.setScriptId(scriptId);
+            mediaDTO.setFilePath(filePath);
+            mediaDTO.setMediaType(mediaType);
+            mediaDTO.setDescription(description);
+            mediaService.save(mediaDTO);
+        }
         return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_SUCCESS.getMessage());
     }
 

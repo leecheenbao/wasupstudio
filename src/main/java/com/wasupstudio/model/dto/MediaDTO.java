@@ -6,10 +6,11 @@ import java.util.Date;
 
 @Data
 public class MediaDTO {
-    private int mediaId;
-    private int scriptId;
+//    private int mediaId;
+    private Integer scriptId;
     private String mediaType;
     private String filePath;
     private Date createTime;
     private Date updateTime;
+    private String description;
 }
