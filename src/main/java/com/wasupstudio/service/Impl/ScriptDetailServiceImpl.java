@@ -2,22 +2,34 @@ package com.wasupstudio.service.Impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.wasupstudio.converter.ParentConfigConverter;
 import com.wasupstudio.mapper.ScriptDetailMapper;
 import com.wasupstudio.model.BasePageInfo;
+import com.wasupstudio.model.dto.ParentConfiglDTO;
 import com.wasupstudio.model.dto.ScriptDetailDTO;
+import com.wasupstudio.model.entity.ParentConfiglEntity;
 import com.wasupstudio.model.entity.ScriptDetailEntity;
-import com.wasupstudio.model.entity.ScriptEntity;
 import com.wasupstudio.service.AbstractService;
+import com.wasupstudio.service.ParentConfigService;
 import com.wasupstudio.service.ScriptDetailService;
-import com.wasupstudio.util.ValueValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 @Service
 public class ScriptDetailServiceImpl extends AbstractService<ScriptDetailEntity> implements ScriptDetailService {
     @Autowired
     ScriptDetailMapper mapper;
+
+    @Autowired
+    ParentConfigService parentConfigService;
+
+    @Autowired
+    ParentConfigConverter parentConfigConverter;
+
     @Override
     public ScriptDetailEntity save(ScriptDetailDTO dto) throws JsonProcessingException {
         ScriptDetailEntity scriptDetailEntity = new ScriptDetailEntity();
@@ -43,6 +55,31 @@ public class ScriptDetailServiceImpl extends AbstractService<ScriptDetailEntity>
     @Override
     public ScriptDetailEntity findByPeriod(Integer scriptId, Integer period) {
         return mapper.findByVerificationCode(scriptId, period);
+    }
+
+    @Override
+    public List<ScriptDetailDTO> findByScriptId(Integer scriptId) {
+        List<ScriptDetailEntity> list = mapper.findByScriptId(scriptId);
+        List<ScriptDetailDTO> dtos = new ArrayList<>();
+        for (ScriptDetailEntity entity : list){
+            ScriptDetailDTO dto = new ScriptDetailDTO();
+            dto.setScriptId(entity.getScriptId());
+            dto.setScriptDetilId(entity.getScriptDetailId());
+            dto.setPeriod(entity.getPeriod());
+            dto.setDescription(entity.getDescription());
+            dto.setTodayScript(entity.getTodayScript());
+            dto.setAdvisoryTime(entity.getAdvisoryTime());
+            dto.setTeachingUrl(entity.getTeachingUrl());
+
+            Gson gson = new Gson();
+            List<String> additionalInfo = gson.fromJson(entity.getAdditionalInfo(), new TypeToken<List<String>>() {}.getType());
+            dto.setAdditionalInfo(additionalInfo);
+            dtos.add(dto);
+
+            List<ParentConfiglEntity> parentConfigs = parentConfigService.findByScriptDetailId(entity.getScriptDetailId());
+            dto.setParentConfigs(parentConfigConverter.ItemsToDTOs(parentConfigs));
+        }
+        return dtos;
     }
 
 

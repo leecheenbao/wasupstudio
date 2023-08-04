@@ -62,17 +62,19 @@ public class ScriptController {
     }
 
     @ApiOperation(value = "取得單一劇本資料")
-    @ApiImplicitParam(name = "id", value = "Script ID", required = true, dataType = "int", paramType = "path")
-    @GetMapping("/{id}")
-    public Result getOneData(@PathVariable Integer id) {
-        ScriptEntity scriptEntity = scriptService.findOne(id);
+    @ApiImplicitParam(name = "scriptId", value = "scriptId", required = true, dataType = "int", paramType = "path")
+    @GetMapping("/{scriptId}")
+    public Result getOneData(@PathVariable Integer scriptId) {
+        ScriptEntity scriptEntity = scriptService.findOne(scriptId);
         scriptEntity.getPreamble();
         if (scriptEntity == null){
             return ResultGenerator.genSuccessResult(ResultCode.DATA_NOT_EXIST.getMessage());
         }
 
+        List<ScriptDetailDTO> details = scriptDetailService.findByScriptId(scriptId);
         ScriptQuery scriptQuery = tranData(scriptEntity);
-        scriptQuery.setMediaDTO(mediaService.findByScriptId(id));
+        scriptQuery.setMediaDTO(mediaService.findByScriptId(scriptId));
+        scriptQuery.setScriptDetail(details);
         return ResultGenerator.genSuccessResult(scriptQuery);
     }
 
