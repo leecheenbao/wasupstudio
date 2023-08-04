@@ -13,6 +13,6 @@ public interface ScriptDetailMapper extends CommonMapper<ScriptDetailEntity> {
 
     @Select("SELECT * FROM wa_script_detail WHERE script_id = #{scriptId} AND period = #{period}")
     ScriptDetailEntity findByVerificationCode(@Param("scriptId") Integer scriptId, @Param("period") Integer period);
-    @Select("SELECT * FROM wa_script_detail WHERE script_id = #{scriptId}")
+    @Select("SELECT * FROM wa_script_detail WHERE script_id = #{scriptId} ORDER BY period")
     List<ScriptDetailEntity> findByScriptId(@Param("scriptId") Integer scriptId);
 }

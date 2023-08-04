@@ -9,7 +9,6 @@ import com.wasupstudio.model.Result;
 public class ResultGenerator {
     private static final String DEFAULT_SUCCESS_MESSAGE = "SUCCESS";
     private static final String DEFAULT_FAILED_MESSAGE = "FAILED";
-    private static final String PART_SUCCESS_MESSAGE = "部分游戏暂时无法转账，请稍后再试";
 
     public static Result genSuccessResult() {
         return new Result()
@@ -35,13 +34,6 @@ public class ResultGenerator {
         return new Result()
                 .setCode(code)
                 .setMessage(message)
-                .setData(data);
-    }
-
-    public static Result genPartSuccessResult(Object data) {
-        return new Result()
-                .setCode(ResultCode.SUCCESS)
-                .setMessage(PART_SUCCESS_MESSAGE)
                 .setData(data);
     }
 

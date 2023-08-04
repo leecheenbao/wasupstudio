@@ -15,11 +15,6 @@ public class ServiceException extends Exception {
         this.code = resultCode.getCode();
     }
 
-
-    public ServiceException(String message, Throwable cause) {
-
-    }
-
     public ServiceException(int code, String message, String extraMessage, Throwable cause) {
         super(message, cause);
         this.code = code;
@@ -38,10 +33,6 @@ public class ServiceException extends Exception {
 
     public int getCode() {
         return code;
-    }
-
-    public String getExtraMessage() {
-        return extraMessage;
     }
 
 }
