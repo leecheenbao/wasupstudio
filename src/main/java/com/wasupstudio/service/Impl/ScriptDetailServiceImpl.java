@@ -19,7 +19,7 @@ public class ScriptDetailServiceImpl extends AbstractService<ScriptDetailEntity>
     @Autowired
     ScriptDetailMapper mapper;
     @Override
-    public void save(ScriptDetailDTO dto) throws JsonProcessingException {
+    public ScriptDetailEntity save(ScriptDetailDTO dto) throws JsonProcessingException {
         ScriptDetailEntity scriptDetailEntity = new ScriptDetailEntity();
         ObjectMapper objectMapper = new ObjectMapper();
         String additionInfoJson = objectMapper.writeValueAsString(dto.getAdditionalInfo());
@@ -31,6 +31,8 @@ public class ScriptDetailServiceImpl extends AbstractService<ScriptDetailEntity>
         scriptDetailEntity.setTeachingUrl(dto.getTeachingUrl());
         scriptDetailEntity.setPeriod(dto.getPeriod());
         save(scriptDetailEntity);
+
+        return findOne(scriptDetailEntity.getScriptDetailId());
     }
 
     @Override

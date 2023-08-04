@@ -1,8 +1,10 @@
 package com.wasupstudio.service.Impl;
 
+import com.wasupstudio.converter.ParentConfigConverter;
 import com.wasupstudio.mapper.ParentConfigMapper;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.dto.ParentConfiglDTO;
+import com.wasupstudio.model.entity.LicenseEntity;
 import com.wasupstudio.model.entity.ParentConfiglEntity;
 import com.wasupstudio.service.AbstractService;
 import com.wasupstudio.service.ParentConfigService;
@@ -13,23 +15,35 @@ import java.util.List;
 
 @Service
 public class ParentConfigServiceImpl extends AbstractService<ParentConfiglEntity> implements ParentConfigService {
-
+    @Autowired
+    ParentConfigConverter parentConfigConverter;
     @Autowired
     ParentConfigMapper parentConfigMapper;
     @Override
-    public void save(ParentConfiglEntity entity) {
-        this.save(entity);
+    public void save(ParentConfiglDTO dto) {
+        this.save(parentConfigConverter.DTOtoItem(dto));
     }
 
     @Override
-    public void batchSave(List<ParentConfiglDTO> list) {
+    public void batchSave(List<ParentConfiglDTO> list, Integer scriptDetailId) {
+        List<ParentConfiglEntity> parentConfiglEntities = parentConfigConverter.DTOsToItems(list);
+        parentConfigMapper.batchInsert(parentConfiglEntities, scriptDetailId);
+    }
 
-//        parentConfigMapper.batchInsert(list);
+    @Override
+    public void batchUpdate(List<ParentConfiglDTO> list, Integer scriptDetailId) {
+        List<ParentConfiglEntity> parentConfiglEntities = parentConfigConverter.DTOsToItems(list);
+        parentConfigMapper.batchInsert(parentConfiglEntities, scriptDetailId);
     }
 
     @Override
     public ParentConfiglEntity findOne(Integer id) {
         return this.findById(id);
+    }
+
+    @Override
+    public List<ParentConfiglEntity> findByScriptDetailId(Integer scriptDetailId) {
+        return parentConfigMapper.findByScriptDetailId(scriptDetailId);
     }
 
 
@@ -44,7 +58,8 @@ public class ParentConfigServiceImpl extends AbstractService<ParentConfiglEntity
     }
 
     @Override
-    public void update(ParentConfiglEntity entity) {
-        this.save(entity);
+    public void update(ParentConfiglDTO dto) {
+        ParentConfiglEntity entity = parentConfigConverter.DTOtoItem(dto);
+        update(entity);
     }
 }

@@ -7,7 +7,7 @@ import com.wasupstudio.model.entity.ScriptDetailEntity;
 
 public interface ScriptDetailService {
 
-    void save (ScriptDetailDTO entity) throws JsonProcessingException;
+    ScriptDetailEntity save (ScriptDetailDTO entity) throws JsonProcessingException;
 
     ScriptDetailEntity findOne(Integer id);
 

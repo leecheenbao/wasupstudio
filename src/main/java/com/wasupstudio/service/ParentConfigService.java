@@ -8,14 +8,17 @@ import java.util.List;
 
 public interface ParentConfigService {
 
-    void save (ParentConfiglEntity entity);
+    void save (ParentConfiglDTO dto);
 
-    void batchSave(List<ParentConfiglDTO> list);
+    void batchSave(List<ParentConfiglDTO> list, Integer scriptDetailId);
+
+    void batchUpdate(List<ParentConfiglDTO> list, Integer scriptDetailId);
 
     ParentConfiglEntity findOne(Integer id);
 
+    List<ParentConfiglEntity> findByScriptDetailId(Integer scriptDetailId);
     BasePageInfo findAllData();
 
-    void update(ParentConfiglEntity entity);
+    void update(ParentConfiglDTO dto);
 
 }

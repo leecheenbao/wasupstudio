@@ -9,9 +9,11 @@ import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
 import com.wasupstudio.model.dto.MediaDTO;
+import com.wasupstudio.model.dto.ParentConfiglDTO;
 import com.wasupstudio.model.dto.ScriptDTO;
 import com.wasupstudio.model.dto.ScriptDetailDTO;
 import com.wasupstudio.model.entity.MemberEntity;
+import com.wasupstudio.model.entity.ParentConfiglEntity;
 import com.wasupstudio.model.entity.ScriptDetailEntity;
 import com.wasupstudio.model.entity.ScriptEntity;
 import com.wasupstudio.model.query.ScriptQuery;
@@ -133,15 +135,38 @@ public class ScriptController {
         }
 
         if (scriptDetailEntity == null){
-            scriptDetailService.save(scriptDetailDTO);
+            ScriptDetailEntity entity = scriptDetailService.save(scriptDetailDTO);
+            parentConfigService.batchSave(scriptDetailDTO.getParentConfigs(), entity.getScriptDetailId());
         } else {
+            List<ParentConfiglEntity> parentConfiglEntityList = parentConfigService.findByScriptDetailId(scriptDetailEntity.getScriptDetailId());
+            List<ParentConfiglDTO> parentConfiglDTOList = scriptDetailDTO.getParentConfigs();
 
-            scriptDetailDTO.setScriptDetilId(scriptDetailEntity.getScriptDetailId());
-            scriptDetailService.update(scriptDetailDTO);
+            // 編輯家長設定
+            saveParentConfig(parentConfiglEntityList, parentConfiglDTOList, scriptDetailEntity.getScriptDetailId());
         }
+
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
     }
 
+    public void saveParentConfig(List<ParentConfiglEntity> parentConfiglEntityList, List<ParentConfiglDTO> parentConfiglDTOList, Integer scriptDetailId){
+        for (int i = 0; i < parentConfiglDTOList.size(); i++) {
+            ParentConfiglDTO dto = parentConfiglDTOList.get(i);
+            dto.setScriptDetailId(scriptDetailId);
+            boolean found = false;
+
+            for (ParentConfiglEntity entity : parentConfiglEntityList) {
+                if (entity.getId().equals(dto.getId())) { // 假設有一個 getId() 方法用於取得唯一識別標誌
+                    parentConfigService.update(dto);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                parentConfigService.save(dto);
+            }
+        }
+    }
     @ApiOperation(value = "更新一筆劇本資料")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "Script ID", required = true, dataType = "int", paramType = "path"),

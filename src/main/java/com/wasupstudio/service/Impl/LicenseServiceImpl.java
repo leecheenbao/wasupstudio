@@ -75,7 +75,6 @@ public class LicenseServiceImpl extends AbstractService<LicenseEntity> implement
     public void update(LicenseDTO licenseDTO) {
         LicenseEntity license = this.findOne(licenseDTO.getId());
         if (license != null){
-            LicenseEntity licenseEntity = new LicenseEntity();
             license.setActivated(licenseDTO.getActivated());
             if (!license.getCustomerName().equals(licenseDTO.getCustomerName())){
                 license.setCustomerName(licenseDTO.getCustomerName());

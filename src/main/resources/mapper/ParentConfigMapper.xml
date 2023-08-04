@@ -5,14 +5,18 @@
 
     <resultMap id="ResultMap" type="com.wasupstudio.model.entity.ParentConfiglEntity">
         <id property="id" column="id" jdbcType="INTEGER"/>
-<!--        <result property="scriptDetailId" column="script_detail_id" jdbcType="INTEGER"/>-->
-        <result property="parDescription" column="par_decription" jdbcType="VARCHAR"/>
+        <result property="scriptDetailId" column="script_detail_id" jdbcType="INTEGER"/>
+        <result property="parDescription" column="par_description" jdbcType="VARCHAR"/>
         <result property="parOrderly" column="par_orderly" jdbcType="INTEGER"/>
         <result property="parRelation" column="par_relation" jdbcType="INTEGER"/>
     </resultMap>
 
     <insert id="batchInsert">
-
+        INSERT INTO wa_script_parent_config(script_detail_id, par_description, par_orderly, par_relation)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{scriptDetailId},#{item.parDescription},#{item.parOrderly},#{item.parRelation})
+        </foreach>
     </insert>
 
 
