@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wasupstudio.mapper.StudentConfigMapper">
+
+    <resultMap id="ResultMap" type="com.wasupstudio.model.entity.StudentConfiglEntity">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="scriptDetailId" column="script_detail_id" jdbcType="INTEGER"/>
+        <result property="stuDescription" column="stu_description" jdbcType="VARCHAR"/>
+        <result property="stuOrderly" column="stu_orderly" jdbcType="INTEGER"/>
+        <result property="stuRelation" column="stu_relation" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <insert id="batchInsert">
+        INSERT INTO wa_script_student_config(script_detail_id, stu_description, stu_orderly, stu_relation)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{scriptDetailId},#{item.stuDescription},#{item.stuOrderly},#{item.stuRelation})
+        </foreach>
+    </insert>
+
+
+</mapper>

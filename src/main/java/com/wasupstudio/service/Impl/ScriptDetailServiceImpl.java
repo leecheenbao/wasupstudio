@@ -5,15 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.wasupstudio.converter.ParentConfigConverter;
+import com.wasupstudio.converter.StudentConfigConverter;
 import com.wasupstudio.mapper.ScriptDetailMapper;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.dto.ParentConfiglDTO;
 import com.wasupstudio.model.dto.ScriptDetailDTO;
 import com.wasupstudio.model.entity.ParentConfiglEntity;
 import com.wasupstudio.model.entity.ScriptDetailEntity;
+import com.wasupstudio.model.entity.StudentConfiglEntity;
 import com.wasupstudio.service.AbstractService;
 import com.wasupstudio.service.ParentConfigService;
 import com.wasupstudio.service.ScriptDetailService;
+import com.wasupstudio.service.StudentConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +29,13 @@ public class ScriptDetailServiceImpl extends AbstractService<ScriptDetailEntity>
 
     @Autowired
     ParentConfigService parentConfigService;
+    @Autowired
+    StudentConfigService studentConfigService;
 
     @Autowired
     ParentConfigConverter parentConfigConverter;
+    @Autowired
+    StudentConfigConverter studentConfigConverter;
 
     @Override
     public ScriptDetailEntity save(ScriptDetailDTO dto) throws JsonProcessingException {
@@ -78,6 +85,9 @@ public class ScriptDetailServiceImpl extends AbstractService<ScriptDetailEntity>
 
             List<ParentConfiglEntity> parentConfigs = parentConfigService.findByScriptDetailId(entity.getScriptDetailId());
             dto.setParentConfigs(parentConfigConverter.ItemsToDTOs(parentConfigs));
+
+            List<StudentConfiglEntity> studentConfigs = studentConfigService.findByScriptDetailId(entity.getScriptDetailId());
+            dto.setStudentConfigs(studentConfigConverter.ItemsToDTOs(studentConfigs));
         }
         return dtos;
     }

@@ -8,14 +8,8 @@ import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
-import com.wasupstudio.model.dto.MediaDTO;
-import com.wasupstudio.model.dto.ParentConfiglDTO;
-import com.wasupstudio.model.dto.ScriptDTO;
-import com.wasupstudio.model.dto.ScriptDetailDTO;
-import com.wasupstudio.model.entity.MemberEntity;
-import com.wasupstudio.model.entity.ParentConfiglEntity;
-import com.wasupstudio.model.entity.ScriptDetailEntity;
-import com.wasupstudio.model.entity.ScriptEntity;
+import com.wasupstudio.model.dto.*;
+import com.wasupstudio.model.entity.*;
 import com.wasupstudio.model.query.ScriptQuery;
 import com.wasupstudio.service.*;
 import com.wasupstudio.util.DateUtils;
@@ -139,12 +133,15 @@ public class ScriptController {
         if (scriptDetailEntity == null){
             ScriptDetailEntity entity = scriptDetailService.save(scriptDetailDTO);
             parentConfigService.batchSave(scriptDetailDTO.getParentConfigs(), entity.getScriptDetailId());
+            studentConfigService.batchSave(scriptDetailDTO.getStudentConfigs(), entity.getScriptDetailId());
         } else {
             List<ParentConfiglEntity> parentConfiglEntityList = parentConfigService.findByScriptDetailId(scriptDetailEntity.getScriptDetailId());
+            List<StudentConfiglEntity> studentConfiglEntityList = studentConfigService.findByScriptDetailId(scriptDetailEntity.getScriptDetailId());
             List<ParentConfiglDTO> parentConfiglDTOList = scriptDetailDTO.getParentConfigs();
-
+            List<StudentConfigDTO> studentConfigDTOList = scriptDetailDTO.getStudentConfigs();
             // 編輯家長設定
             saveParentConfig(parentConfiglEntityList, parentConfiglDTOList, scriptDetailEntity.getScriptDetailId());
+            saveStudentConfig(studentConfiglEntityList, studentConfigDTOList, scriptDetailEntity.getScriptDetailId());
         }
 
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
@@ -166,6 +163,24 @@ public class ScriptController {
 
             if (!found) {
                 parentConfigService.save(dto);
+            }
+        }
+    }public void saveStudentConfig(List<StudentConfiglEntity> studentConfiglEntityList, List<StudentConfigDTO> studentConfigDTOList, Integer scriptDetailId){
+        for (int i = 0; i < studentConfigDTOList.size(); i++) {
+            StudentConfigDTO dto = studentConfigDTOList.get(i);
+            dto.setScriptDetailId(scriptDetailId);
+            boolean found = false;
+
+            for (StudentConfiglEntity entity : studentConfiglEntityList) {
+                if (entity.getId().equals(dto.getId())) { // 假設有一個 getId() 方法用於取得唯一識別標誌
+                    studentConfigService.update(dto);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                studentConfigService.save(dto);
             }
         }
     }

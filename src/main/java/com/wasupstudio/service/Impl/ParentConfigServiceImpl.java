@@ -4,7 +4,6 @@ import com.wasupstudio.converter.ParentConfigConverter;
 import com.wasupstudio.mapper.ParentConfigMapper;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.dto.ParentConfiglDTO;
-import com.wasupstudio.model.entity.LicenseEntity;
 import com.wasupstudio.model.entity.ParentConfiglEntity;
 import com.wasupstudio.service.AbstractService;
 import com.wasupstudio.service.ParentConfigService;

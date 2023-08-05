@@ -8,14 +8,16 @@ import java.util.List;
 
 public interface StudentConfigService {
 
-    void save (StudentConfiglEntity entity);
+    void save (StudentConfigDTO dto);
 
-    void batchSave(List<StudentConfigDTO> list);
+    void batchSave(List<StudentConfigDTO> list, Integer scriptDetailId);
 
     StudentConfiglEntity findOne(Integer id);
 
+    List<StudentConfiglEntity> findByScriptDetailId(Integer scriptDetailId);
+
     BasePageInfo findAllData();
 
-    void update(StudentConfiglEntity entity);
+    void update(StudentConfigDTO dto);
 
 }
