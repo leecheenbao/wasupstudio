@@ -47,7 +47,7 @@ public class ScriptDetailServiceImpl extends AbstractService<ScriptDetailEntity>
         scriptDetailEntity.setDescription(dto.getDescription());
         scriptDetailEntity.setTodayScript(dto.getTodayScript());
         scriptDetailEntity.setAdditionalInfo(additionInfoJson);
-        scriptDetailEntity.setTeachingUrl(dto.getTeachingUrl());
+//        scriptDetailEntity.setTeachingUrl(dto.getTeachingUrl());
         scriptDetailEntity.setPeriod(dto.getPeriod());
         scriptDetailEntity.setParContent(dto.getParContent());
         scriptDetailEntity.setStuContent(dto.getStuContent());
