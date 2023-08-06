@@ -46,6 +46,10 @@ public class MediaEntity implements Serializable {
     @Column(name = "update_time")
     private Date updateTime;
 
+    @Column(name = "file_extension")
+    private String fileExtension;
+
+
 
 
 }

@@ -30,6 +30,7 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
         mediaEntity.setCreateTime(new Date());
         mediaEntity.setUpdateTime(new Date());
         mediaEntity.setDescription(mediaDTO.getDescription());
+        mediaEntity.setFileExtension(mediaDTO.getFileExtension());
         save(mediaEntity);
     }
 
@@ -78,6 +79,7 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
         mediaEntity.setCreateTime(new Date());
         mediaEntity.setUpdateTime(new Date());
         mediaEntity.setDescription(mediaDTO.getDescription());
+        mediaEntity.setFileExtension(mediaDTO.getFileExtension());
         update(mediaEntity);
     }
 

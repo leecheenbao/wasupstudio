@@ -27,7 +27,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.wasupstudio.util.FileUtils.getFileExtension;
+
 @Slf4j
 @Api(tags = "劇本相關 Script API")
 @RestController
@@ -228,6 +232,7 @@ public class ScriptController {
     public Result handleFileUpload(@PathVariable Integer scriptId,
                                    @RequestParam("description") String description,
                                    @RequestParam("file") MultipartFile file) throws IOException {
+
         if (FileUtils.validateFileExtension(file.getOriginalFilename())){
             return ResultGenerator.genSuccessResult((ResultCode.UPLOAD_FORMAT_ERROR.getMessage()));
         }
@@ -237,11 +242,12 @@ public class ScriptController {
             return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_MAX_ERROR.getFormattedMessage(type,size));
         }
 
-        String fileName = DateUtils.currentTimeMillis() + "." +FileUtils.getFileExtension(file.getOriginalFilename());
+        String fileName = DateUtils.currentTimeMillis() + "." + getFileExtension(file.getOriginalFilename());
         String mediaType = FileUtils.checkFileType(fileName);
 
         String filePath = fileService.uploadFile(file.getBytes(), fileName, mediaType);
         MediaDTO mediaDTO = mediaService.findByScriptIdAndDescription(scriptId, description);
+        String extension = getFileExtension(Objects.requireNonNull(file.getOriginalFilename()));
         if (mediaDTO!=null) {
             // 取得最後一個字節獲取storage的object_name
             String[] str = mediaDTO.getFilePath().split(File.separator);
@@ -250,6 +256,7 @@ public class ScriptController {
             mediaDTO.setFilePath(filePath);
             mediaDTO.setMediaType(mediaType);
             mediaDTO.setDescription(description);
+            mediaDTO.setFileExtension(extension);
             mediaService.update(mediaDTO);
         } else {
             mediaDTO = new MediaDTO();
@@ -257,6 +264,7 @@ public class ScriptController {
             mediaDTO.setFilePath(filePath);
             mediaDTO.setMediaType(mediaType);
             mediaDTO.setDescription(description);
+            mediaDTO.setFileExtension(extension);
             mediaService.save(mediaDTO);
         }
         return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_SUCCESS.getMessage());
