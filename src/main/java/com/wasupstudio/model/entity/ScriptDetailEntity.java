@@ -34,5 +34,8 @@ public class ScriptDetailEntity {
 
     @Column(name = "teaching_url")
     private String teachingUrl;
-
+    @Column(name = "stu_content")
+    private String stuContent;
+    @Column(name = "par_content")
+    private String parContent;
 }

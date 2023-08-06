@@ -24,6 +24,9 @@ public class ScriptDetailDTO {
 
     private String teachingUrl;
 
+    private String stuContent;
+    private String parContent;
+
     private List<ParentConfiglDTO> parentConfigs;
 
     private List<StudentConfigDTO> studentConfigs;

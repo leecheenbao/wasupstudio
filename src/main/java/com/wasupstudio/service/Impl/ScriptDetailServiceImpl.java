@@ -49,6 +49,8 @@ public class ScriptDetailServiceImpl extends AbstractService<ScriptDetailEntity>
         scriptDetailEntity.setAdditionalInfo(additionInfoJson);
         scriptDetailEntity.setTeachingUrl(dto.getTeachingUrl());
         scriptDetailEntity.setPeriod(dto.getPeriod());
+        scriptDetailEntity.setParContent(dto.getParContent());
+        scriptDetailEntity.setStuContent(dto.getStuContent());
         save(scriptDetailEntity);
 
         return findOne(scriptDetailEntity.getScriptDetailId());
@@ -77,6 +79,8 @@ public class ScriptDetailServiceImpl extends AbstractService<ScriptDetailEntity>
             dto.setTodayScript(entity.getTodayScript());
             dto.setAdvisoryTime(entity.getAdvisoryTime());
             dto.setTeachingUrl(entity.getTeachingUrl());
+            dto.setParContent(entity.getParContent());
+            dto.setStuContent(entity.getStuContent());
 
             Gson gson = new Gson();
             List<String> additionalInfo = gson.fromJson(entity.getAdditionalInfo(), new TypeToken<List<String>>() {}.getType());
@@ -107,7 +111,8 @@ public class ScriptDetailServiceImpl extends AbstractService<ScriptDetailEntity>
     public void update(ScriptDetailDTO dto) {
 
         try{
-            ScriptDetailEntity scriptDetailEntity = this.findOne(dto.getScriptDetilId());
+            ScriptDetailEntity scriptDetailEntity = this.findByPeriod(dto.getScriptId(), dto.getPeriod());
+
             if (scriptDetailEntity != null) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 String additionInfoJson = objectMapper.writeValueAsString(dto.getAdditionalInfo());
@@ -118,6 +123,8 @@ public class ScriptDetailServiceImpl extends AbstractService<ScriptDetailEntity>
                 scriptDetailEntity.setAdditionalInfo(additionInfoJson);
                 scriptDetailEntity.setTeachingUrl(dto.getTeachingUrl());
                 scriptDetailEntity.setPeriod(dto.getPeriod());
+                scriptDetailEntity.setStuContent(dto.getStuContent());
+                scriptDetailEntity.setParContent(dto.getParContent());
             }
             update(scriptDetailEntity);
         }catch (Exception e){

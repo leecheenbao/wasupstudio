@@ -46,8 +46,6 @@ public class ScriptQuery implements Serializable {
 
     private List<MediaDTO> mediaDTO;
 
-    private List<ParentConfiglDTO> parentConfig;
-
     private List<ScriptDetailDTO> scriptDetail;
 
 }

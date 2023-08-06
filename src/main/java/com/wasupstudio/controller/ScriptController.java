@@ -135,6 +135,8 @@ public class ScriptController {
             parentConfigService.batchSave(scriptDetailDTO.getParentConfigs(), entity.getScriptDetailId());
             studentConfigService.batchSave(scriptDetailDTO.getStudentConfigs(), entity.getScriptDetailId());
         } else {
+            scriptDetailService.update(scriptDetailDTO);
+
             List<ParentConfiglEntity> parentConfiglEntityList = parentConfigService.findByScriptDetailId(scriptDetailEntity.getScriptDetailId());
             List<StudentConfiglEntity> studentConfiglEntityList = studentConfigService.findByScriptDetailId(scriptDetailEntity.getScriptDetailId());
             List<ParentConfiglDTO> parentConfiglDTOList = scriptDetailDTO.getParentConfigs();

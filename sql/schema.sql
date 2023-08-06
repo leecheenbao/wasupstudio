@@ -95,6 +95,8 @@ CREATE TABLE wa_script_detail (
                                   today_script TEXT COMMENT '本日劇情',
                                   additional_info JSON COMMENT '額外信息',
                                   teaching_url JSON COMMENT '教材文件（可儲存多個路徑）',
+                                  stu_content VARCHAR(500) COMMENT '學生討論內容',
+                                  par_content VARCHAR(500) COMMENT '家長討論內容',
                                   FOREIGN KEY (script_id) REFERENCES wa_script(script_id)
 ) COMMENT '每日劇本詳情表';
 
