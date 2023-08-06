@@ -141,12 +141,17 @@ public class ScriptController {
             List<StudentConfiglEntity> studentConfiglEntityList = studentConfigService.findByScriptDetailId(scriptDetailEntity.getScriptDetailId());
             List<ParentConfiglDTO> parentConfiglDTOList = scriptDetailDTO.getParentConfigs();
             List<StudentConfigDTO> studentConfigDTOList = scriptDetailDTO.getStudentConfigs();
+            // 編輯學生設定
+            if (studentConfigDTOList != null) {
+                saveStudentConfig(studentConfiglEntityList, studentConfigDTOList, scriptDetailEntity.getScriptDetailId());
+            }
             // 編輯家長設定
-            saveParentConfig(parentConfiglEntityList, parentConfiglDTOList, scriptDetailEntity.getScriptDetailId());
-            saveStudentConfig(studentConfiglEntityList, studentConfigDTOList, scriptDetailEntity.getScriptDetailId());
+            if (parentConfiglDTOList != null) {
+                saveParentConfig(parentConfiglEntityList, parentConfiglDTOList, scriptDetailEntity.getScriptDetailId());
+            }
         }
 
-        return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
+        return ResultGenerator.genSuccessResult(ResultCode.UPDATE_SUCCESS.getMessage());
     }
 
     public void saveParentConfig(List<ParentConfiglEntity> parentConfiglEntityList, List<ParentConfiglDTO> parentConfiglDTOList, Integer scriptDetailId){
@@ -208,7 +213,7 @@ public class ScriptController {
         scriptDTO.setAuthor(member.getEmail());
         scriptDTO.setScriptId(id);
         scriptService.update(scriptDTO);
-        return ResultGenerator.genSuccessResult(ResultCode.SAVE_SUCCESS.getMessage());
+        return ResultGenerator.genSuccessResult(ResultCode.UPDATE_SUCCESS.getMessage());
     }
 
     @ApiOperation(value = "上傳文件", notes = "上傳文件接口")
