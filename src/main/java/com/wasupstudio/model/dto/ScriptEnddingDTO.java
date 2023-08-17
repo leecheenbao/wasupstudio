@@ -1,12 +1,11 @@
 package com.wasupstudio.model.dto;
 
-import com.wasupstudio.model.entity.ScriptEntity;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class ScriptDetailDTO {
+public class ScriptEnddingDTO {
 
     private Integer scriptDetilId;
 
@@ -21,11 +20,6 @@ public class ScriptDetailDTO {
     private String todayScript;
 
     private List<String> additionalInfo;
-
-    private String teachingUrl;
-
-    private String stuContent;
-    private String parContent;
 
     private List<ParentConfiglDTO> parentConfigs;
 

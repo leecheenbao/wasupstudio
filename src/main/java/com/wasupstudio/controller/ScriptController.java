@@ -124,15 +124,15 @@ public class ScriptController {
             return ResultGenerator.genFailResult(errorMsg);
         }
         // 判斷詳情天數是否大於原先的script設定
-        ScriptDetailEntity scriptDetailEntity = scriptDetailService.findByPeriod(
-                scriptDetailDTO.getScriptId(),scriptDetailDTO.getPeriod());
-
         ScriptEntity scriptEntity = scriptService.findOne(scriptDetailDTO.getScriptId());
         if (scriptEntity != null){
             if (scriptEntity.getScriptPeriod() - scriptDetailDTO.getPeriod() < 0) {
                 return ResultGenerator.genFailResult(ResultCode.ADD_FAILD.getMessage());
             }
         }
+
+        ScriptDetailEntity scriptDetailEntity = scriptDetailService.findByPeriod(
+                scriptDetailDTO.getScriptId(),scriptDetailDTO.getPeriod());
 
         if (scriptDetailEntity == null){
             ScriptDetailEntity entity = scriptDetailService.save(scriptDetailDTO);
@@ -154,6 +154,18 @@ public class ScriptController {
                 saveParentConfig(parentConfiglEntityList, parentConfiglDTOList, scriptDetailEntity.getScriptDetailId());
             }
         }
+
+        return ResultGenerator.genSuccessResult(ResultCode.UPDATE_SUCCESS.getMessage());
+    }
+
+    @ApiOperation(value = "新增劇本結局詳情資料")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 400, message = "Bad Request")
+    })
+    @PostMapping("/endding")
+    public Result enddingSave(@RequestBody ScriptDetailDTO scriptDetailDTO, BindingResult bindingResult) throws JsonProcessingException {
+
 
         return ResultGenerator.genSuccessResult(ResultCode.UPDATE_SUCCESS.getMessage());
     }
