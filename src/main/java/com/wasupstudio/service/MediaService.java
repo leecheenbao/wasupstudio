@@ -13,7 +13,6 @@ public interface MediaService {
     MediaEntity findOne(Integer id);
 
     List<MediaDTO> findByScriptId(Integer scriptId);
-    MediaDTO findByScriptIdAndMediaId(Integer scriptId, Integer mediaId);
     MediaDTO findByScriptIdAndDescription(Integer scriptId, String description);
 
     BasePageInfo findAllData();

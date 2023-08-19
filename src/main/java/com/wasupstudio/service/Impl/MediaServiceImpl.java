@@ -5,8 +5,10 @@ import com.wasupstudio.mapper.MediaMapper;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.dto.MediaDTO;
 import com.wasupstudio.model.entity.MediaEntity;
+import com.wasupstudio.model.entity.MediaId;
 import com.wasupstudio.service.AbstractService;
 import com.wasupstudio.service.MediaService;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +31,7 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
         mediaEntity.setFilePath(mediaDTO.getFilePath());
         mediaEntity.setCreateTime(new Date());
         mediaEntity.setUpdateTime(new Date());
-        mediaEntity.setDescription(mediaDTO.getDescription());
+//        mediaEntity.setDescription(mediaDTO.getDescription());
         mediaEntity.setFileExtension(mediaDTO.getFileExtension());
         save(mediaEntity);
     }
@@ -45,21 +47,13 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
     }
 
     @Override
-    public MediaDTO findByScriptIdAndMediaId(Integer scriptId, Integer mediaId) {
-        MediaEntity mediaEntity = mediaMapper.findByScriptIdAndMediaId(scriptId, mediaId);
-        if (mediaEntity !=null){
-            return mediaConverter.map(mediaEntity);
-        }
-        return null;
-    }
-
-    @Override
     public MediaDTO findByScriptIdAndDescription(Integer scriptId, String description) {
         MediaEntity mediaEntity = mediaMapper.findByScriptIdAndDescription(scriptId, description);
         if (mediaEntity !=null){
             return mediaConverter.map(mediaEntity);
         }
-        return null;    }
+        return null;
+    }
 
     @Override
     public BasePageInfo findAllData() {
@@ -72,15 +66,10 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
 
     @Override
     public void update(MediaDTO mediaDTO) {
-        MediaEntity mediaEntity = new MediaEntity();
-        mediaEntity.setScriptId(mediaDTO.getScriptId());
-        mediaEntity.setMediaType(mediaDTO.getMediaType());
-        mediaEntity.setFilePath(mediaDTO.getFilePath());
-        mediaEntity.setCreateTime(new Date());
-        mediaEntity.setUpdateTime(new Date());
-        mediaEntity.setDescription(mediaDTO.getDescription());
-        mediaEntity.setFileExtension(mediaDTO.getFileExtension());
-        update(mediaEntity);
+        mediaMapper.updateByScriptIdAndDescription(
+                mediaDTO.getMediaType(), new Date(), mediaDTO.getFileExtension(),
+                mediaDTO.getScriptId(), mediaDTO.getDescription()
+        );
     }
 
     @Override

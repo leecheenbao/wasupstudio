@@ -287,6 +287,7 @@ public class ScriptController {
             String[] str = mediaDTO.getFilePath().split(File.separator);
             String lastByte = str[str.length - 1];
             fileService.removeFile(lastByte);
+            mediaDTO.setScriptId(scriptId);
             mediaDTO.setFilePath(filePath);
             mediaDTO.setMediaType(mediaType);
             mediaDTO.setDescription(description);

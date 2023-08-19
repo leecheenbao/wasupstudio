@@ -49,8 +49,6 @@ public class MediaEntity implements Serializable {
     @Column(name = "file_extension")
     private String fileExtension;
 
-
-
-
 }
+
 

@@ -124,7 +124,7 @@ CREATE TABLE wa_script_parent_config (
 CREATE TABLE wa_script_ending (
                                   script_id INT PRIMARY KEY COMMENT '劇本ID',
                                   advisory_time INT COMMENT '建議時間',
-                                  ending_description TEXT COMMENT '結局說明',
+                                  ending_description TEXT COMMENT '結局說明(分)',
                                   ending_one TEXT COMMENT '結局一描述',
                                   ending_two TEXT COMMENT '結局二描述',
                                   ending_three TEXT COMMENT '結局三描述',
