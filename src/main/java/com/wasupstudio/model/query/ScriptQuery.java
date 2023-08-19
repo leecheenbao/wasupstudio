@@ -3,6 +3,7 @@ package com.wasupstudio.model.query;
 import com.wasupstudio.model.dto.MediaDTO;
 import com.wasupstudio.model.dto.ParentConfiglDTO;
 import com.wasupstudio.model.dto.ScriptDetailDTO;
+import com.wasupstudio.model.dto.ScriptEndingDTO;
 import com.wasupstudio.model.entity.ScriptDetailEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -47,6 +48,8 @@ public class ScriptQuery implements Serializable {
     private List<MediaDTO> mediaDTO;
 
     private List<ScriptDetailDTO> scriptDetail;
+
+    private ScriptEndingDTO scriptEndingDTO;
 
 }
 

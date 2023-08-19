@@ -47,6 +47,10 @@ public class ScriptController {
     private StudentConfigService studentConfigService;
     @Autowired
     private ParentConfigService parentConfigService;
+
+    @Autowired
+    private ScriptEndingService scriptEndingService;
+
     @Autowired
     private MediaService mediaService;
     @Autowired
@@ -65,30 +69,33 @@ public class ScriptController {
     public Result getOneData(@PathVariable Integer scriptId) {
         ScriptEntity scriptEntity = scriptService.findOne(scriptId);
         scriptEntity.getPreamble();
-        if (scriptEntity == null){
+        if (scriptEntity == null) {
             return ResultGenerator.genSuccessResult(ResultCode.DATA_NOT_EXIST.getMessage());
         }
 
         List<ScriptDetailDTO> details = scriptDetailService.findByScriptId(scriptId);
+        ScriptEndingDTO scriptEndingDTO = scriptEndingService.findOne(scriptId);
         ScriptQuery scriptQuery = tranData(scriptEntity);
         scriptQuery.setMediaDTO(mediaService.findByScriptId(scriptId));
         scriptQuery.setScriptDetail(details);
+        scriptQuery.setScriptEndingDTO(scriptEndingDTO);
         return ResultGenerator.genSuccessResult(scriptQuery);
     }
 
-    public ScriptQuery tranData(ScriptEntity scriptEntity){
+    public ScriptQuery tranData(ScriptEntity scriptEntity) {
         Gson gson = new Gson();
         List<String> tips = gson.fromJson(scriptEntity.getTips(), new TypeToken<List<String>>() {}.getType());
         List<String> goals = gson.fromJson(scriptEntity.getGoal(), new TypeToken<List<String>>() {}.getType());
         List<String> preambles = gson.fromJson(scriptEntity.getPreamble(), new TypeToken<List<String>>() {}.getType());
 
         ScriptQuery scriptQuery = new ScriptQuery();
-        BeanUtils.copyProperties(scriptEntity,scriptQuery);
+        BeanUtils.copyProperties(scriptEntity, scriptQuery);
         scriptQuery.setTips(tips);
         scriptQuery.setGoal(goals);
         scriptQuery.setPreamble(preambles);
         return scriptQuery;
     }
+
     @ApiOperation(value = "新增一筆劇本資料")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success"),
@@ -125,16 +132,16 @@ public class ScriptController {
         }
         // 判斷詳情天數是否大於原先的script設定
         ScriptEntity scriptEntity = scriptService.findOne(scriptDetailDTO.getScriptId());
-        if (scriptEntity != null){
+        if (scriptEntity != null) {
             if (scriptEntity.getScriptPeriod() - scriptDetailDTO.getPeriod() < 0) {
                 return ResultGenerator.genFailResult(ResultCode.ADD_FAILD.getMessage());
             }
         }
 
         ScriptDetailEntity scriptDetailEntity = scriptDetailService.findByPeriod(
-                scriptDetailDTO.getScriptId(),scriptDetailDTO.getPeriod());
+                scriptDetailDTO.getScriptId(), scriptDetailDTO.getPeriod());
 
-        if (scriptDetailEntity == null){
+        if (scriptDetailEntity == null) {
             ScriptDetailEntity entity = scriptDetailService.save(scriptDetailDTO);
             parentConfigService.batchSave(scriptDetailDTO.getParentConfigs(), entity.getScriptDetailId());
             studentConfigService.batchSave(scriptDetailDTO.getStudentConfigs(), entity.getScriptDetailId());
@@ -158,19 +165,31 @@ public class ScriptController {
         return ResultGenerator.genSuccessResult(ResultCode.UPDATE_SUCCESS.getMessage());
     }
 
-    @ApiOperation(value = "新增劇本結局詳情資料")
+    @ApiOperation(value = "新增劇本結局資料")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 400, message = "Bad Request")
     })
-    @PostMapping("/endding")
-    public Result enddingSave(@RequestBody ScriptDetailDTO scriptDetailDTO, BindingResult bindingResult) throws JsonProcessingException {
+    @PostMapping("/ending")
+    public Result enddingSave(@RequestBody ScriptEndingDTO scriptEndingDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            String errorMsg = bindingResult.getFieldErrors().stream()
+                    .map(error -> error.getField() + " " + error.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+            return ResultGenerator.genFailResult(errorMsg);
+        }
 
+        ScriptEntity scriptEntity = scriptService.findOne(scriptEndingDTO.getScriptId());
+        if (scriptEntity == null){
+            return ResultGenerator.genFailResult(ResultCode.ADD_FAILD.getMessage());
+        }
 
-        return ResultGenerator.genSuccessResult(ResultCode.UPDATE_SUCCESS.getMessage());
+        scriptEndingService.save(scriptEndingDTO);
+
+        return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
     }
 
-    public void saveParentConfig(List<ParentConfiglEntity> parentConfiglEntityList, List<ParentConfiglDTO> parentConfiglDTOList, Integer scriptDetailId){
+    public void saveParentConfig(List<ParentConfiglEntity> parentConfiglEntityList, List<ParentConfiglDTO> parentConfiglDTOList, Integer scriptDetailId) {
         for (int i = 0; i < parentConfiglDTOList.size(); i++) {
             ParentConfiglDTO dto = parentConfiglDTOList.get(i);
             dto.setScriptDetailId(scriptDetailId);
@@ -188,7 +207,9 @@ public class ScriptController {
                 parentConfigService.save(dto);
             }
         }
-    }public void saveStudentConfig(List<StudentConfiglEntity> studentConfiglEntityList, List<StudentConfigDTO> studentConfigDTOList, Integer scriptDetailId){
+    }
+
+    public void saveStudentConfig(List<StudentConfiglEntity> studentConfiglEntityList, List<StudentConfigDTO> studentConfigDTOList, Integer scriptDetailId) {
         for (int i = 0; i < studentConfigDTOList.size(); i++) {
             StudentConfigDTO dto = studentConfigDTOList.get(i);
             dto.setScriptDetailId(scriptDetailId);
@@ -207,6 +228,7 @@ public class ScriptController {
             }
         }
     }
+
     @ApiOperation(value = "更新一筆劇本資料")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "Script ID", required = true, dataType = "int", paramType = "path"),
@@ -245,13 +267,13 @@ public class ScriptController {
                                    @RequestParam("description") String description,
                                    @RequestParam("file") MultipartFile file) throws IOException {
 
-        if (FileUtils.validateFileExtension(file.getOriginalFilename())){
+        if (FileUtils.validateFileExtension(file.getOriginalFilename())) {
             return ResultGenerator.genSuccessResult((ResultCode.UPLOAD_FORMAT_ERROR.getMessage()));
         }
-        if (FileUtils.validateFileSize(file)){
+        if (FileUtils.validateFileSize(file)) {
             String type = FileTypeEnum.getEnum(FileUtils.checkFileType(file.getOriginalFilename())).getDesc();
             String size = String.valueOf(FileUtils.MAX_FILE_SIZE);
-            return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_MAX_ERROR.getFormattedMessage(type,size));
+            return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_MAX_ERROR.getFormattedMessage(type, size));
         }
 
         String fileName = DateUtils.currentTimeMillis() + "." + getFileExtension(file.getOriginalFilename());
@@ -260,7 +282,7 @@ public class ScriptController {
         String filePath = fileService.uploadFile(file.getBytes(), fileName, mediaType);
         MediaDTO mediaDTO = mediaService.findByScriptIdAndDescription(scriptId, description);
         String extension = getFileExtension(Objects.requireNonNull(file.getOriginalFilename()));
-        if (mediaDTO!=null) {
+        if (mediaDTO != null) {
             // 取得最後一個字節獲取storage的object_name
             String[] str = mediaDTO.getFilePath().split(File.separator);
             String lastByte = str[str.length - 1];
