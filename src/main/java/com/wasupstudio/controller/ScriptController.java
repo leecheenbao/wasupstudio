@@ -285,8 +285,8 @@ public class ScriptController {
         if (mediaDTO != null) {
             // 取得最後一個字節獲取storage的object_name
             String[] str = mediaDTO.getFilePath().split(File.separator);
-            String lastByte = str[str.length - 1];
-            fileService.removeFile(lastByte);
+            String oldFile = str[str.length - 1];
+            fileService.removeFile(oldFile);
             mediaDTO.setScriptId(scriptId);
             mediaDTO.setFilePath(filePath);
             mediaDTO.setMediaType(mediaType);

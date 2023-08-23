@@ -22,8 +22,8 @@ public interface MediaMapper extends CommonMapper<MediaEntity> {
     void deleteByStringIdAndDescription(Integer scriptId, String description);
 
     @Update("UPDATE wa_media " +
-            "SET media_type=#{mediaType}, update_time=#{updateTime}, file_extension=#{fileExtension} " +
-            "WHERE script_id=#{scriptId} AND description=#{description} AND file_path=#{filePath}")
+            "SET media_type=#{mediaType}, update_time=#{updateTime}, file_extension=#{fileExtension}, file_path=#{filePath}" +
+            "WHERE script_id=#{scriptId} AND description=#{description}")
     void updateByScriptIdAndDescription(String mediaType, Date updateTime, String fileExtension, Integer scriptId, String description, String filePath);
 
 }
