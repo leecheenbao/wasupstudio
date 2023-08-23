@@ -68,7 +68,7 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
     public void update(MediaDTO mediaDTO) {
         mediaMapper.updateByScriptIdAndDescription(
                 mediaDTO.getMediaType(), new Date(), mediaDTO.getFileExtension(),
-                mediaDTO.getScriptId(), mediaDTO.getDescription()
+                mediaDTO.getScriptId(), mediaDTO.getDescription(), mediaDTO.getFilePath()
         );
     }
 

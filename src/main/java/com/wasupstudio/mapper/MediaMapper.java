@@ -23,7 +23,7 @@ public interface MediaMapper extends CommonMapper<MediaEntity> {
 
     @Update("UPDATE wa_media " +
             "SET media_type=#{mediaType}, update_time=#{updateTime}, file_extension=#{fileExtension} " +
-            "WHERE script_id=#{scriptId} AND description=#{description}")
-    void updateByScriptIdAndDescription(String mediaType, Date updateTime, String fileExtension, Integer scriptId, String description);
+            "WHERE script_id=#{scriptId} AND description=#{description} AND file_path=#{filePath}")
+    void updateByScriptIdAndDescription(String mediaType, Date updateTime, String fileExtension, Integer scriptId, String description, String filePath);
 
 }
