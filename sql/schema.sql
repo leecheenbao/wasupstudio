@@ -140,17 +140,6 @@ CREATE TABLE wa_script_ending (
                                   FOREIGN KEY (script_id) REFERENCES wa_script(script_id)
 ) COMMENT '劇本結局表';
 
--- 學習單問卷表
-CREATE TABLE wa_script_learning (
-                                    learning_id INT NOT NULL AUTO_INCREMENT COMMENT '學習單問卷唯一 ID',
-                                    script_id INT COMMENT '劇本ID',
-                                    title VARCHAR(255) NOT NULL COMMENT '學習單問卷標題',
-                                    description TEXT COMMENT '學習單問卷描述',
-                                    create_time TIMESTAMP NOT NULL COMMENT '學習單建立時間',
-                                    update_time TIMESTAMP NOT NULL COMMENT '學習單更新時間',
-                                    PRIMARY KEY (learning_id),
-                                    FOREIGN KEY (script_id) REFERENCES wa_script(script_id)
-) COMMENT='學習單問卷表';
 
 -- 建立問題表
 CREATE TABLE wa_script_question (
@@ -202,7 +191,8 @@ CREATE TABLE wa_task (
                              4:國中 (8年級)
                              5:國中 (9年級)',
                          author VARCHAR(255) NOT NULL COMMENT '最後編輯者'
-);
+) COMMENT='任務資料表';
+
 
 -- 任務分配表，存儲任務分配的信息
 CREATE TABLE wa_task_assignment (
@@ -212,6 +202,6 @@ CREATE TABLE wa_task_assignment (
                                     assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '分配時間',
                                     FOREIGN KEY (task_id) REFERENCES wa_task(task_id),
                                     FOREIGN KEY (assignee_id) REFERENCES wa_member(id)
-);
+) COMMENT='任務分配表';
 
 
