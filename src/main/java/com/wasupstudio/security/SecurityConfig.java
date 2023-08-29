@@ -55,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/app/**/*.{js,html}")
                 .antMatchers("/v2/api-docs/**")
                 .antMatchers("/i18n/**")
+                .antMatchers("/api/script")
                 .antMatchers("/test/**")
                 .antMatchers("/h2")
                 .antMatchers("/content/**")
