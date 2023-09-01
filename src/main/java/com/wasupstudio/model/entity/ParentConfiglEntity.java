@@ -27,4 +27,7 @@ public class ParentConfiglEntity {
     @Column(name = "par_relation")
     private Integer parRelation;
 
+    @Column(name = "score")
+    private Integer score;
+
 }

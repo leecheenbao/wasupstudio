@@ -27,4 +27,7 @@ public class StudentConfiglEntity {
     @Column(name = "stu_relation")
     private Integer stuRelation;
 
+    @Column(name = "score")
+    private Integer score;
+
 }
