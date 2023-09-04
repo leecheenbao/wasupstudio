@@ -34,15 +34,16 @@ public class WebCorsConfig implements WebMvcConfigurer {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-//        config.setAllowCredentials(true);
-        config.setAllowedOrigins(Collections.singletonList("*")); //不可跟 config.setAllowCredentials(true) 同時使用
+        config.setAllowCredentials(true);
+        config.setAllowedOrigins(Collections.singletonList("https://wasupstudionobullying.com")); //不可跟 config.setAllowCredentials(true) 同時使用
         config.setAllowedMethods(Collections.singletonList("*"));
         config.setAllowedHeaders(Collections.singletonList("*"));
         // 暴露 header 中的其他屬性給客戶端應用程序
         config.setExposedHeaders(Arrays.asList(
                 "Authorization", "X-Total-Count", "Link",
                 "Access-Control-Allow-Origin",
-                "Access-Control-Allow-Credentials"
+                "Access-Control-Allow-Credentials",
+                "strict-origin-when-cross-origin"
         ));
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
