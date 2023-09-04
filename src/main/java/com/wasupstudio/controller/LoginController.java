@@ -80,10 +80,7 @@ public class LoginController {
 			@ApiImplicitParam(name = "code", value = "授權碼", required = false, dataType = "String", paramType = "query")
 	})
 	@GetMapping("/google-signup")
-	public Result google_signup(@RequestParam(value = "code" ,required = false) String code,
-								@RequestBody(required = false) MemberDTO memberDTO,
-								HttpSession session) throws Exception {
-		session.setAttribute("member", memberDTO);
+	public Result google_signup(@RequestParam(value = "code" ,required = false) String code) throws Exception {
 		if (code != null) {
 			GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
 					HTTP_TRANSPORT,
