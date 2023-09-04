@@ -18,6 +18,4 @@ public class StudentConfigDTO {
 
     private Integer stuRelation;
 
-    private Integer score;
-
 }

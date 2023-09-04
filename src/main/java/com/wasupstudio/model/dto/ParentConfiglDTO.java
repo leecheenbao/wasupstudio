@@ -15,6 +15,4 @@ public class ParentConfiglDTO {
 
     private Integer parRelation;
 
-    private Integer score;
-
 }

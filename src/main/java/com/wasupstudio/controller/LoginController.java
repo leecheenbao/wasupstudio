@@ -108,6 +108,20 @@ public class LoginController {
 			// 取得使用者資訊
 			Oauth2 oauth2 = new Oauth2.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
 			Userinfo userInfo = oauth2.userinfo().get().execute();
+
+			// 如果之前已經有註冊過直接登入
+			MemberEntity memberEntity = memberService.getAdminByEmail(userInfo.getEmail());
+			if (memberEntity != null){
+				String jwtToken = memberService.login(userInfo.getEmail());
+				Authentication authentication = JwtUtils.getAuthentication(jwtToken);
+				LoginDTO loginDTO = new LoginDTO();
+				loginDTO.setToken(jwtToken);
+				loginDTO.setMemMail(userInfo.getEmail());
+				loginDTO.setRole(authentication.getAuthorities());
+				loginDTO.setId(memberEntity.getId());
+				return ResultGenerator.genSuccessResult(loginDTO);
+			}
+
 			return ResultGenerator.genSuccessResult(userInfo);
 		}
 
