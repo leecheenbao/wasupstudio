@@ -15,6 +15,10 @@ public final class ProjectConstant {
         public final static int DELETED = 3;// 删除
     }
 
+    public final class GoogleOAuthPath {
+        public final static String SIGNUP = "/google-signup";
+        public final static String LOGIN = "/google-login";
+    }
     public final class FilePath {
         public final static String MAINPATH = "https://storage.cloud.google.com/";
 

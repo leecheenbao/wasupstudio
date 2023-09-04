@@ -91,7 +91,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 // 配置登錄地址
                 .antMatchers(HttpMethod.POST, SecurityConstants.AUTH_LOGIN_URL).permitAll()
-                .antMatchers(HttpMethod.POST,SecurityConstants.AUTH_SIGNUP_URL).permitAll()
+                .antMatchers(HttpMethod.POST, SecurityConstants.AUTH_SIGNUP_URL).permitAll()
                 // 其他請求需驗證
                 .anyRequest().authenticated()
                 .and()

@@ -95,7 +95,7 @@ public class LoginController {
 					.setApprovalPrompt("force")
 					.build();
 			GoogleTokenResponse tokenResponse = flow.newTokenRequest(code)
-					.setRedirectUri(BASE_URL + REDIRECT_URI)
+					.setRedirectUri(BASE_URL + REDIRECT_URI + ProjectConstant.GoogleOAuthPath.SIGNUP)
 					.setGrantType("authorization_code")
 					.execute();
 
@@ -114,7 +114,7 @@ public class LoginController {
 			return ResultGenerator.genSuccessResult(userInfo);
 		}
 
-		return getGoogleOAuth(BASE_URL + REDIRECT_URI + "/google-signup");
+		return getGoogleOAuth(BASE_URL + REDIRECT_URI + ProjectConstant.GoogleOAuthPath.SIGNUP);
 	}
 
 	@ApiOperation(value = "Google登錄", notes = "如果提供了code，則會使用Google API進行登錄，否則會重定向到Google的OAuth授權頁面")
@@ -135,7 +135,7 @@ public class LoginController {
 					.setApprovalPrompt("force")
 					.build();
 			GoogleTokenResponse tokenResponse = flow.newTokenRequest(code)
-					.setRedirectUri(BASE_URL + REDIRECT_URI)
+					.setRedirectUri(BASE_URL + REDIRECT_URI + ProjectConstant.GoogleOAuthPath.LOGIN)
 					.setGrantType("authorization_code")
 					.execute();
 
@@ -170,7 +170,7 @@ public class LoginController {
 			return ResultGenerator.genSuccessResult(loginDTO);
 		}
 
-		return getGoogleOAuth(BASE_URL + REDIRECT_URI + "/google-login");
+		return getGoogleOAuth(BASE_URL + REDIRECT_URI + ProjectConstant.GoogleOAuthPath.LOGIN);
 	}
 
 	private Result getGoogleOAuth(String REDIRECT_URI) throws GeneralSecurityException, IOException {
