@@ -125,7 +125,7 @@ public class LoginController {
 			return ResultGenerator.genSuccessResult(userInfo);
 		}
 
-		return getGoogleOAuth(BASE_URL + REDIRECT_URI + ProjectConstant.GoogleOAuthPath.SIGNUP);
+		return getGoogleOAuth("https://wasupstudionobullying.com/setProfile");
 	}
 
 	@ApiOperation(value = "Google登錄", notes = "如果提供了code，則會使用Google API進行登錄，否則會重定向到Google的OAuth授權頁面")
