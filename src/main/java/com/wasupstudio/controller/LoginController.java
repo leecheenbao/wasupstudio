@@ -42,13 +42,14 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Api(tags = "權限相關 API")
@@ -80,30 +81,54 @@ public class LoginController {
 			@ApiImplicitParam(name = "code", value = "授權碼", required = false, dataType = "String", paramType = "query")
 	})
 	@GetMapping("/google-signup")
-	public Result google_signup(@RequestParam(value = "code" ,required = false) String code) throws Exception {
-		if (code != null) {
-			GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-					HTTP_TRANSPORT,
-					JSON_FACTORY,
-					CLIENT_ID,
-					CLIENT_SECRET,
-					SCOPES)
-					.setAccessType("offline")
-					.setApprovalPrompt("force")
-					.build();
-			GoogleTokenResponse tokenResponse = flow.newTokenRequest(code)
-					.setRedirectUri(BASE_URL + REDIRECT_URI + ProjectConstant.GoogleOAuthPath.SIGNUP)
-					.setGrantType("authorization_code")
-					.execute();
+	public Result google_signup() throws Exception {
+		return getGoogleOAuth(BASE_URL + REDIRECT_URI + ProjectConstant.GoogleOAuthPath.SIGNUP);
+	}
 
-			Credential credential = new Credential.Builder(BearerToken.authorizationHeaderAccessMethod())
-					.setTransport(HTTP_TRANSPORT)
-					.setJsonFactory(JSON_FACTORY)
-					.setTokenServerUrl(new GenericUrl("https://oauth2.googleapis.com/token"))
-					.setClientAuthentication(new BasicAuthentication(CLIENT_ID, CLIENT_SECRET))
-					.build()
-					.setAccessToken(tokenResponse.getAccessToken())
-					.setRefreshToken(tokenResponse.getRefreshToken());
+	@ApiOperation(value = "Google登錄", notes = "如果提供了code，則會使用Google API進行登錄，否則會重定向到Google的OAuth授權頁面")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "code", value = "授權碼", required = false, dataType = "String", paramType = "query")
+	})
+	@GetMapping("/google-login")
+	public Result googleLogin() throws Exception {
+		return getGoogleOAuth(BASE_URL + REDIRECT_URI + ProjectConstant.GoogleOAuthPath.LOGIN);
+	}
+
+
+
+	@GetMapping(value = "/login2callback")
+	public RedirectView handleLogin2Callback(@RequestParam(value = "code") String code,
+											 HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String url = ProjectConstant.GoogleOAuthPath.REDRIEC;
+		if (code != null) {
+			Credential credential = googleOAuth(code, ProjectConstant.GoogleOAuthPath.LOGIN);
+
+			// 取得使用者資訊
+			Oauth2 oauth2 = new Oauth2.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
+			Userinfo userInfo = oauth2.userinfo().get().execute();
+
+			String jwtToken = memberService.login(userInfo.getEmail());
+			MemberEntity memberEntity = memberService.getAdminByEmail(userInfo.getEmail());
+			if (jwtToken == null || memberEntity == null) {
+				return new RedirectView(url);
+			}
+
+			String mail = userInfo.getEmail();
+			String role = memberEntity.getRole().toString();
+			Map<String, String> map = new TreeMap<>();
+			map.put("mail", mail);
+			map.put("token", jwtToken);
+			map.put("role", role);
+			return new RedirectView(getURL(url, map));
+		}
+		return new RedirectView(url);
+	}
+
+	@GetMapping(value = "/signup2callback")
+	public RedirectView handleSignup2Callback(@RequestParam(value = "code") String code, HttpServletRequest request) throws IOException {
+		String url = "https://wasupstudionobullying.com/setProfile";
+		if (code != null) {
+			Credential credential = googleOAuth(code, ProjectConstant.GoogleOAuthPath.SIGNUP);
 
 			// 取得使用者資訊
 			Oauth2 oauth2 = new Oauth2.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
@@ -119,120 +144,12 @@ public class LoginController {
 				loginDTO.setMemMail(userInfo.getEmail());
 				loginDTO.setRole(authentication.getAuthorities());
 				loginDTO.setId(memberEntity.getId());
-				return ResultGenerator.genSuccessResult(loginDTO);
+				url = "https://wasupstudionobullying.com";
+				return new RedirectView(url);
 			}
-
-			String username = userInfo.getName();
-			String email = userInfo.getEmail();
-			return getGoogleOAuth("https://wasupstudionobullying.com/setProfile?name=" + username + "&email=" + email);
-
+			return new RedirectView(url);
 		}
-		return getGoogleOAuth(BASE_URL + REDIRECT_URI + ProjectConstant.GoogleOAuthPath.SIGNUP);
-	}
-
-	@ApiOperation(value = "Google登錄", notes = "如果提供了code，則會使用Google API進行登錄，否則會重定向到Google的OAuth授權頁面")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "code", value = "授權碼", required = false, dataType = "String", paramType = "query")
-	})
-	@GetMapping("/google-login")
-	public Result googleLogin(@RequestParam(value = "code" ,required = false) String code, HttpServletRequest request) throws Exception {
-
-		if (code != null) {
-			GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-					HTTP_TRANSPORT,
-					JSON_FACTORY,
-					CLIENT_ID,
-					CLIENT_SECRET,
-					SCOPES)
-					.setAccessType("offline")
-					.setApprovalPrompt("force")
-					.build();
-			GoogleTokenResponse tokenResponse = flow.newTokenRequest(code)
-					.setRedirectUri(BASE_URL + REDIRECT_URI + ProjectConstant.GoogleOAuthPath.LOGIN)
-					.setGrantType("authorization_code")
-					.execute();
-
-			Credential credential = new Credential.Builder(BearerToken.authorizationHeaderAccessMethod())
-					.setTransport(HTTP_TRANSPORT)
-					.setJsonFactory(JSON_FACTORY)
-					.setTokenServerUrl(new GenericUrl("https://oauth2.googleapis.com/token"))
-					.setClientAuthentication(new BasicAuthentication(CLIENT_ID, CLIENT_SECRET))
-					.build()
-					.setAccessToken(tokenResponse.getAccessToken())
-					.setRefreshToken(tokenResponse.getRefreshToken());
-
-			// 取得使用者資訊
-			Oauth2 oauth2 = new Oauth2.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
-			Userinfo userInfo = oauth2.userinfo().get().execute();
-
-			String jwtToken = memberService.login(userInfo.getEmail());
-			if (jwtToken == null) {
-				return ResultGenerator.genSuccessResult(
-						ResultCode.USER_LOGIN_FAILED.getMessage() + ":" +
-								ResultCode.USER_NAME_NOT_EXIST.getMessage());
-			}
-
-			Authentication authentication = JwtUtils.getAuthentication(jwtToken);
-			MemberEntity memberEntity = memberService.getAdminByEmail(userInfo.getEmail());
-
-			LoginDTO loginDTO = new LoginDTO();
-			loginDTO.setToken(jwtToken);
-			loginDTO.setMemMail(userInfo.getEmail());
-			loginDTO.setRole(authentication.getAuthorities());
-			loginDTO.setId(memberEntity.getId());
-
-			String role = authentication.getAuthorities().toString();
-//			return ResultGenerator.genSuccessResult(loginDTO);
-			return getGoogleOAuth("https://wasupstudionobullying.com?token="+ jwtToken + "&role=" + role);
-
-		}
-
-		return getGoogleOAuth(BASE_URL + REDIRECT_URI + ProjectConstant.GoogleOAuthPath.LOGIN);
-	}
-
-	private Result getGoogleOAuth(String REDIRECT_URI) throws GeneralSecurityException, IOException {
-		List<String> scopes = Arrays.asList("openid", "email", "profile");
-		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-				GoogleNetHttpTransport.newTrustedTransport(),
-				JacksonFactory.getDefaultInstance(),
-				CLIENT_ID,
-				CLIENT_SECRET,
-				scopes)
-				.build();
-		AuthorizationCodeRequestUrl authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI);
-		return ResultGenerator.genSuccessResult(authorizationUrl.build());
-	}
-
-	@GetMapping(value = "/oauth2callback")
-	public Result handleOAuth2Callback(@RequestParam(value = "code") String code) throws IOException {
-		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-				HTTP_TRANSPORT,
-				JSON_FACTORY,
-				CLIENT_ID,
-				CLIENT_SECRET,
-				SCOPES)
-				.setAccessType("offline")
-				.setApprovalPrompt("force")
-				.build();
-		GoogleTokenResponse tokenResponse = flow.newTokenRequest(code)
-				.setRedirectUri(BASE_URL + REDIRECT_URI)
-				.setGrantType("authorization_code")
-				.execute();
-
-		Credential credential = new Credential.Builder(BearerToken.authorizationHeaderAccessMethod())
-				.setTransport(HTTP_TRANSPORT)
-				.setJsonFactory(JSON_FACTORY)
-				.setTokenServerUrl(new GenericUrl("https://oauth2.googleapis.com/token"))
-				.setClientAuthentication(new BasicAuthentication(CLIENT_ID, CLIENT_SECRET))
-				.build()
-				.setAccessToken(tokenResponse.getAccessToken())
-				.setRefreshToken(tokenResponse.getRefreshToken());
-
-		// 取得使用者資訊
-		Oauth2 oauth2 = new Oauth2.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
-		Userinfo userInfo = oauth2.userinfo().get().execute();
-
-		return ResultGenerator.genSuccessResult(userInfo);
+		return new RedirectView(url);
 	}
 	/**
 	 * 用戶登入
@@ -399,5 +316,60 @@ public class LoginController {
 
 		return url;
 	}
+
+	public String getURL(String url, Map<String, String> params) {
+		StringBuilder urlString = new StringBuilder(url);
+
+		if (!params.isEmpty()) {
+			urlString.append("?");
+			for (Map.Entry<String, String> entry : params.entrySet()) {
+				urlString.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+			}
+			urlString.deleteCharAt(urlString.length() - 1); // 移除末尾的 "&"
+		}
+
+		return urlString.toString();
+	}
+
+	private Result getGoogleOAuth(String REDIRECT_URI) throws GeneralSecurityException, IOException {
+		List<String> scopes = Arrays.asList("openid", "email", "profile");
+		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+				GoogleNetHttpTransport.newTrustedTransport(),
+				JacksonFactory.getDefaultInstance(),
+				CLIENT_ID,
+				CLIENT_SECRET,
+				scopes)
+				.build();
+		AuthorizationCodeRequestUrl authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI);
+		return ResultGenerator.genSuccessResult(authorizationUrl.build());
+	}
+
+	public Credential googleOAuth(String code, String path) throws IOException {
+		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+				HTTP_TRANSPORT,
+				JSON_FACTORY,
+				CLIENT_ID,
+				CLIENT_SECRET,
+				SCOPES)
+				.setAccessType("offline")
+				.setApprovalPrompt("force")
+				.build();
+		GoogleTokenResponse tokenResponse = flow.newTokenRequest(code)
+				.setRedirectUri(BASE_URL + REDIRECT_URI + path)
+				.setGrantType("authorization_code")
+				.execute();
+
+		Credential credential = new Credential.Builder(BearerToken.authorizationHeaderAccessMethod())
+				.setTransport(HTTP_TRANSPORT)
+				.setJsonFactory(JSON_FACTORY)
+				.setTokenServerUrl(new GenericUrl("https://oauth2.googleapis.com/token"))
+				.setClientAuthentication(new BasicAuthentication(CLIENT_ID, CLIENT_SECRET))
+				.build()
+				.setAccessToken(tokenResponse.getAccessToken())
+				.setRefreshToken(tokenResponse.getRefreshToken());
+
+		return credential;
+	}
+
 }
 

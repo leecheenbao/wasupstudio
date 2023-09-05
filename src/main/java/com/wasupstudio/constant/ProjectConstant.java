@@ -16,9 +16,11 @@ public final class ProjectConstant {
     }
 
     public final class GoogleOAuthPath {
-        public final static String SIGNUP = "/google-signup";
-        public final static String LOGIN = "/google-login";
+        public final static String REDRIEC = "https://wasupstudionobullying.com";
+        public final static String SIGNUP = "/signup2callback";
+        public final static String LOGIN = "/login2callback";
     }
+
     public final class FilePath {
         public final static String MAINPATH = "https://storage.cloud.google.com/";
 
