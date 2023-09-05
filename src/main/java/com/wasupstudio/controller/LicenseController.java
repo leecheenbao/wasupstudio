@@ -1,19 +1,17 @@
 package com.wasupstudio.controller;
 
-import com.google.gson.Gson;
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.enums.LicenseEnum;
-import com.wasupstudio.model.Result;
 import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
+import com.wasupstudio.model.BasePageInfo;
+import com.wasupstudio.model.Result;
 import com.wasupstudio.model.dto.LicenseDTO;
 import com.wasupstudio.model.entity.LicenseEntity;
 import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.service.LicenseService;
-import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.service.MemberService;
 import com.wasupstudio.util.DateUtils;
-import com.wasupstudio.util.JwtUtils;
 import com.wasupstudio.util.MailUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

@@ -22,7 +22,7 @@ import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 /**
  * Web 安全配置
  *
- * @author star
+ * @author Paul
  **/
 @Configuration
 @EnableWebSecurity
