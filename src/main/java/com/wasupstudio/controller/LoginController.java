@@ -122,10 +122,12 @@ public class LoginController {
 				return ResultGenerator.genSuccessResult(loginDTO);
 			}
 
-			return ResultGenerator.genSuccessResult(userInfo);
-		}
+			String username = userInfo.getName();
+			String email = userInfo.getEmail();
+			return getGoogleOAuth("https://wasupstudionobullying.com/setProfile?name=" + username + "&email=" + email);
 
-		return getGoogleOAuth("https://wasupstudionobullying.com/setProfile");
+		}
+		return getGoogleOAuth(BASE_URL + REDIRECT_URI + ProjectConstant.GoogleOAuthPath.SIGNUP);
 	}
 
 	@ApiOperation(value = "Google登錄", notes = "如果提供了code，則會使用Google API進行登錄，否則會重定向到Google的OAuth授權頁面")
