@@ -180,7 +180,11 @@ public class LoginController {
 			loginDTO.setMemMail(userInfo.getEmail());
 			loginDTO.setRole(authentication.getAuthorities());
 			loginDTO.setId(memberEntity.getId());
-			return ResultGenerator.genSuccessResult(loginDTO);
+
+			String role = authentication.getAuthorities().toString();
+//			return ResultGenerator.genSuccessResult(loginDTO);
+			return getGoogleOAuth("https://wasupstudionobullying.com?token="+ jwtToken + "&role=" + role);
+
 		}
 
 		return getGoogleOAuth(BASE_URL + REDIRECT_URI + ProjectConstant.GoogleOAuthPath.LOGIN);
