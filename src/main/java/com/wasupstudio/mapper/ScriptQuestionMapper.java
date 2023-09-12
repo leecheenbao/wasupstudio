@@ -1,0 +1,16 @@
+package com.wasupstudio.mapper;
+
+import com.wasupstudio.model.entity.ScriptQuestionEntity;
+import com.wasupstudio.util.CommonMapper;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
+
+@Mapper
+public interface ScriptQuestionMapper extends CommonMapper<ScriptQuestionEntity> {
+
+    @Select("SELECT * FROM wa_script_question WHERE task_id = #{taskId}")
+    List<ScriptQuestionEntity> findByTaskId(@Param("taskId") Integer taskId);
+}

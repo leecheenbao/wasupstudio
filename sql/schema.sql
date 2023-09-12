@@ -140,25 +140,16 @@ CREATE TABLE wa_script_ending (
                                   FOREIGN KEY (script_id) REFERENCES wa_script(script_id)
 ) COMMENT '劇本結局表';
 
-
--- 建立問題表
+-- 建立問題統計表
 CREATE TABLE wa_script_question (
-                                    question_id INT NOT NULL AUTO_INCREMENT COMMENT '問題唯一 ID',
-                                    content TEXT NOT NULL COMMENT '問題內容',
-                                    learning_id INT NOT NULL COMMENT '學習單問卷 ID',
-                                    PRIMARY KEY (question_id),
-                                    FOREIGN KEY (learning_id) REFERENCES wa_script_learning (learning_id) ON DELETE CASCADE ON UPDATE CASCADE
-) COMMENT='問題表';
-
--- 建立選項表
-CREATE TABLE wa_script_question_option (
-                                           option_id INT NOT NULL AUTO_INCREMENT COMMENT '選項唯一 ID',
-                                           content TEXT NOT NULL COMMENT '選項內容',
-                                           question_id INT NOT NULL COMMENT '問題 ID',
-                                           score_ratio DECIMAL(4,2) NOT NULL COMMENT '選項配分比例',
-                                           PRIMARY KEY (option_id),
-                                           FOREIGN KEY (question_id) REFERENCES wa_script_question (question_id) ON DELETE CASCADE ON UPDATE CASCADE
-) COMMENT='選項表';
+                                    question_id INT NOT NULL AUTO_INCREMENT COMMENT '選項唯一 ID',
+                                    task_id INT NOT NULL COMMENT '任務 ID',
+                                    script_id INT NOT NULl COMMENT '劇本 ID',
+                                    period INT COMMENT '天數',
+                                    par_ans VARCHAR(10) NOT NULL COMMENT '家長答案選項',
+                                    stu_ans VARCHAR(10) NOT NULL COMMENT '學生答案選項',
+                                    PRIMARY KEY (question_id)
+) COMMENT='問題統計表';
 
 -- 建立媒體資料表
 CREATE TABLE wa_media (
