@@ -142,10 +142,10 @@ public class LoginController {
 				loginDTO.setMemMail(userInfo.getEmail());
 				loginDTO.setRole(authentication.getAuthorities());
 				loginDTO.setId(memberEntity.getId());
-				url = "https://wasupstudionobullying.com";
+				url = "https://wasupstudionobullying.com?token=" + jwtToken + "&email=" + userInfo.getEmail() + "&role=" + authentication.getAuthorities();
 				return new RedirectView(url);
 			}
-			return new RedirectView(url + "?mail=" + userInfo.getEmail() + "&name=" + userInfo.getName());
+			return new RedirectView(url + "?mail=" + userInfo.getEmail() + "&name=" + userInfo.getId());
 		}
 		return new RedirectView(url);
 	}
