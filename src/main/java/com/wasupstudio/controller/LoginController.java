@@ -145,7 +145,7 @@ public class LoginController {
 				url = "https://wasupstudionobullying.com";
 				return new RedirectView(url);
 			}
-			return new RedirectView(url);
+			return new RedirectView(url + "?mail=" + userInfo.getEmail() + "&name=" + userInfo.getName());
 		}
 		return new RedirectView(url);
 	}
