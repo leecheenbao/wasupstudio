@@ -68,7 +68,6 @@ public class ScriptController {
     @GetMapping("/{scriptId}")
     public Result getOneData(@PathVariable Integer scriptId) {
         ScriptEntity scriptEntity = scriptService.findOne(scriptId);
-        scriptEntity.getPreamble();
         if (scriptEntity == null) {
             return ResultGenerator.genSuccessResult(ResultCode.DATA_NOT_EXIST.getMessage());
         }
@@ -102,15 +101,10 @@ public class ScriptController {
             @ApiResponse(code = 400, message = "Bad Request")
     })
     @PostMapping
-    public Result save(@RequestBody ScriptDTO scriptDTO, BindingResult bindingResult) throws JsonProcessingException {
+    public Result save(@RequestBody ScriptDTO scriptDTO) throws JsonProcessingException {
         MemberEntity member = JwtUtils.getMember();
         scriptDTO.setAuthor(member.getEmail());
-        if (bindingResult.hasErrors()) {
-            String errorMsg = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getField() + " " + error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return ResultGenerator.genFailResult(errorMsg);
-        }
+
         ScriptEntity scriptEntity = scriptService.save(scriptDTO);
         ScriptQuery scriptQuery = tranData(scriptEntity);
 
@@ -123,13 +117,7 @@ public class ScriptController {
             @ApiResponse(code = 400, message = "Bad Request")
     })
     @PostMapping("/detail")
-    public Result detailSave(@RequestBody ScriptDetailDTO scriptDetailDTO, BindingResult bindingResult) throws JsonProcessingException {
-        if (bindingResult.hasErrors()) {
-            String errorMsg = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getField() + " " + error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return ResultGenerator.genFailResult(errorMsg);
-        }
+    public Result detailSave(@RequestBody ScriptDetailDTO scriptDetailDTO) throws JsonProcessingException {
         // 判斷詳情天數是否大於原先的script設定
         ScriptEntity scriptEntity = scriptService.findOne(scriptDetailDTO.getScriptId());
         if (scriptEntity != null) {
@@ -171,14 +159,7 @@ public class ScriptController {
             @ApiResponse(code = 400, message = "Bad Request")
     })
     @PostMapping("/ending")
-    public Result enddingSave(@RequestBody ScriptEndingDTO scriptEndingDTO, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            String errorMsg = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getField() + " " + error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return ResultGenerator.genFailResult(errorMsg);
-        }
-
+    public Result enddingSave(@RequestBody ScriptEndingDTO scriptEndingDTO) {
         ScriptEntity scriptEntity = scriptService.findOne(scriptEndingDTO.getScriptId());
         if (scriptEntity == null){
             return ResultGenerator.genFailResult(ResultCode.ADD_FAILD.getMessage());
@@ -190,8 +171,7 @@ public class ScriptController {
     }
 
     public void saveParentConfig(List<ParentConfiglEntity> parentConfiglEntityList, List<ParentConfiglDTO> parentConfiglDTOList, Integer scriptDetailId) {
-        for (int i = 0; i < parentConfiglDTOList.size(); i++) {
-            ParentConfiglDTO dto = parentConfiglDTOList.get(i);
+        for (ParentConfiglDTO dto : parentConfiglDTOList) {
             dto.setScriptDetailId(scriptDetailId);
             boolean found = false;
 
@@ -210,8 +190,7 @@ public class ScriptController {
     }
 
     public void saveStudentConfig(List<StudentConfiglEntity> studentConfiglEntityList, List<StudentConfigDTO> studentConfigDTOList, Integer scriptDetailId) {
-        for (int i = 0; i < studentConfigDTOList.size(); i++) {
-            StudentConfigDTO dto = studentConfigDTOList.get(i);
+        for (StudentConfigDTO dto : studentConfigDTOList) {
             dto.setScriptDetailId(scriptDetailId);
             boolean found = false;
 
@@ -239,14 +218,7 @@ public class ScriptController {
             @ApiResponse(code = 400, message = "Bad Request")
     })
     @PutMapping("/{id}")
-    public Result update(@PathVariable Integer id, @RequestBody ScriptDTO scriptDTO, BindingResult bindingResult) {
-        log.info("[[更改劇本資料]] id:{}, dto:{}", id, scriptDTO);
-        if (bindingResult.hasErrors()) {
-            String errorMsg = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getField() + " " + error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return ResultGenerator.genFailResult(errorMsg);
-        }
+    public Result update(@PathVariable Integer id, @RequestBody ScriptDTO scriptDTO) {
         MemberEntity member = JwtUtils.getMember();
         scriptDTO.setAuthor(member.getEmail());
         scriptDTO.setScriptId(id);
@@ -258,7 +230,6 @@ public class ScriptController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "description", value = "圖片位置說明", required = true, dataType = "String"),
             @ApiImplicitParam(name = "file", value = "文件", required = true, dataType = "MultipartFile"),
-
     })
     @PostMapping("/upload/{scriptId}")
     @ResponseBody

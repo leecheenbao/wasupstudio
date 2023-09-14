@@ -27,7 +27,6 @@ public class ScriptQuestionServiceImpl extends AbstractService<ScriptQuestionEnt
         } else {
             this.update(scriptQuestionConverter.DTOtoItem(dto));
         }
-
     }
 
     @Override

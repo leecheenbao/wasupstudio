@@ -1,5 +1,6 @@
 package com.wasupstudio.model.dto;
 
+import com.wasupstudio.annotation.ValidQuestion;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -14,7 +15,9 @@ public class ScriptQuestionDTO implements Serializable {
     private Integer taskId;
     private Integer scriptId;
     private Integer period;
+    @ValidQuestion
     private String parAns;
+    @ValidQuestion
     private String stuAns;
 
 }

@@ -68,14 +68,7 @@ public class TaskController {
 
     @ApiOperation(value = "新增一筆任務資料", notes = "新增一筆 任務資料，並回傳 Result 結果")
     @PostMapping
-    public Result save(@RequestBody @Valid TaskDTO taskDTO, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            String errorMsg = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getField() + " " + error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return ResultGenerator.genFailResult(errorMsg);
-        }
-
+    public Result save(@RequestBody @Valid TaskDTO taskDTO) {
         // 檢核劇本資料
         Integer scriptId = taskDTO.getScriptId();
         ScriptEntity scriptEntity = scriptService.findOne(scriptId);

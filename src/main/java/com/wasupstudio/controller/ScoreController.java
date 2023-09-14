@@ -10,12 +10,10 @@ import com.wasupstudio.service.ScriptQuestionOptionService;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Api(tags = "評分 Score API")
@@ -28,14 +26,7 @@ public class ScoreController {
 
     @ApiOperation(value = "批量新增任務資料", notes = "批量新增學習單資料，並回傳 Result 結果")
     @PostMapping
-    public Result save(@RequestBody @Valid List<ScriptQuestionDTO> scriptQuestionDTOs, BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-            String errorMsg = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getField() + " " + error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return ResultGenerator.genFailResult(errorMsg);
-        }
+    public Result save(@RequestBody @Valid List<ScriptQuestionDTO> scriptQuestionDTOs) {
         for (ScriptQuestionDTO scriptQuestionDTO : scriptQuestionDTOs){
             scriptQuestionOptionService.save(scriptQuestionDTO);
         }

@@ -184,6 +184,7 @@ public class LoginController {
 		loginDTO.setMemMail(adminLoginQuery.getEmail());
 		loginDTO.setRole(authentication.getAuthorities());
 		loginDTO.setId(memberEntity.getId());
+		log.info("[會員登入成功 登入資訊 adminLoginQuery:{}]", adminLoginQuery);
 		return ResultGenerator.genSuccessResult(loginDTO);
 
 	}
@@ -195,16 +196,7 @@ public class LoginController {
 	 */
 	@ApiOperation(value = "會員註冊", notes = "使用會員資料進行註冊，回傳成功或失敗訊息")
 	@PostMapping("/signup")
-	public Result signup(@RequestBody @Valid MemberDTO memberDTO, BindingResult bindingResult) throws Exception {
-
-		if (bindingResult.hasErrors()) {
-			String errorMsg = bindingResult.getFieldErrors().stream()
-					.map(error -> error.getField() + " " + error.getDefaultMessage())
-					.collect(Collectors.joining(", "));
-			return ResultGenerator.genFailResult(errorMsg);
-		}
-
-
+	public Result signup(@RequestBody @Valid MemberDTO memberDTO) throws Exception {
 		MemberEntity memberEntity = memberService.getAdminByEmail(memberDTO.getEmail());
 		if (memberEntity == null) {
 			String mail = memberDTO.getEmail();
@@ -226,15 +218,7 @@ public class LoginController {
 	 */
 	@ApiOperation(value = "發送驗證信", notes = "註冊之後發送驗證信，可用於再次發送")
 	@PostMapping("/mail")
-	public Result sendMail(@RequestBody @Valid MemberDTO memberDTO, BindingResult bindingResult) throws Exception {
-
-		if (bindingResult.hasErrors()) {
-			String errorMsg = bindingResult.getFieldErrors().stream()
-					.map(error -> error.getField() + " " + error.getDefaultMessage())
-					.collect(Collectors.joining(", "));
-			return ResultGenerator.genFailResult(errorMsg);
-		}
-
+	public Result sendMail(@RequestBody @Valid MemberDTO memberDTO) throws Exception {
 		/* 註冊成功發送驗證信 */
 		MemberEntity memberEntity = memberService.getAdminByEmail(memberDTO.getEmail());
 		if (memberEntity != null) {
@@ -258,20 +242,15 @@ public class LoginController {
 		// 在這裡根據驗證碼進行驗證邏輯的實現
 		// 從數據庫中查詢相應的帳號，檢查驗證碼是否有效
 		MemberDTO memberDTO = memberService.findByVerificationCode(verificationCode);
-//		// 如果驗證通過，將帳號的啟用狀態設置為已啟用
-//		if (memberDTO.getStatus().equals(ProjectConstant.SystemAdminStatus.NOT_ENABLED)){
-//			memberDTO.setStatus(ProjectConstant.SystemAdminStatus.DISABLE);
-//			memberService.update(memberDTO);
-//			return ResultGenerator.genSuccessResult(ResultCode.VALIDATAE_CODE_SUCCESS.getMessage());
-//		} else if (memberDTO.getStatus().equals(ProjectConstant.SystemAdminStatus.NORMAL)){
-//			return ResultGenerator.genFailResult(ResultCode.VALIDATAE_CODE_ERROR.getMessage());
-//		} else if (memberDTO.getStatus().equals(ProjectConstant.SystemAdminStatus.DISABLE)) {
-//			return ResultGenerator.genFailResult(ResultCode.USER_LOCK_ERROR.getMessage());
-//		}
+		// 如果驗證通過，將帳號的啟用狀態設置為已啟用
+		if (memberDTO.getStatus().equals(ProjectConstant.SystemAdminStatus.NOT_ENABLED)){
+			memberDTO.setStatus(ProjectConstant.SystemAdminStatus.DISABLE);
+			memberService.update(memberDTO);
+		}
 		// 返回相應的成功或失敗消息
 		Integer memberId = memberDTO.getId();
 		// 導頁
-		String redirectUrl = "http://localhost:3000/setProfile-" + memberId;
+		String redirectUrl = BASE_URL + "/setProfile-" + memberId;
 		return new RedirectView(redirectUrl); // 重新導向到指定的url
 	}
 
