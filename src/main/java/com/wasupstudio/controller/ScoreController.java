@@ -7,10 +7,7 @@ import com.wasupstudio.model.Result;
 import com.wasupstudio.model.dto.ScriptQuestionDTO;
 import com.wasupstudio.model.entity.ScriptQuestionEntity;
 import com.wasupstudio.service.ScriptQuestionOptionService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -29,7 +26,7 @@ public class ScoreController {
     @Autowired
     ScriptQuestionOptionService scriptQuestionOptionService;
 
-    @ApiOperation(value = "新增一筆任務資料", notes = "新增一筆學習單資料，並回傳 Result 結果")
+    @ApiOperation(value = "批量新增任務資料", notes = "批量新增學習單資料，並回傳 Result 結果")
     @PostMapping
     public Result save(@RequestBody @Valid List<ScriptQuestionDTO> scriptQuestionDTOs, BindingResult bindingResult) {
 
@@ -45,6 +42,13 @@ public class ScoreController {
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
     }
 
+    @ApiOperation(value = "刪除任務資料", notes = "刪除學習單資料")
+    @ApiImplicitParam(name = "questionId", value = "questionId", required = true, dataType = "int")
+    @DeleteMapping("/{questionId}")
+    public Result delete(@PathVariable Integer questionId) {
+        scriptQuestionOptionService.delete(questionId);
+        return ResultGenerator.genSuccessResult(ResultCode.DELETE_SUCCESS.getMessage());
+    }
     @ApiOperation(value = "取得所有分數資料")
     @GetMapping
     public Result getAllData() {

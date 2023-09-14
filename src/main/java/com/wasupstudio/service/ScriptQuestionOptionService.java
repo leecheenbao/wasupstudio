@@ -8,6 +8,8 @@ public interface ScriptQuestionOptionService {
 
     void save(ScriptQuestionDTO dto);
 
+    void delete(Integer questionId);
+
     BasePageInfo<ScriptQuestionEntity> findByTaskId(Integer taskId);
 
     BasePageInfo<ScriptQuestionEntity> findAllData();

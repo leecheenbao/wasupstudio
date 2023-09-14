@@ -31,6 +31,11 @@ public class ScriptQuestionServiceImpl extends AbstractService<ScriptQuestionEnt
     }
 
     @Override
+    public void delete(Integer quesetionId) {
+        this.deleteById(quesetionId);
+    }
+
+    @Override
     public BasePageInfo<ScriptQuestionEntity> findByTaskId(Integer id) {
         List<ScriptQuestionEntity> list = scriptQuestionMapper.findByTaskId(id);
         BasePageInfo basePageInfo = new BasePageInfo<>();
