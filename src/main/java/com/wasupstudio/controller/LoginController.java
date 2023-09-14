@@ -44,10 +44,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Api(tags = "權限相關 API")
@@ -137,15 +134,15 @@ public class LoginController {
 			if (memberEntity != null){
 				String jwtToken = memberService.login(userInfo.getEmail());
 				Authentication authentication = JwtUtils.getAuthentication(jwtToken);
-				LoginDTO loginDTO = new LoginDTO();
-				loginDTO.setToken(jwtToken);
-				loginDTO.setMemMail(userInfo.getEmail());
-				loginDTO.setRole(authentication.getAuthorities());
-				loginDTO.setId(memberEntity.getId());
 				url = "https://wasupstudionobullying.com?token=" + jwtToken + "&email=" + userInfo.getEmail() + "&role=" + authentication.getAuthorities();
 				return new RedirectView(url);
+			} else {
+				MemberDTO memberDTO = new MemberDTO();
+				memberDTO.setEmail(userInfo.getEmail());
+				memberDTO.setPwd(UUID.fromString(userInfo.getName()).toString());
+				memberService.save(memberDTO);
 			}
-			return new RedirectView(url + "?mail=" + userInfo.getEmail() + "&name=" + userInfo.getId());
+			return new RedirectView(url + "?mail=" + userInfo.getEmail() + "&name=" + userInfo.getName());
 		}
 		return new RedirectView(url);
 	}
