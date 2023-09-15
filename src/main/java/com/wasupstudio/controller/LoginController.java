@@ -139,7 +139,7 @@ public class LoginController {
 			} else {
 				MemberDTO memberDTO = new MemberDTO();
 				memberDTO.setEmail(userInfo.getEmail());
-				memberDTO.setPwd(UUID.fromString(userInfo.getName()).toString());
+				memberDTO.setPwd(String.valueOf(UUID.randomUUID()));
 				memberService.save(memberDTO);
 			}
 			return new RedirectView(url + "?mail=" + userInfo.getEmail() + "&name=" + userInfo.getName());
