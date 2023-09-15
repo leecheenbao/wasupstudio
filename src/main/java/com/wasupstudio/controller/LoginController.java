@@ -141,6 +141,7 @@ public class LoginController {
 				memberDTO.setEmail(userInfo.getEmail());
 				memberDTO.setPwd(String.valueOf(UUID.randomUUID()));
 				memberDTO.setRole(MemberDTO.Role.ROLE_USER);
+				memberDTO.setName(userInfo.getName());
 				memberService.save(memberDTO);
 			}
 			return new RedirectView(url + "?mail=" + userInfo.getEmail() + "&name=" + userInfo.getName());
