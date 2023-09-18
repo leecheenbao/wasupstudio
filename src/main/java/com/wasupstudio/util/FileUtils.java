@@ -19,22 +19,22 @@ public class FileUtils {
     public static final long MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB;
     public static final long MAX_VIDEO_SIZE = 1024 * 1024 * 1024; // 1G;
     // 定義有效的影音文件副檔名
-    private static final String[] VALID_VIDEO_TYPES = {"mp4", ".avi", ".mkv"};
+    private static final String[] VALID_VIDEO_TYPES = {"mp4", "avi", "mkv", "wmv"};
     // 定義有效的圖片文件副檔名
     private static final String[] VALID_IMAGE_TYPES = {"jpg", "png", "gif", "jpeg", "bmp", "gif"};
     // 定義有效的文件副檔名
-    private static final String[] VALID_DOCS_TYPES = {"pdf", "doc", "txt","docx","ptt","pttx"};
+    private static final String[] VALID_DOCS_TYPES = {"pdf", "doc", "txt", "docx", "ptt", "pttx"};
 
     public static boolean validateFileSize(MultipartFile file) {
         String mediaType = checkFileType(file.getOriginalFilename());
-        switch (mediaType){
-            case ProjectConstant.FileType.DOCS:{
+        switch (mediaType) {
+            case ProjectConstant.FileType.DOCS: {
                 return file.getSize() >= MAX_FILE_SIZE;
             }
-            case ProjectConstant.FileType.IMAGE:{
+            case ProjectConstant.FileType.IMAGE: {
                 return file.getSize() >= MAX_IMAGE_SIZE;
             }
-            case ProjectConstant.FileType.VIDEO:{
+            case ProjectConstant.FileType.VIDEO: {
                 return file.getSize() >= MAX_VIDEO_SIZE;
             }
         }
@@ -112,7 +112,7 @@ public class FileUtils {
         return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + units[digitGroups];
     }
 
-    public static String checkFileType(String originFileName){
+    public static String checkFileType(String originFileName) {
 
         // 獲取檔案副檔名
         String fileExtension = getFileExtension(originFileName);
@@ -122,7 +122,7 @@ public class FileUtils {
             return ProjectConstant.FileType.VIDEO;
         } else if (isImageFile(fileExtension, VALID_IMAGE_TYPES)) {
             return ProjectConstant.FileType.IMAGE;
-        } else if (isPdfFile(fileExtension, VALID_DOCS_TYPES)){
+        } else if (isPdfFile(fileExtension, VALID_DOCS_TYPES)) {
             return ProjectConstant.FileType.DOCS;
         }
         return ProjectConstant.FileType.UNKNOWN;
@@ -147,6 +147,7 @@ public class FileUtils {
         }
         return false;
     }
+
     public static boolean isPdfFile(String fileExtension, String[] PDFExtensions) {
         for (String extension : PDFExtensions) {
             if (extension.equalsIgnoreCase(fileExtension)) {
