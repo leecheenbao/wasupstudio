@@ -21,9 +21,10 @@ public final class ProjectConstant {
         public final static String LOGIN = "/login2callback";
     }
 
-    public final class FilePath {
+    public static final class FilePath {
         public final static String MAINPATH = "https://storage.cloud.google.com/";
 
+        public final static String BUCKET_NAME = "wasupstudio-bucket";
         public final static String IMAGE = "/image/";
 
         public final static String VIDEO = "/video/";
@@ -32,7 +33,7 @@ public final class ProjectConstant {
     }
 
 
-    public final class FileType{
+    public static final class FileType{
         public final static String DOCS = "docs";
         public final static String IMAGE = "image";
 
@@ -42,7 +43,7 @@ public final class ProjectConstant {
 
     }
 
-    public final class APIStatus {
+    public static final class APIStatus {
         public final static String API_RESPONSE_IS_SUCCESS = "SUCCESS";
         public final static String API_RESPONSE_IS_FAIL = "FAIL";
     }
