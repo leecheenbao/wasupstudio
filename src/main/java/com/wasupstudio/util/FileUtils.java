@@ -23,7 +23,7 @@ public class FileUtils {
     // 定義有效的圖片文件副檔名
     private static final String[] VALID_IMAGE_TYPES = {"jpg", "png", "gif", "jpeg", "bmp", "gif"};
     // 定義有效的文件副檔名
-    private static final String[] VALID_DOCS_TYPES = {"pdf", "doc", "txt"};
+    private static final String[] VALID_DOCS_TYPES = {"pdf", "doc", "txt","docx"};
 
     public static boolean validateFileSize(MultipartFile file) {
         String mediaType = checkFileType(file.getOriginalFilename());
