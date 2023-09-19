@@ -260,7 +260,6 @@ public class LoginController {
 		Integer memberId = memberDTO.getId();
 		// 導頁
 		String redirectUrl = BASE_URL + "/setProfile-" + memberId;
-//		String redirectUrl = "setProfile";
 
 		return new RedirectView(redirectUrl); // 重新導向到指定的url
 	}
