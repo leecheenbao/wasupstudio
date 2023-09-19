@@ -120,7 +120,7 @@ public class LoginController {
 	}
 
 	@GetMapping(value = "/signup2callback")
-	public RedirectView handleSignup2Callback(@RequestParam(value = "code") String code, HttpServletRequest request) throws IOException {
+	public RedirectView handleSignup2Callback(@RequestParam(value = "code") String code, HttpServletRequest request) throws Exception {
 		String url = "https://wasupstudionobullying.com/setProfile";
 		if (code != null) {
 			Credential credential = googleOAuth(code, ProjectConstant.GoogleOAuthPath.SIGNUP);
@@ -143,6 +143,13 @@ public class LoginController {
 				memberDTO.setRole(MemberDTO.Role.ROLE_USER);
 				memberDTO.setName(userInfo.getName());
 				memberService.save(memberDTO);
+				memberEntity = memberService.getAdminByEmail(memberDTO.getEmail());
+				if (memberEntity != null) {
+					String mail = memberEntity.getEmail();
+					String verificationCode = AesUtils.encrypt(mail);
+
+					MailUtil.sendMail(ProjectConstant.MailType.SIGNUP, verificationCode, mail);
+				}
 			}
 			return new RedirectView(url + "?mail=" + userInfo.getEmail() + "&name=" + userInfo.getName());
 		}
