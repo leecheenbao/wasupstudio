@@ -110,10 +110,11 @@ public class LoginController {
 
 			String mail = userInfo.getEmail();
 			String role = memberEntity.getRole().toString();
-			Map<String, String> map = new TreeMap<>();
+			Map<String, Object> map = new TreeMap<>();
 			map.put("mail", mail);
 			map.put("token", jwtToken);
 			map.put("role", role);
+			map.put("memberId", memberEntity.getId());
 			return new RedirectView(getURL(url, map));
 		}
 		return new RedirectView(url);
@@ -121,7 +122,9 @@ public class LoginController {
 
 	@GetMapping(value = "/signup2callback")
 	public RedirectView handleSignup2Callback(@RequestParam(value = "code") String code, HttpServletRequest request) throws Exception {
-		String url = "https://wasupstudionobullying.com/setProfile";
+//		String url = "https://wasupstudionobullying.com/setProfile";
+		String url = "https://wasupstudionobullying.com/sentMail";
+
 		if (code != null) {
 			Credential credential = googleOAuth(code, ProjectConstant.GoogleOAuthPath.SIGNUP);
 
@@ -301,12 +304,12 @@ public class LoginController {
 		return url;
 	}
 
-	public String getURL(String url, Map<String, String> params) {
+	public String getURL(String url, Map<String, Object> params) {
 		StringBuilder urlString = new StringBuilder(url);
 
 		if (!params.isEmpty()) {
 			urlString.append("?");
-			for (Map.Entry<String, String> entry : params.entrySet()) {
+			for (Map.Entry<String, Object> entry : params.entrySet()) {
 				urlString.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
 			}
 			urlString.deleteCharAt(urlString.length() - 1); // 移除末尾的 "&"
