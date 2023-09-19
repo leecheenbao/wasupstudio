@@ -2,23 +2,26 @@ package com.wasupstudio.util;
 
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.enums.MailEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.mail.*;
 import javax.mail.internet.*;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Properties;
 
+@Slf4j
 public class MailUtil {
 
+    @Value("${base.url}")
+    private static String BASE_URL;
     private static String user = "paul.lee.2022.09@gmail.com";
     private static String pwd = "ogeplmjxvktfyefd";
     private static String from = "paul.lee.2022.09@gmail.com";
 
-    private static final String MAIL_SIGNUP_VERIFY_URL = "http://wasupstudionobullying.com:8080/wasupstudio/auth/verify/";
-    private static final String MAIL_FORGET_URL = "http://wasupstudionobullying.com:8080/wasupstudio/api/forget";
+    private static final String MAIL_SIGNUP_VERIFY_URL =  BASE_URL + "/auth/verify/";
+    private static final String MAIL_FORGET_URL = BASE_URL + "/wasupstudio/api/forget";
 
     public static void sendMail(String action, String content, String mailTo) throws Exception {
         try {
@@ -65,11 +68,9 @@ public class MailUtil {
             // Send message
             Transport.send(message);
 
-        } catch (AddressException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
+            log.info("[發送 {} 信件 成功] >> from:{}, to:{}", action, from, mailTo);
         } catch (MessagingException e) {
+            log.error("[發送 {} 信件 失敗] >> from:{}, to:{}\n exception:{}", action, from, mailTo, e);
             e.printStackTrace();
         }
     }
