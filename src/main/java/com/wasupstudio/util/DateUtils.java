@@ -1199,5 +1199,17 @@ public class DateUtils {
     public static boolean between(Date from, Date time, Date to) {
         return (from.before(time) || from.equals(time)) && (time.before(to) || time.equals(to));
     }
+
+    /**
+     *
+     * @return
+     * 取得當下時間
+     */
+    public static String getCurrentDateTimeFormatted() {
+        // 获取当前日期和时间
+        Date currentDate = new Date();
+        // 格式化日期和时间为字符串
+        return format(currentDate);
+    }
 }
 
