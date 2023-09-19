@@ -17,7 +17,7 @@ public class MailUtil {
     private static String pwd = "ogeplmjxvktfyefd";
     private static String from = "paul.lee.2022.09@gmail.com";
 
-    private static final String MAIL_SIGNUP_VERIFY_URL =  "https://wasupstudionobullying.com/wasupstudio/auth/verify/";
+    private static final String MAIL_SIGNUP_VERIFY_URL = "https://wasupstudionobullying.com/wasupstudio/auth/verify/";
     private static final String MAIL_FORGET_URL = "https://wasupstudionobullying.com/wasupstudio/wasupstudio/api/forget";
 
     public static void sendMail(String action, String content, String mailTo) throws Exception {
@@ -155,10 +155,9 @@ public class MailUtil {
                         "    <center style='width: 100%; background: #f3f3f5;'>" +
                         "        <div style='text-align: left; padding: 20px; font-family: Arial, sans-serif;'>" +
                         "            <p>您好，</p>" +
-                        "            <p>您於 " + currentDate + " 時，申請帳號密碼重新設置</p>" +
+                        "            <p>您於 " + currentDate + " 時，申請帳號</p>" +
                         "            <p><strong>若您沒有申請此需求，請忽略此封信</strong></p>" +
                         "            <p>請您點擊下方鏈接進行密碼重新設置：</p>" +
-//                        "            <p><a href='http://www.XXXX.com/ccaaaasdasd/sadasdad'>http://www.XXXX.com/ccaaaasdasd/sadasdad</a></p>" +
                         "               <a class='s-btn s-btn__primary' href='" + MAIL_SIGNUP_VERIFY_URL + verificationCode + "' " +
                         "               target='_parent' style='background: #0095FF; " +
                         "               border: 1px solid #0077cc; box-shadow: inset 0 1px 0 0 rgba(102,191,255,.75); " +
@@ -166,7 +165,6 @@ public class MailUtil {
                         "               text-align: center; text-decoration: none; padding: 13px 17px; display: block; border-radius: 4px; " +
                         "               white-space: nowrap;'>" +
                         "               啟用連結請點我</a>" +
-//                        "            <p>若點擊鏈接無法正常啓用，請複製此網址至瀏覽器中操作。</p>" +
                         "            <p><strong>本郵件為自動發送，請勿做任何回復</strong></p>" +
                         "            <p>若有任何問題，請聯繫 wasupstudio@gmail.com</p>" +
                         "        </div>" +
