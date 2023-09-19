@@ -262,7 +262,7 @@ public class LoginController {
 		// 返回相應的成功或失敗消息
 		Integer memberId = memberDTO.getId();
 		// 導頁
-		String redirectUrl = BASE_URL + "/setProfile-" + memberId;
+		String redirectUrl = "https://wasupstudionobullying.com/setProfile-" + memberId;
 
 		return new RedirectView(redirectUrl); // 重新導向到指定的url
 	}
