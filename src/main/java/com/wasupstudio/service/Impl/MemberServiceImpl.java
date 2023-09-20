@@ -101,11 +101,18 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
     }
 
     @Override
+    public void updatePwd(MemberDTO memberDTO) {
+        MemberEntity memberEntity = this.findOne(memberDTO.getId());
+        if (memberEntity != null){
+            memberEntity.setPwd(AesUtils.encrypt(memberDTO.getPwd()));
+        }
+        this.update(memberEntity);
+    }
+
+    @Override
     public String login(AdminLoginQuery adminLoginQuery, AdminLoginLogQuery adminLoginLogQuery) {
 
         MemberEntity memberEntity = memberMapper.findAccount(adminLoginQuery.getEmail());
-//        memberEntity.setLastIp(adminLoginLogQuery.getIp());
-//        memberEntity.setLastLogin(new Date());
 
         Boolean isTure = checkoutPassword(adminLoginQuery, memberEntity);
         if (isTure) {

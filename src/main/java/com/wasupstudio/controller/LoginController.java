@@ -33,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -45,7 +44,6 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Api(tags = "權限相關 API")
 @RestController
@@ -122,7 +120,6 @@ public class LoginController {
 
 	@GetMapping(value = "/signup2callback")
 	public RedirectView handleSignup2Callback(@RequestParam(value = "code") String code, HttpServletRequest request) throws Exception {
-//		String url = "https://wasupstudionobullying.com/setProfile";
 		String url = "https://wasupstudionobullying.com/sentMail";
 
 		if (code != null) {
@@ -238,9 +235,9 @@ public class LoginController {
 			String verificationCode = AesUtils.encrypt(mail);
 
 			MailUtil.sendMail(ProjectConstant.MailType.SIGNUP, verificationCode, mail);
+			return ResultGenerator.genSuccessResult(ResultCode.SEND_MAIL_SUCCESS.getMessage());
 		}
-
-		return ResultGenerator.genSuccessResult();
+		return ResultGenerator.genSuccessResult(ResultCode.EMAIL_NOT_EXIST.getMessage());
 	}
 
 	/**
@@ -263,8 +260,59 @@ public class LoginController {
 		Integer memberId = memberDTO.getId();
 		// 導頁
 		String redirectUrl = "https://wasupstudionobullying.com/setProfile-" + memberId;
-
 		return new RedirectView(redirectUrl); // 重新導向到指定的url
+	}
+
+	/**
+	 * 發送重置信件
+	 * @return 發送結果
+	 */
+	@ApiOperation(value = "發送重置信件", notes = "發送重置信件")
+	@PostMapping("/mail/resetpwd")
+	public Result sendForgetMail(@RequestBody @Valid MemberDTO memberDTO) throws Exception {
+		/* 註冊成功發送驗證信 */
+		MemberEntity memberEntity = memberService.getAdminByEmail(memberDTO.getEmail());
+		if (memberEntity != null) {
+			String mail = memberEntity.getEmail();
+			String verificationCode = AesUtils.encrypt(mail);
+
+			MailUtil.sendMail(ProjectConstant.MailType.FORGET, verificationCode, mail);
+			return ResultGenerator.genSuccessResult(ResultCode.SEND_MAIL_SUCCESS.getMessage());
+		}
+		return ResultGenerator.genSuccessResult(ResultCode.EMAIL_NOT_EXIST.getMessage());
+	}
+
+	/**
+	 * 確認重置密碼信件
+	 *
+	 * @return 發送結果
+	 */
+	@ApiOperation(value = "確認重置密碼信件", notes = "確認重置密碼信件，導頁至更改密碼")
+	@GetMapping("/reset/{verificationCode}")
+	public RedirectView resetPwdVerification(@PathVariable String verificationCode) {
+		System.out.println(getUrl());
+		// 在這裡根據驗證碼進行驗證邏輯的實現
+		// 從數據庫中查詢相應的帳號，檢查驗證碼是否有效
+		MemberDTO memberDTO = memberService.findByVerificationCode(verificationCode);
+		// 如果驗證通過，將帳號的啟用狀態設置為已啟用
+		if (memberDTO != null){
+			Integer memberId = memberDTO.getId();
+			String redirectUrl = "https://wasupstudionobullying.com/pwdEdit-" + memberId;
+			return new RedirectView(redirectUrl); // 重新導向到指定的url
+		}
+		return null;
+	}
+
+	@ApiOperation(value = "確認重置密碼信件", notes = "確認重置密碼信件，導頁至更改密碼")
+	@PostMapping("/reset")
+	public Result resetPwd(@RequestBody @Valid MemberDTO memberDTO) throws Exception {
+		MemberEntity memberEntity = memberService.getAdminByEmail(memberDTO.getEmail());
+		if (memberEntity == null) {
+			memberService.updatePwd(memberDTO);
+			return ResultGenerator.genSuccessResult(ResultCode.PASSWORD_CHANGE_SUCCESS.getMessage());
+		} else {
+			return ResultGenerator.genFailResult(ResultCode.PASSWORD_CHANGE_FAILD.getMessage());
+		}
 	}
 
 	/**

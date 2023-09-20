@@ -20,6 +20,8 @@ public interface MemberService {
 
     void update(MemberDTO memberDTO);
 
+    void updatePwd(MemberDTO memberDTO);
+
     String login(AdminLoginQuery adminLoginQuery, AdminLoginLogQuery adminLoginLogQuery);
 
     String login(String mail);
