@@ -23,7 +23,9 @@ public class FileUtils {
     // 定義有效的圖片文件副檔名
     private static final String[] VALID_IMAGE_TYPES = {"jpg", "png", "gif", "jpeg", "bmp", "gif"};
     // 定義有效的文件副檔名
-    private static final String[] VALID_DOCS_TYPES = {"pdf", "doc", "txt", "docx", "ptt", "pttx"};
+    private static final String[] VALID_DOCS_TYPES = {"doc", "txt", "docx", "ptt", "pttx"};
+
+    private static final String[] VALID_PDF_TYPES = {"pdf"};
 
     public static boolean validateFileSize(MultipartFile file) {
         String mediaType = checkFileType(file.getOriginalFilename());
@@ -124,6 +126,8 @@ public class FileUtils {
             return ProjectConstant.FileType.IMAGE;
         } else if (isPdfFile(fileExtension, VALID_DOCS_TYPES)) {
             return ProjectConstant.FileType.DOCS;
+        } else if (isPdfFile(fileExtension, VALID_PDF_TYPES)) {
+            return ProjectConstant.FileType.PDF;
         }
         return ProjectConstant.FileType.UNKNOWN;
     }
