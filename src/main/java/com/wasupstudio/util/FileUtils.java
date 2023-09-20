@@ -44,7 +44,7 @@ public class FileUtils {
     }
 
     public static boolean validateFileExtension(String fileName) {
-        String[] allValidTypes = mergeArrays(VALID_VIDEO_TYPES, VALID_IMAGE_TYPES, VALID_DOCS_TYPES);
+        String[] allValidTypes = mergeArrays(VALID_VIDEO_TYPES, VALID_IMAGE_TYPES, VALID_DOCS_TYPES, VALID_PDF_TYPES);
 
         String extension = getFileExtension(fileName);
         for (String allowedExtension : allValidTypes) {
