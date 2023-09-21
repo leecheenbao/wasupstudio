@@ -23,10 +23,10 @@ public class MemberDTO implements Serializable {
     private String pwd;
     private String name;
     private String phone;
-    private Date birthday;
+    private String birthday;
     private String organization;
     private Integer grade;
-    private Date registionTime;
+    private String registionTime;
     private Role role;
     private String lastIp;
     private Date lastLogin;

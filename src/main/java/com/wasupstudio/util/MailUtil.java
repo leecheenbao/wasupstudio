@@ -5,8 +5,10 @@ import com.wasupstudio.enums.MailEnum;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.mail.*;
-import javax.mail.internet.*;
-import java.text.SimpleDateFormat;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import java.util.Properties;
 
 @Slf4j

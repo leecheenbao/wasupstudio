@@ -156,7 +156,7 @@ public class JwtUtils {
             memberEntity.setStatus((Integer) map.get("status"));
             memberEntity.setGrade((Integer) map.get("grade"));
             memberEntity.setOrganization((String) map.get("organization"));
-            memberEntity.setBirthday(birthday);
+            memberEntity.setBirthday(birthday.toString());
 
             memberEntity.setRole(MemberEntity.Role.valueOf((String) map.get("role")));
             memberEntity.setName((String) map.get("name"));

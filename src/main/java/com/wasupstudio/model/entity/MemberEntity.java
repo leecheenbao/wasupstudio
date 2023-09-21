@@ -36,14 +36,14 @@ public class MemberEntity implements Serializable {
     @Column(name = "phone", nullable = false)
     private String phone;
     @Column(name = "birthday", nullable = false)
-    private Date birthday;
+    private String birthday;
     @Column(name = "organization", nullable = false)
     private String organization;
     @Column(name = "grade", nullable = false)
     private Integer grade;
 
     @Column(name = "registration_time", nullable = false)
-    private Date registionTime;
+    private String registionTime;
 
     @Column(name = "status", nullable = false)
     private Integer status;
