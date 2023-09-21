@@ -38,18 +38,5 @@ public class MemberController {
         return ResultGenerator.genSuccessResult(licenseEntity);
     }
 
-    @ApiOperation(value = "更新指定ID的會員資料", notes = "更新指定ID的會員資料")
-    @PutMapping("/{id}")
-    public Result update(@PathVariable Integer id, @RequestBody @Valid MemberDTO memberDTO, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            String errorMsg = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getField() + " " + error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return ResultGenerator.genFailResult(errorMsg);
-        }
 
-        memberDTO.setId(id);
-        memberService.update(memberDTO);
-        return ResultGenerator.genSuccessResult(ResultCode.SAVE_SUCCESS.getMessage());
-    }
 }

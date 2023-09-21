@@ -33,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -44,6 +45,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Api(tags = "權限相關 API")
 @RestController
@@ -406,5 +408,20 @@ public class LoginController {
 		return credential;
 	}
 
+
+	@ApiOperation(value = "更新指定ID的會員資料", notes = "更新指定ID的會員資料")
+	@PutMapping("/member/{id}")
+	public Result update(@PathVariable Integer id, @RequestBody @Valid MemberDTO memberDTO, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			String errorMsg = bindingResult.getFieldErrors().stream()
+					.map(error -> error.getField() + " " + error.getDefaultMessage())
+					.collect(Collectors.joining(", "));
+			return ResultGenerator.genFailResult(errorMsg);
+		}
+
+		memberDTO.setId(id);
+		memberService.update(memberDTO);
+		return ResultGenerator.genSuccessResult(ResultCode.SAVE_SUCCESS.getMessage());
+	}
 }
 
