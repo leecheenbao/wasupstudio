@@ -26,7 +26,7 @@ public class PdfWithQrCodeUtils {
     String outputFilePath = "file/output.pdf";
 
     public static void main(String[] args) throws IOException, WriterException {
-        String pdfFilePath = "file/input.pdf";
+        String pdfFilePath = "https://storage.cloud.google.com/wasupstudio-bucket/1695017168715.pdf";
         String qrCodeContent = "https://www.example.com";
         int qrCodeSize = 100;
         String outputFilePath = "file/output.pdf";

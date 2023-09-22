@@ -422,18 +422,7 @@ public class LoginController {
 		memberDTO.setId(id);
 		memberService.update(memberDTO);
 
-		String jwtToken = memberService.login(memberDTO.getEmail());
-		if (jwtToken.isEmpty()){
-			return ResultGenerator.genFailResult(ResultCode.USER_LOGIN_FAILED.getMessage());
-		}
-		Authentication authentication = JwtUtils.getAuthentication(jwtToken);
-		MemberEntity memberEntity = memberService.getAdminByEmail(memberDTO.getEmail());
-		LoginDTO loginDTO = new LoginDTO();
-		loginDTO.setToken(jwtToken);
-		loginDTO.setMemMail(memberDTO.getEmail());
-		loginDTO.setRole(authentication.getAuthorities());
-		loginDTO.setId(memberEntity.getId());
-		return ResultGenerator.genSuccessResult(loginDTO);
+		return ResultGenerator.genSuccessResult(ResultCode.SAVE_SUCCESS.getMessage());
 	}
 }
 
