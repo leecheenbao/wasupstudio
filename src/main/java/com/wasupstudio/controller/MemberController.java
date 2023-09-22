@@ -1,20 +1,17 @@
 package com.wasupstudio.controller;
 
-import com.wasupstudio.model.Result;
-import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
-import com.wasupstudio.model.dto.MemberDTO;
+import com.wasupstudio.model.BasePageInfo;
+import com.wasupstudio.model.Result;
 import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.service.MemberService;
-import com.wasupstudio.model.BasePageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Api(tags = "用戶相關 Member API")
 @RestController
