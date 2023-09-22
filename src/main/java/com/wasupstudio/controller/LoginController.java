@@ -309,7 +309,7 @@ public class LoginController {
 	@PostMapping("/reset")
 	public Result resetPwd(@RequestBody @Valid MemberDTO memberDTO) {
 		MemberEntity memberEntity = memberService.getAdminByEmail(memberDTO.getEmail());
-		if (memberEntity == null) {
+		if (memberEntity != null) {
 			memberService.updatePwd(memberDTO);
 			return ResultGenerator.genSuccessResult(ResultCode.PASSWORD_CHANGE_SUCCESS.getMessage());
 		} else {
