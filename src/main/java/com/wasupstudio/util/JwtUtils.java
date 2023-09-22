@@ -14,6 +14,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.xml.bind.DatatypeConverter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,7 +38,7 @@ public class JwtUtils {
     /**
      * 根據用戶名和用戶角色生成 token
      *
-     * @param member   用戶
+     * @param member     用戶
      * @param isRemember 是否記住我
      * @return 返回生成的 token
      */
@@ -94,7 +97,7 @@ public class JwtUtils {
     public static Authentication getAuthentication(String token) {
         Claims claims = getTokenBody(token);
         // 獲取用戶角色字符串
-        Map<String,String> memberInfo = (Map<String, String>) claims.get(SecurityConstants.TOKEN_MEMBER_INFO);
+        Map<String, String> memberInfo = (Map<String, String>) claims.get(SecurityConstants.TOKEN_MEMBER_INFO);
         String role = memberInfo.get(SecurityConstants.TOKEN_ROLE_CLAIM);
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
@@ -144,27 +147,22 @@ public class JwtUtils {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Claims claims = getTokenBody(authentication.getCredentials().toString());
         Map<String, Object> map = (Map<String, Object>) claims.get(SecurityConstants.TOKEN_MEMBER_INFO);
-
-        if (map != null) {
-            Long timestamp = (Long) map.get("birthday");
-            Date birthday = new Date(timestamp);
-
+        return Optional.ofNullable(map).map(memberMap -> {
+            String dateString = (String) memberMap.get("birthday");
+            LocalDate birthday = LocalDate.parse(dateString);
             MemberEntity memberEntity = new MemberEntity();
-            memberEntity.setId((Integer) map.get("id"));
-            memberEntity.setPhone((String) map.get("phone"));
-            memberEntity.setEmail((String) map.get("email"));
-            memberEntity.setStatus((Integer) map.get("status"));
-            memberEntity.setGrade((Integer) map.get("grade"));
-            memberEntity.setOrganization((String) map.get("organization"));
+            memberEntity.setId((Integer) memberMap.get("id"));
+            memberEntity.setPhone((String) memberMap.get("phone"));
+            memberEntity.setEmail((String) memberMap.get("email"));
+            memberEntity.setStatus((Integer) memberMap.get("status"));
+            memberEntity.setGrade((Integer) memberMap.get("grade"));
+            memberEntity.setOrganization((String) memberMap.get("organization"));
             memberEntity.setBirthday(birthday.toString());
-
-            memberEntity.setRole(MemberEntity.Role.valueOf((String) map.get("role")));
-            memberEntity.setName((String) map.get("name"));
+            memberEntity.setRole(MemberEntity.Role.valueOf((String) memberMap.get("role")));
+            memberEntity.setName((String) memberMap.get("name"));
 
             return memberEntity;
-        }
-
-        return null;
+        }).orElse(null);
     }
 
 }
