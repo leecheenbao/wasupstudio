@@ -184,7 +184,7 @@ public class LoginController {
 		adminLoginQuery.setDevice_os(getHeader("device_os"));
 
 		String jwtToken = memberService.login(adminLoginQuery, adminLoginLogQuery);
-		if (jwtToken.isEmpty()){
+		if (jwtToken == null){
 			log.info("[會員登入失敗 登入資訊 adminLoginQuery:{}]", adminLoginQuery);
 			return ResultGenerator.genFailResult(ResultCode.USER_LOGIN_FAILED.getMessage());
 		}
