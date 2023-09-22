@@ -22,11 +22,6 @@ import java.util.Date;
 @Table(name = "wa_media")
 public class MediaEntity implements Serializable {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "media_id")
-//    private int mediaId;
-
     @Column(name = "script_id")
     private Integer scriptId;
     @Id

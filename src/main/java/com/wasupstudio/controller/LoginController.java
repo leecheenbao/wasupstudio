@@ -305,9 +305,9 @@ public class LoginController {
 		return null;
 	}
 
-	@ApiOperation(value = "確認重置密碼信件", notes = "確認重置密碼信件，導頁至更改密碼")
+	@ApiOperation(value = "重置密碼", notes = "更改密碼")
 	@PostMapping("/reset")
-	public Result resetPwd(@RequestBody @Valid MemberDTO memberDTO) throws Exception {
+	public Result resetPwd(@RequestBody @Valid MemberDTO memberDTO) {
 		MemberEntity memberEntity = memberService.getAdminByEmail(memberDTO.getEmail());
 		if (memberEntity == null) {
 			memberService.updatePwd(memberDTO);
