@@ -43,7 +43,8 @@ public class MemberEntity implements Serializable {
     private Integer grade;
 
     @Column(name = "registration_time", nullable = false)
-    private String registionTime;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date registionTime;
 
     @Column(name = "status", nullable = false)
     private Integer status;

@@ -13,6 +13,7 @@ import com.wasupstudio.service.MemberService;
 import com.wasupstudio.service.AbstractService;
 import com.wasupstudio.util.AesUtils;
 import com.wasupstudio.model.BasePageInfo;
+import com.wasupstudio.util.DateUtils;
 import com.wasupstudio.util.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
             memberEntity.setBirthday(memberDTO.getBirthday());
             memberEntity.setOrganization(memberDTO.getOrganization());
             memberEntity.setGrade(memberDTO.getGrade());
-            memberEntity.setRegistionTime(memberDTO.getRegistionTime());
+            memberEntity.setRegistionTime(new Date());
             memberEntity.setStatus(ProjectConstant.SystemAdminStatus.NOT_ENABLED);
             memberEntity.setRole(MemberEntity.Role.valueOf(memberDTO.getRole().toString()));
             memberEntity.setVerificationCode(AesUtils.encrypt(memberDTO.getEmail()));
@@ -90,7 +91,6 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
             memberEntity.setOrganization(memberDTO.getOrganization());
             memberEntity.setGrade(memberDTO.getGrade());
             memberEntity.setLastIp(memberDTO.getLastIp());
-            memberEntity.setRegistionTime(memberDTO.getRegistionTime());
             memberEntity.setLastLogin(memberDTO.getLastLogin());
             memberEntity.setStatus(memberDTO.getStatus());
             memberEntity.setCategory(memberDTO.getCategory());

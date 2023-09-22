@@ -175,7 +175,7 @@ public class DateUtils {
     }
 
     public static String format8(Date date) {
-        return format(date, DF_YYYYMMDD);
+        return format(date, YYYY_MM_DD);
     }
 
 
