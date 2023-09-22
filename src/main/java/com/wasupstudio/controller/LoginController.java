@@ -308,7 +308,7 @@ public class LoginController {
 	@ApiOperation(value = "重置密碼", notes = "更改密碼")
 	@PostMapping("/reset")
 	public Result resetPwd(@RequestBody @Valid MemberDTO memberDTO) {
-		MemberEntity memberEntity = memberService.getAdminByEmail(memberDTO.getEmail());
+		MemberEntity memberEntity = memberService.findOne(memberDTO.getId());
 		if (memberEntity != null) {
 			memberService.updatePwd(memberDTO);
 			return ResultGenerator.genSuccessResult(ResultCode.PASSWORD_CHANGE_SUCCESS.getMessage());
