@@ -8,9 +8,9 @@ import java.util.Map;
 
 public enum FileTypeEnum {
 
-    PDF("docs","/docs/","文件檔"),
-    IMAGE("image","/image/","圖片檔"),
-    VIDEO("video","/video/", "影音檔")
+    PDF("application/docs","/docs/","文件檔"),
+    IMAGE("application/image","/image/","圖片檔"),
+    VIDEO("application/video","/video/", "影音檔")
     ;
 
 

@@ -18,6 +18,8 @@ public class FileUtils {
     public static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     public static final long MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB;
     public static final long MAX_VIDEO_SIZE = 1024 * 1024 * 1024; // 1G;
+    public static final long MAX_PDF_SIZE = 5 * 1024 * 1024; // 5M;
+
     // 定義有效的影音文件副檔名
     private static final String[] VALID_VIDEO_TYPES = {"mp4", "avi", "mkv", "wmv"};
     // 定義有效的圖片文件副檔名
@@ -38,6 +40,9 @@ public class FileUtils {
             }
             case ProjectConstant.FileType.VIDEO: {
                 return file.getSize() >= MAX_VIDEO_SIZE;
+            }
+            case ProjectConstant.FileType.PDF: {
+                return file.getSize() >= MAX_PDF_SIZE;
             }
         }
         return true;

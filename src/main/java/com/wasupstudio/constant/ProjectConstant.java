@@ -36,11 +36,8 @@ public final class ProjectConstant {
     public static final class FileType{
         public final static String DOCS = "application/docs";
         public final static String PDF = "application/pdf";
-
         public final static String IMAGE = "application/image";
-
         public final static String VIDEO = "application/video";
-
         public final static String UNKNOWN = "Unknown file type";
 
     }

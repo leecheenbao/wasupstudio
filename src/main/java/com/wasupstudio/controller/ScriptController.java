@@ -3,10 +3,10 @@ package com.wasupstudio.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.google.zxing.WriterException;
 import com.wasupstudio.enums.FileTypeEnum;
 import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
-import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
 import com.wasupstudio.model.dto.*;
 import com.wasupstudio.model.entity.*;
@@ -15,20 +15,20 @@ import com.wasupstudio.service.*;
 import com.wasupstudio.util.DateUtils;
 import com.wasupstudio.util.FileUtils;
 import com.wasupstudio.util.JwtUtils;
+import com.wasupstudio.util.PdfWithQrCodeUtils;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static com.wasupstudio.util.FileUtils.getFileExtension;
 
@@ -56,17 +56,12 @@ public class ScriptController {
     @Autowired
     private FileService fileService;
 
-    @ApiOperation(value = "取得劇本資料")
-    @GetMapping
-    public Result getAllData() {
-        BasePageInfo pageInfo = scriptService.findAllData();
-        return ResultGenerator.genSuccessResult(pageInfo);
-    }
-
     @ApiOperation(value = "取得單一劇本資料")
     @ApiImplicitParam(name = "scriptId", value = "scriptId", required = true, dataType = "int", paramType = "path")
     @GetMapping("/{scriptId}")
     public Result getOneData(@PathVariable Integer scriptId) {
+        MemberEntity member = JwtUtils.getMember();
+
         ScriptEntity scriptEntity = scriptService.findOne(scriptId);
         if (scriptEntity == null) {
             return ResultGenerator.genSuccessResult(ResultCode.DATA_NOT_EXIST.getMessage());
@@ -297,5 +292,56 @@ public class ScriptController {
         fileService.removeFile(lastByte);
         mediaService.delete(scriptId, description);
         return ResultGenerator.genSuccessResult(ResultCode.DELETE_SUCCESS.getMessage());
+    }
+
+
+    @ApiOperation(value = "刪除檔案", notes = "刪除檔案接口")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "scriptId", value = "劇本ID", required = true, dataType = "Integer"),
+            @ApiImplicitParam(name = "description", value = "影音ID", required = true, dataType = "String")
+    })
+    @PostMapping("/download/{scriptId}/{description}")
+    @ResponseBody
+    public void downloadMixFile(@PathVariable Integer scriptId, @PathVariable String description,
+                                HttpServletResponse response) throws IOException, WriterException {
+
+        MediaDTO mediaDTO = mediaService.findByScriptIdAndDescription(scriptId, description);
+        if (mediaDTO == null) {
+//            return ResultGenerator.genSuccessResult(ResultCode.MATERIAL_INFO_NOT_EXIST.getMessage());
+        }
+
+        String qrCodeContent = "https://www.example.com";
+        String gcsUrl = "https://storage.googleapis.com/wasupstudio-bucket/1695017168715.pdf";
+        String localFilePath = "file/output.pdf";
+
+        PdfWithQrCodeUtils.downloadFileFromGCS(gcsUrl, localFilePath);
+
+        PdfWithQrCodeUtils.mixPdfAndQrCode(qrCodeContent, localFilePath);
+
+
+        File file = new File(localFilePath);
+
+        if (file.exists()) {
+            response.setContentType(MediaType.APPLICATION_PDF_VALUE);  // Set the content type to PDF
+            response.setHeader("Content-Disposition", "attachment; filename=output.pdf");
+
+            try (InputStream inputStream = new FileInputStream(file);
+                 OutputStream outputStream = response.getOutputStream()) {
+
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+                outputStream.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Handle the case where the file doesn't exist
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.getWriter().write("File not found");
+        }
+
     }
 }

@@ -14,9 +14,8 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,18 +25,26 @@ public class PdfWithQrCodeUtils {
     String outputFilePath = "file/output.pdf";
 
     public static void main(String[] args) throws IOException, WriterException {
-        String pdfFilePath = "https://storage.cloud.google.com/wasupstudio-bucket/1695017168715.pdf";
         String qrCodeContent = "https://www.example.com";
-        int qrCodeSize = 100;
-        String outputFilePath = "file/output.pdf";
+        String gcsUrl = "https://storage.googleapis.com/wasupstudio-bucket/1695017168715.pdf";
+        String localFilePath = "file/output.pdf";
 
+        downloadFileFromGCS(gcsUrl, localFilePath);
+
+        mixPdfAndQrCode(qrCodeContent, localFilePath);
+    }
+
+
+    public static void mixPdfAndQrCode(String qrCodeContent, String localFilePath) throws IOException, WriterException {
+        String outputFilePath = "file/output.pdf";
+        int qrCodeSize = 100;
         // Create QR Code
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeContent, BarcodeFormat.QR_CODE, qrCodeSize, qrCodeSize, getQRCodeHints());
         BufferedImage qrCodeImage = createQRCodeImage(bitMatrix);
 
         // Load PDF file
-        PDDocument document = PDDocument.load(new File(pdfFilePath));
+        PDDocument document = PDDocument.load(new File(localFilePath));
         PDPage page = document.getPage(0); // Get the first page
 
         // Create an image object from the QR Code
@@ -56,6 +63,19 @@ public class PdfWithQrCodeUtils {
         document.close();
     }
 
+    public static void downloadFileFromGCS(String gcsUrl, String localFilePath) throws IOException {
+        URL url = new URL(gcsUrl);
+        try (InputStream in = new BufferedInputStream(url.openStream());
+             FileOutputStream out = new FileOutputStream(localFilePath)) {
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
+            System.out.println("File downloaded successfully to: " + localFilePath);
+        }
+    }
     private static BufferedImage createQRCodeImage(BitMatrix bitMatrix) {
         int qrCodeWidth = bitMatrix.getWidth();
         int qrCodeHeight = bitMatrix.getHeight();

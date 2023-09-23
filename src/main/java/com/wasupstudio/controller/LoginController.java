@@ -17,6 +17,7 @@ import com.google.api.services.oauth2.model.Userinfo;
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
+import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
 import com.wasupstudio.model.dto.LoginDTO;
 import com.wasupstudio.model.dto.MemberDTO;
@@ -24,6 +25,7 @@ import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
 import com.wasupstudio.service.MemberService;
+import com.wasupstudio.service.ScriptService;
 import com.wasupstudio.util.AesUtils;
 import com.wasupstudio.util.HttpServletRequestUtils;
 import com.wasupstudio.util.JwtUtils;
@@ -70,6 +72,9 @@ public class LoginController {
 
 	@Autowired
 	private MemberService memberService;
+
+	@Autowired
+	private ScriptService scriptService;
 
 	@ApiOperation(value = "Google註冊", notes = "如果提供了code，則會使用Google API進行註冊，否則會重定向到Google的OAuth授權頁面")
 	@ApiImplicitParams({
@@ -424,5 +429,13 @@ public class LoginController {
 
 		return ResultGenerator.genSuccessResult(ResultCode.SAVE_SUCCESS.getMessage());
 	}
+
+	@ApiOperation(value = "取得劇本資料")
+	@GetMapping("/script")
+	public Result getAllData() {
+		BasePageInfo pageInfo = scriptService.findAllData();
+		return ResultGenerator.genSuccessResult(pageInfo);
+	}
 }
+
 
