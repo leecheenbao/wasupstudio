@@ -7,6 +7,7 @@ import com.google.zxing.WriterException;
 import com.wasupstudio.enums.FileTypeEnum;
 import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
+import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
 import com.wasupstudio.model.dto.*;
 import com.wasupstudio.model.entity.*;
@@ -55,6 +56,13 @@ public class ScriptController {
     private MediaService mediaService;
     @Autowired
     private FileService fileService;
+
+    @ApiOperation(value = "取得劇本資料")
+    @GetMapping
+    public Result getAllData() {
+        BasePageInfo pageInfo = scriptService.findAllData();
+        return ResultGenerator.genSuccessResult(pageInfo);
+    }
 
     @ApiOperation(value = "取得單一劇本資料")
     @ApiImplicitParam(name = "scriptId", value = "scriptId", required = true, dataType = "int", paramType = "path")
