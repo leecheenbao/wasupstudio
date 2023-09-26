@@ -14,6 +14,8 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfo;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
@@ -21,17 +23,21 @@ import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
 import com.wasupstudio.model.dto.LoginDTO;
 import com.wasupstudio.model.dto.MemberDTO;
+import com.wasupstudio.model.dto.ScriptDetailDTO;
+import com.wasupstudio.model.dto.ScriptEndingDTO;
 import com.wasupstudio.model.entity.MemberEntity;
+import com.wasupstudio.model.entity.ScriptEntity;
 import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
-import com.wasupstudio.service.MemberService;
-import com.wasupstudio.service.ScriptService;
+import com.wasupstudio.model.query.ScriptQuery;
+import com.wasupstudio.service.*;
 import com.wasupstudio.util.AesUtils;
 import com.wasupstudio.util.HttpServletRequestUtils;
 import com.wasupstudio.util.JwtUtils;
 import com.wasupstudio.util.MailUtil;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -53,7 +59,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/auth")
 @Slf4j
-public class LoginController {
+public class AuthController {
 	@Value("${google.CLIENT_ID}")
 	private  String CLIENT_ID;
 	@Value("${google.CLIENT_SECRET}")
@@ -72,9 +78,14 @@ public class LoginController {
 
 	@Autowired
 	private MemberService memberService;
-
 	@Autowired
 	private ScriptService scriptService;
+	@Autowired
+	private ScriptEndingService scriptEndingService;
+	@Autowired
+	private ScriptDetailService scriptDetailService;
+	@Autowired
+	private MediaService mediaService;
 
 	@ApiOperation(value = "Google註冊", notes = "如果提供了code，則會使用Google API進行註冊，否則會重定向到Google的OAuth授權頁面")
 	@ApiImplicitParams({
@@ -435,6 +446,38 @@ public class LoginController {
 	public Result getAllData() {
 		BasePageInfo pageInfo = scriptService.findAllData();
 		return ResultGenerator.genSuccessResult(pageInfo);
+	}
+
+	@ApiOperation(value = "取得單一劇本資料")
+	@ApiImplicitParam(name = "scriptId", value = "scriptId", required = true, dataType = "int", paramType = "path")
+	@GetMapping("/{scriptId}")
+	public Result getOneData(@PathVariable Integer scriptId) {
+		ScriptEntity scriptEntity = scriptService.findOne(scriptId);
+		if (scriptEntity == null) {
+			return ResultGenerator.genSuccessResult(ResultCode.DATA_NOT_EXIST.getMessage());
+		}
+
+		List<ScriptDetailDTO> details = scriptDetailService.findByScriptId(scriptId);
+		ScriptEndingDTO scriptEndingDTO = scriptEndingService.findOne(scriptId);
+		ScriptQuery scriptQuery = tranData(scriptEntity);
+		scriptQuery.setMediaDTO(mediaService.findByScriptId(scriptId));
+		scriptQuery.setScriptDetail(details);
+		scriptQuery.setScriptEndingDTO(scriptEndingDTO);
+		return ResultGenerator.genSuccessResult(scriptQuery);
+	}
+
+	public ScriptQuery tranData(ScriptEntity scriptEntity) {
+		Gson gson = new Gson();
+		List<String> tips = gson.fromJson(scriptEntity.getTips(), new TypeToken<List<String>>() {}.getType());
+		List<String> goals = gson.fromJson(scriptEntity.getGoal(), new TypeToken<List<String>>() {}.getType());
+		List<String> preambles = gson.fromJson(scriptEntity.getPreamble(), new TypeToken<List<String>>() {}.getType());
+
+		ScriptQuery scriptQuery = new ScriptQuery();
+		BeanUtils.copyProperties(scriptEntity, scriptQuery);
+		scriptQuery.setTips(tips);
+		scriptQuery.setGoal(goals);
+		scriptQuery.setPreamble(preambles);
+		return scriptQuery;
 	}
 }
 

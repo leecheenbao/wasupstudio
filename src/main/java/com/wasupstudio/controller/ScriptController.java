@@ -43,15 +43,12 @@ public class ScriptController {
     private ScriptService scriptService;
     @Autowired
     private ScriptDetailService scriptDetailService;
-
     @Autowired
     private StudentConfigService studentConfigService;
     @Autowired
     private ParentConfigService parentConfigService;
-
     @Autowired
     private ScriptEndingService scriptEndingService;
-
     @Autowired
     private MediaService mediaService;
     @Autowired
@@ -62,40 +59,6 @@ public class ScriptController {
     public Result getAllData() {
         BasePageInfo pageInfo = scriptService.findAllData();
         return ResultGenerator.genSuccessResult(pageInfo);
-    }
-
-    @ApiOperation(value = "取得單一劇本資料")
-    @ApiImplicitParam(name = "scriptId", value = "scriptId", required = true, dataType = "int", paramType = "path")
-    @GetMapping("/{scriptId}")
-    public Result getOneData(@PathVariable Integer scriptId) {
-        MemberEntity member = JwtUtils.getMember();
-
-        ScriptEntity scriptEntity = scriptService.findOne(scriptId);
-        if (scriptEntity == null) {
-            return ResultGenerator.genSuccessResult(ResultCode.DATA_NOT_EXIST.getMessage());
-        }
-
-        List<ScriptDetailDTO> details = scriptDetailService.findByScriptId(scriptId);
-        ScriptEndingDTO scriptEndingDTO = scriptEndingService.findOne(scriptId);
-        ScriptQuery scriptQuery = tranData(scriptEntity);
-        scriptQuery.setMediaDTO(mediaService.findByScriptId(scriptId));
-        scriptQuery.setScriptDetail(details);
-        scriptQuery.setScriptEndingDTO(scriptEndingDTO);
-        return ResultGenerator.genSuccessResult(scriptQuery);
-    }
-
-    public ScriptQuery tranData(ScriptEntity scriptEntity) {
-        Gson gson = new Gson();
-        List<String> tips = gson.fromJson(scriptEntity.getTips(), new TypeToken<List<String>>() {}.getType());
-        List<String> goals = gson.fromJson(scriptEntity.getGoal(), new TypeToken<List<String>>() {}.getType());
-        List<String> preambles = gson.fromJson(scriptEntity.getPreamble(), new TypeToken<List<String>>() {}.getType());
-
-        ScriptQuery scriptQuery = new ScriptQuery();
-        BeanUtils.copyProperties(scriptEntity, scriptQuery);
-        scriptQuery.setTips(tips);
-        scriptQuery.setGoal(goals);
-        scriptQuery.setPreamble(preambles);
-        return scriptQuery;
     }
 
     @ApiOperation(value = "新增一筆劇本資料")
@@ -351,5 +314,19 @@ public class ScriptController {
             response.getWriter().write("File not found");
         }
 
+    }
+
+    public ScriptQuery tranData(ScriptEntity scriptEntity) {
+        Gson gson = new Gson();
+        List<String> tips = gson.fromJson(scriptEntity.getTips(), new TypeToken<List<String>>() {}.getType());
+        List<String> goals = gson.fromJson(scriptEntity.getGoal(), new TypeToken<List<String>>() {}.getType());
+        List<String> preambles = gson.fromJson(scriptEntity.getPreamble(), new TypeToken<List<String>>() {}.getType());
+
+        ScriptQuery scriptQuery = new ScriptQuery();
+        BeanUtils.copyProperties(scriptEntity, scriptQuery);
+        scriptQuery.setTips(tips);
+        scriptQuery.setGoal(goals);
+        scriptQuery.setPreamble(preambles);
+        return scriptQuery;
     }
 }
