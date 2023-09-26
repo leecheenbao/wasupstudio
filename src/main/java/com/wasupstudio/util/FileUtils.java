@@ -25,7 +25,7 @@ public class FileUtils {
     // 定義有效的圖片文件副檔名
     private static final String[] VALID_IMAGE_TYPES = {"jpg", "png", "gif", "jpeg", "bmp", "gif"};
     // 定義有效的文件副檔名
-    private static final String[] VALID_DOCS_TYPES = {"doc", "txt", "docx", "ptt", "pttx"};
+    private static final String[] VALID_DOCS_TYPES = {"doc", "txt", "docx", "ppt", "pptx"};
 
     private static final String[] VALID_PDF_TYPES = {"pdf"};
 
