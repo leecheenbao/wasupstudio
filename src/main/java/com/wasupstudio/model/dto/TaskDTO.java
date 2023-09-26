@@ -31,9 +31,9 @@ public class TaskDTO implements Serializable {
 
     private Integer estimatedParticipants;
 
-    private Date createTime;
+    private String createTime;
 
-    private Date endTime;
+    private String endTime;
 
     private Integer status;
 

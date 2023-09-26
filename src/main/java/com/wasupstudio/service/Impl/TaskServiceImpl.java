@@ -11,6 +11,8 @@ import com.wasupstudio.util.ValueValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +35,9 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
         taskEntity.setEstimatedParticipants(taskDTO.getEstimatedParticipants());
         taskEntity.setStatus(taskDTO.getStatus());
         taskEntity.setCreateTime(new Date());
-        taskEntity.setEndTime(DateUtils.getEndDate(taskDTO.getEndTime()));
+
+        Date endTime = DateUtils.toDate(taskDTO.getEndTime(), DateUtils.YYYY_MM_DD);
+        taskEntity.setEndTime(DateUtils.getEndDate(endTime));
         taskEntity.setLearning(taskEntity.getLearning());
 
         save(taskEntity);
@@ -67,7 +71,7 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
     @Override
     public void update(TaskDTO taskDTO) {
         TaskEntity taskEntity = this.findOne(taskDTO.getTaskId());
-        if (taskEntity != null){
+        if (taskEntity != null) {
             taskEntity.setAuthor(taskDTO.getAuthor());
             taskEntity.setMemberId(taskDTO.getMemberId());
 
@@ -89,14 +93,16 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
             if (!ValueValidator.isNullOrZero(taskDTO.getStatus())) {
                 taskEntity.setStatus(taskDTO.getStatus());
             }
-            if (!ValueValidator.isNullOrEmpty(taskDTO.getEndTime())){
-                taskEntity.setEndTime(DateUtils.getEndDate(taskDTO.getEndTime()));
+            if (!ValueValidator.isNullOrEmpty(taskDTO.getEndTime())) {
+                Date endTime = DateUtils.toDate(taskDTO.getEndTime(), DateUtils.YYYY_MM_DD);
+                taskEntity.setEndTime(DateUtils.getEndDate(endTime));
             }
-            if (!ValueValidator.isNullOrZero(taskDTO.getLearning())){
+            if (!ValueValidator.isNullOrZero(taskDTO.getLearning())) {
                 taskEntity.setLearning(taskDTO.getLearning());
             }
             this.update(taskEntity);
         }
     }
 }
+
 
