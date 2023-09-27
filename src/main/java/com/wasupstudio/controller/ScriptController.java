@@ -29,10 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.file.Files;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 import static com.wasupstudio.util.FileUtils.getFileExtension;
 
@@ -278,8 +275,30 @@ public class ScriptController {
         if (scriptEntity == null) {
             return ResultGenerator.genSuccessResult(ResultCode.DATA_NOT_EXIST.getMessage());
         }
+        // 劇本建議天數(扣掉結局日)
+        int period = scriptEntity.getScriptPeriod() - 1;
 
-        List<ScriptDetailDTO> details = scriptDetailService.findByScriptId(scriptId);
+        List<ScriptDetailDTO> detailDTOS = scriptDetailService.findByScriptId(scriptId);
+        List<ScriptDetailDTO> details = new ArrayList<>();
+        for (int count = 1; count <= period; count++) {
+            boolean found = false;
+            for (ScriptDetailDTO dto : detailDTOS) {
+                if (dto.getPeriod().equals(count)) {
+                    // 如果在 detailDTOS 中找到了該期數的資料，則將它添加到 details 中
+                    details.add(dto);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                // 如果在 detailDTOS 中未找到該期數的資料，則添加一個空的物件到 details 中
+                ScriptDetailDTO emptyDto = new ScriptDetailDTO();
+                emptyDto.setPeriod(count);
+                // 可以根據需求設定其他屬性為預設值
+                details.add(emptyDto);
+            }
+        }
+
         ScriptEndingDTO scriptEndingDTO = scriptEndingService.findOne(scriptId);
         ScriptQuery scriptQuery = tranData(scriptEntity);
         scriptQuery.setMediaDTO(mediaService.findByScriptId(scriptId));
@@ -288,6 +307,7 @@ public class ScriptController {
         return ResultGenerator.genSuccessResult(scriptQuery);
     }
 
+    @ApiOperation(value = "PDF檔案下載")
     @PostMapping("/download/pdf")
     @ResponseBody
     public void downloadMixFile(@RequestBody FileDownloadDTO fileDownloadDTO,
@@ -295,16 +315,18 @@ public class ScriptController {
 
         MediaDTO pdf = mediaService.findByScriptIdAndDescription(fileDownloadDTO.getScriptId(), fileDownloadDTO.getSheet());
         MediaDTO media = mediaService.findByScriptIdAndDescription(fileDownloadDTO.getScriptId(), fileDownloadDTO.getMedia());
-        String pdfUrl = "";
-        String mediaUrl = "";
-        if (pdf.getFilePath() != null) {
-            pdfUrl = pdf.getFilePath();
-        }
-        if (media.getFilePath() != null){
-            mediaUrl = media.getFilePath();
+
+        if (!pdf.getFileExtension().equals("pdf")) {
+            // 如果不是 PDF 副檔名，可以加上適當的錯誤處理
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("Only PDF files can be processed.");
+            return;
         }
 
+        String pdfUrl = pdf.getFilePath();
+        String mediaUrl = media.getFilePath();
         String outputUrl = "file/output.pdf";
+
         PdfWithQrCodeUtils.mixPdfAndQrCode(mediaUrl, pdfUrl, outputUrl);
         File file = new File(outputUrl);
 
@@ -332,6 +354,10 @@ public class ScriptController {
 
     }
     public ScriptQuery tranData(ScriptEntity scriptEntity) {
+        return getScriptQuery(scriptEntity);
+    }
+
+    static ScriptQuery getScriptQuery(ScriptEntity scriptEntity) {
         Gson gson = new Gson();
         List<String> tips = gson.fromJson(scriptEntity.getTips(), new TypeToken<List<String>>() {}.getType());
         List<String> goals = gson.fromJson(scriptEntity.getGoal(), new TypeToken<List<String>>() {}.getType());

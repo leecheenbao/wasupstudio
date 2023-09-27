@@ -14,8 +14,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfo;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
@@ -37,7 +35,6 @@ import com.wasupstudio.util.JwtUtils;
 import com.wasupstudio.util.MailUtil;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -54,6 +51,8 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.wasupstudio.controller.ScriptController.getScriptQuery;
 
 @Api(tags = "權限相關 API")
 @RestController
@@ -467,17 +466,7 @@ public class AuthController {
 	}
 
 	public ScriptQuery tranData(ScriptEntity scriptEntity) {
-		Gson gson = new Gson();
-		List<String> tips = gson.fromJson(scriptEntity.getTips(), new TypeToken<List<String>>() {}.getType());
-		List<String> goals = gson.fromJson(scriptEntity.getGoal(), new TypeToken<List<String>>() {}.getType());
-		List<String> preambles = gson.fromJson(scriptEntity.getPreamble(), new TypeToken<List<String>>() {}.getType());
-
-		ScriptQuery scriptQuery = new ScriptQuery();
-		BeanUtils.copyProperties(scriptEntity, scriptQuery);
-		scriptQuery.setTips(tips);
-		scriptQuery.setGoal(goals);
-		scriptQuery.setPreamble(preambles);
-		return scriptQuery;
+		return getScriptQuery(scriptEntity);
 	}
 }
 
