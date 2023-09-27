@@ -22,7 +22,8 @@ public final class ProjectConstant {
     }
 
     public static final class FilePath {
-        public final static String MAINPATH = "https://storage.cloud.google.com/";
+//        public final static String MAINPATH = "https://storage.cloud.google.com/";
+        public final static String MAINPATH = "https://storage.googleapis.com/";
 
         public final static String BUCKET_NAME = "wasupstudio-bucket";
         public final static String IMAGE = "/image/";

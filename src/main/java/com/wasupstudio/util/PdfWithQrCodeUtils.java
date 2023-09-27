@@ -16,6 +16,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,41 +28,62 @@ public class PdfWithQrCodeUtils {
 
     public static void main(String[] args) throws IOException, WriterException {
         String qrCodeContent = "https://www.example.com";
-        String gcsUrl = "https://storage.googleapis.com/wasupstudio-bucket/1695017168715.pdf";
+        String gcsUrl = "https://storage.googleapis.com/wasupstudio-bucket/1695690624270.pdf";
         String localFilePath = "file/output.pdf";
+//        downloadFileFromGCS(gcsUrl, localFilePath);
+//        downloadFileFromGCS(gcsUrl, localFilePath);
+//        convertPDFToJavaFile(gcsUrl);
+        mixPdfAndQrCode(qrCodeContent, gcsUrl, localFilePath);
 
-        downloadFileFromGCS(gcsUrl, localFilePath);
-
-        mixPdfAndQrCode(qrCodeContent, localFilePath);
     }
 
 
-    public static void mixPdfAndQrCode(String qrCodeContent, String localFilePath) throws IOException, WriterException {
-        String outputFilePath = "file/output.pdf";
-        int qrCodeSize = 100;
-        // Create QR Code
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeContent, BarcodeFormat.QR_CODE, qrCodeSize, qrCodeSize, getQRCodeHints());
-        BufferedImage qrCodeImage = createQRCodeImage(bitMatrix);
+    public static void mixPdfAndQrCode(String qrCodeContent, String gcsUrl, String outputFilePath) {
+        try {
+            int qrCodeSize = 98;
+            // Create QR Code
+            QRCodeWriter qrCodeWriter = new QRCodeWriter();
+            BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeContent, BarcodeFormat.QR_CODE, qrCodeSize-40, qrCodeSize-40, getQRCodeHints());
+            BufferedImage qrCodeImage = createQRCodeImage(bitMatrix);
 
-        // Load PDF file
-        PDDocument document = PDDocument.load(new File(localFilePath));
-        PDPage page = document.getPage(0); // Get the first page
+            File file = convertPDFToJavaFile(gcsUrl);
+            // Load PDF file
+            PDDocument document = PDDocument.load(file);
+            PDPage page = document.getPage(0); // Get the first page
 
-        // Create an image object from the QR Code
-        PDImageXObject qrCodePDImageXObject = PDImageXObject.createFromByteArray(document, toByteArray(qrCodeImage), "QR Code");
+            // Create an image object from the QR Code
+            PDImageXObject qrCodePDImageXObject = PDImageXObject.createFromByteArray(document, toByteArray(qrCodeImage), "QR Code");
 
-        // Get the width and height of the PDF page
-        float pageWidth = page.getMediaBox().getWidth();
-        float pageHeight = page.getMediaBox().getHeight();
+            // Get the width and height of the PDF page
+            float pageWidth = page.getMediaBox().getWidth();
+            float pageHeight = page.getMediaBox().getHeight();
 
-        PDPageContentStream contentStream = new PDPageContentStream(document, page, PDPageContentStream.AppendMode.APPEND, true, true);
-        contentStream.drawImage(qrCodePDImageXObject, (int) (pageWidth - qrCodeSize - 25), (int) (pageHeight - qrCodeSize - 15), qrCodeSize, qrCodeSize);
-        contentStream.close();
+            PDPageContentStream contentStream = new PDPageContentStream(document, page, PDPageContentStream.AppendMode.APPEND, true, true);
+            contentStream.drawImage(qrCodePDImageXObject, (int) (pageWidth - qrCodeSize - 25), (int) (pageHeight - qrCodeSize - 15), qrCodeSize, qrCodeSize);
+            contentStream.close();
 
-        // Save the modified PDF document
-        document.save(outputFilePath);
-        document.close();
+            // Save the modified PDF document
+            document.save(outputFilePath);
+            document.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("處理 PDF 檔案時出現 IO 錯誤。");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("處理 PDF 檔案時出現未知錯誤。");
+        }
+    }
+
+    public static File convertPDFToJavaFile(String gcsUrl) throws IOException {
+        URL url = new URL(gcsUrl);
+        try (InputStream in = url.openStream()) {
+            File pdfFile = File.createTempFile("temp_pdf", ".pdf");
+
+            // 使用 Java 的 NIO 複製 InputStream 到 File
+            Files.copy(in, pdfFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            return pdfFile;
+        }
     }
 
     public static void downloadFileFromGCS(String gcsUrl, String localFilePath) throws IOException {
@@ -76,6 +99,7 @@ public class PdfWithQrCodeUtils {
             System.out.println("File downloaded successfully to: " + localFilePath);
         }
     }
+
     private static BufferedImage createQRCodeImage(BitMatrix bitMatrix) {
         int qrCodeWidth = bitMatrix.getWidth();
         int qrCodeHeight = bitMatrix.getHeight();
@@ -108,7 +132,7 @@ public class PdfWithQrCodeUtils {
         float pageHeight = page.getMediaBox().getHeight();
 
         PDPageContentStream contentStream = new PDPageContentStream(document, page, PDPageContentStream.AppendMode.APPEND, true, true);
-        contentStream.drawImage(qrCodePDImageXObject, (int) (pageWidth - qrCodeSize - 25), (int) (pageHeight - qrCodeSize - 15), qrCodeSize, qrCodeSize);
+        contentStream.drawImage(qrCodePDImageXObject, (int) (pageWidth - qrCodeSize - 5), (int) (pageHeight - qrCodeSize - 5), qrCodeSize, qrCodeSize);
         contentStream.close();
 
         // Save the modified PDF document
@@ -116,6 +140,7 @@ public class PdfWithQrCodeUtils {
         document.close();
         return outputFilePath;
     }
+
     private static byte[] toByteArray(BufferedImage image) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ImageIO.write(image, "png", outputStream);

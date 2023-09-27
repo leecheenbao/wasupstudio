@@ -28,8 +28,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.file.Files;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import static com.wasupstudio.util.FileUtils.getFileExtension;
 
@@ -266,55 +269,7 @@ public class ScriptController {
     }
 
 
-    @ApiOperation(value = "刪除檔案", notes = "刪除檔案接口")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "scriptId", value = "劇本ID", required = true, dataType = "Integer"),
-            @ApiImplicitParam(name = "description", value = "影音ID", required = true, dataType = "String")
-    })
-    @PostMapping("/download/{scriptId}/{description}")
-    @ResponseBody
-    public void downloadMixFile(@PathVariable Integer scriptId, @PathVariable String description,
-                                HttpServletResponse response) throws IOException, WriterException {
 
-        MediaDTO mediaDTO = mediaService.findByScriptIdAndDescription(scriptId, description);
-        if (mediaDTO == null) {
-//            return ResultGenerator.genSuccessResult(ResultCode.MATERIAL_INFO_NOT_EXIST.getMessage());
-        }
-
-        String qrCodeContent = "https://www.example.com";
-        String gcsUrl = "https://storage.googleapis.com/wasupstudio-bucket/1695017168715.pdf";
-        String localFilePath = "file/output.pdf";
-
-        PdfWithQrCodeUtils.downloadFileFromGCS(gcsUrl, localFilePath);
-
-        PdfWithQrCodeUtils.mixPdfAndQrCode(qrCodeContent, localFilePath);
-
-
-        File file = new File(localFilePath);
-
-        if (file.exists()) {
-            response.setContentType(MediaType.APPLICATION_PDF_VALUE);  // Set the content type to PDF
-            response.setHeader("Content-Disposition", "attachment; filename=output.pdf");
-
-            try (InputStream inputStream = new FileInputStream(file);
-                 OutputStream outputStream = response.getOutputStream()) {
-
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
-                }
-                outputStream.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            // Handle the case where the file doesn't exist
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            response.getWriter().write("File not found");
-        }
-
-    }
     @ApiOperation(value = "取得單一劇本資料")
     @ApiImplicitParam(name = "scriptId", value = "scriptId", required = true, dataType = "int", paramType = "path")
     @GetMapping("/{scriptId}")
@@ -333,6 +288,49 @@ public class ScriptController {
         return ResultGenerator.genSuccessResult(scriptQuery);
     }
 
+    @PostMapping("/download/pdf")
+    @ResponseBody
+    public void downloadMixFile(@RequestBody FileDownloadDTO fileDownloadDTO,
+                                HttpServletResponse response) throws IOException {
+
+        MediaDTO pdf = mediaService.findByScriptIdAndDescription(fileDownloadDTO.getScriptId(), fileDownloadDTO.getSheet());
+        MediaDTO media = mediaService.findByScriptIdAndDescription(fileDownloadDTO.getScriptId(), fileDownloadDTO.getMedia());
+        String pdfUrl = "";
+        String mediaUrl = "";
+        if (pdf.getFilePath() != null) {
+            pdfUrl = pdf.getFilePath();
+        }
+        if (media.getFilePath() != null){
+            mediaUrl = media.getFilePath();
+        }
+
+        String outputUrl = "file/output.pdf";
+        PdfWithQrCodeUtils.mixPdfAndQrCode(mediaUrl, pdfUrl, outputUrl);
+        File file = new File(outputUrl);
+
+        if (file.exists()) {
+            response.setContentType(MediaType.APPLICATION_PDF_VALUE);  // Set the content type to PDF
+            response.setHeader("Content-Disposition", "attachment; filename=output.pdf");
+
+            try (InputStream inputStream = Files.newInputStream(file.toPath());
+                 OutputStream outputStream = response.getOutputStream()) {
+
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+                outputStream.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Handle the case where the file doesn't exist
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.getWriter().write("File not found");
+        }
+
+    }
     public ScriptQuery tranData(ScriptEntity scriptEntity) {
         Gson gson = new Gson();
         List<String> tips = gson.fromJson(scriptEntity.getTips(), new TypeToken<List<String>>() {}.getType());

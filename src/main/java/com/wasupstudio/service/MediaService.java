@@ -8,11 +8,12 @@ import java.util.List;
 
 public interface MediaService {
 
-    void save (MediaDTO mediaDTO);
+    void save(MediaDTO mediaDTO);
 
     MediaEntity findOne(Integer id);
 
     List<MediaDTO> findByScriptId(Integer scriptId);
+
     MediaDTO findByScriptIdAndDescription(Integer scriptId, String description);
 
     BasePageInfo findAllData();
