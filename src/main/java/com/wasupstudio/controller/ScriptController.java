@@ -315,6 +315,23 @@ public class ScriptController {
         }
 
     }
+    @ApiOperation(value = "取得單一劇本資料")
+    @ApiImplicitParam(name = "scriptId", value = "scriptId", required = true, dataType = "int", paramType = "path")
+    @GetMapping("/{scriptId}")
+    public Result getOneData(@PathVariable Integer scriptId) {
+        ScriptEntity scriptEntity = scriptService.findOne(scriptId);
+        if (scriptEntity == null) {
+            return ResultGenerator.genSuccessResult(ResultCode.DATA_NOT_EXIST.getMessage());
+        }
+
+        List<ScriptDetailDTO> details = scriptDetailService.findByScriptId(scriptId);
+        ScriptEndingDTO scriptEndingDTO = scriptEndingService.findOne(scriptId);
+        ScriptQuery scriptQuery = tranData(scriptEntity);
+        scriptQuery.setMediaDTO(mediaService.findByScriptId(scriptId));
+        scriptQuery.setScriptDetail(details);
+        scriptQuery.setScriptEndingDTO(scriptEndingDTO);
+        return ResultGenerator.genSuccessResult(scriptQuery);
+    }
 
     public ScriptQuery tranData(ScriptEntity scriptEntity) {
         Gson gson = new Gson();

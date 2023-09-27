@@ -450,7 +450,7 @@ public class AuthController {
 
 	@ApiOperation(value = "取得單一劇本資料")
 	@ApiImplicitParam(name = "scriptId", value = "scriptId", required = true, dataType = "int", paramType = "path")
-	@GetMapping("/{scriptId}")
+	@GetMapping("/script/{scriptId}")
 	public Result getOneData(@PathVariable Integer scriptId) {
 		ScriptEntity scriptEntity = scriptService.findOne(scriptId);
 		if (scriptEntity == null) {
