@@ -126,7 +126,6 @@ public class AuthController {
 			String mail = userInfo.getEmail();
 			String role = memberEntity.getRole().toString();
 			Map<String, Object> map = new TreeMap<>();
-			map.put("memberId", memberEntity.getId());
 			map.put("mail", mail);
 			map.put("token", jwtToken);
 			map.put("role", role);
