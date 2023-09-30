@@ -130,6 +130,7 @@ public class AuthController {
 			map.put("token", jwtToken);
 			map.put("role", role);
 			map.put("memberId", memberEntity.getId());
+			map.put("id", memberEntity.getId());
 			return new RedirectView(getURL(url, map));
 		}
 		return new RedirectView(url);
