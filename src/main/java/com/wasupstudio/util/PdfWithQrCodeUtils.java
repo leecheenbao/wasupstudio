@@ -6,6 +6,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -21,6 +22,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class PdfWithQrCodeUtils {
 
     String qrCodeContent = "https://www.example.com";
@@ -46,6 +48,7 @@ public class PdfWithQrCodeUtils {
             BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeContent, BarcodeFormat.QR_CODE, qrCodeSize-40, qrCodeSize-40, getQRCodeHints());
             BufferedImage qrCodeImage = createQRCodeImage(bitMatrix);
 
+            log.info("PDF下載 qrCodeContent:{}, gcsUrl:{}, outputFilePath:{}",qrCodeContent ,gcsUrl ,outputFilePath);
             File file = convertPDFToJavaFile(gcsUrl);
             // Load PDF file
             PDDocument document = PDDocument.load(file);
