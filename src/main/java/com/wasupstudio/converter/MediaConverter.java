@@ -9,8 +9,8 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface MediaConverter {
 
-    MediaDTO map(MediaEntity mediaEntity);
-    List<MediaDTO> map(List<MediaEntity> mediaEntityList);
+    MediaDTO itemToDto(MediaEntity mediaEntity);
+    List<MediaDTO> itemsToDtos(List<MediaEntity> mediaEntityList);
 
 
 

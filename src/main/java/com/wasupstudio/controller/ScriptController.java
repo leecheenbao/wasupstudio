@@ -213,6 +213,7 @@ public class ScriptController {
             return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_MAX_ERROR.getFormattedMessage(type, size));
         }
 
+        String originalFileName = file.getOriginalFilename();
         String fileName = DateUtils.currentTimeMillis() + "." + getFileExtension(file.getOriginalFilename());
         String mediaType = FileUtils.checkFileType(fileName);
 
@@ -229,6 +230,7 @@ public class ScriptController {
             mediaDTO.setMediaType(mediaType);
             mediaDTO.setDescription(description);
             mediaDTO.setFileExtension(extension);
+            mediaDTO.setFilename(originalFileName);
             mediaService.update(mediaDTO);
         } else {
             mediaDTO = new MediaDTO();
@@ -237,6 +239,7 @@ public class ScriptController {
             mediaDTO.setMediaType(mediaType);
             mediaDTO.setDescription(description);
             mediaDTO.setFileExtension(extension);
+            mediaDTO.setFilename(originalFileName);
             mediaService.save(mediaDTO);
         }
         return ResultGenerator.genSuccessResult(ResultCode.UPLOAD_SUCCESS.getMessage());

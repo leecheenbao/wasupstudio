@@ -157,6 +157,7 @@ CREATE TABLE wa_media (
                           description VARCHAR(50) NOT NULL COMMENT '圖片所屬位置說明 cover:封面, day-1:劇本第一日',
                           media_type VARCHAR(20) NOT NULL COMMENT '媒體類型，可以是圖片或影片文件',
                           file_path VARCHAR(255) NOT NULL COMMENT '媒體檔案路徑',
+                          filename VARCHAR(100) NOT NULL COMMENT '檔案名稱',
                           create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '媒體創建時間',
                           update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '媒體更新時間',
                           PRIMARY KEY (script_id, description)

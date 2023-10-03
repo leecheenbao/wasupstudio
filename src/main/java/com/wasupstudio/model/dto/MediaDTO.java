@@ -14,4 +14,5 @@ public class MediaDTO {
     private Date updateTime;
     private String description;
     private String fileExtension;
+    private String filename;
 }

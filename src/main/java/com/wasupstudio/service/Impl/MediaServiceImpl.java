@@ -5,10 +5,8 @@ import com.wasupstudio.mapper.MediaMapper;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.dto.MediaDTO;
 import com.wasupstudio.model.entity.MediaEntity;
-import com.wasupstudio.model.entity.MediaId;
 import com.wasupstudio.service.AbstractService;
 import com.wasupstudio.service.MediaService;
-import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +31,7 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
         mediaEntity.setUpdateTime(new Date());
         mediaEntity.setDescription(mediaDTO.getDescription());
         mediaEntity.setFileExtension(mediaDTO.getFileExtension());
+        mediaEntity.setFilename(mediaDTO.getFilename());
         save(mediaEntity);
     }
 
@@ -43,14 +42,14 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
 
     @Override
     public List<MediaDTO> findByScriptId(Integer scriptId) {
-        return mediaConverter.map(mediaMapper.findByScriptId(scriptId));
+        return mediaConverter.itemsToDtos(mediaMapper.findByScriptId(scriptId));
     }
 
     @Override
     public MediaDTO findByScriptIdAndDescription(Integer scriptId, String description) {
         MediaEntity mediaEntity = mediaMapper.findByScriptIdAndDescription(scriptId, description);
         if (mediaEntity !=null){
-            return mediaConverter.map(mediaEntity);
+            return mediaConverter.itemToDto(mediaEntity);
         }
         return null;
     }
@@ -68,7 +67,7 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
     public void update(MediaDTO mediaDTO) {
         mediaMapper.updateByScriptIdAndDescription(
                 mediaDTO.getMediaType(), new Date(), mediaDTO.getFileExtension(),
-                mediaDTO.getScriptId(), mediaDTO.getDescription(), mediaDTO.getFilePath()
+                mediaDTO.getScriptId(), mediaDTO.getDescription(), mediaDTO.getFilePath(), mediaDTO.getFilename()
         );
     }
 
