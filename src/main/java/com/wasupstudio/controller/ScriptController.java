@@ -3,7 +3,6 @@ package com.wasupstudio.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.google.zxing.WriterException;
 import com.wasupstudio.enums.FileTypeEnum;
 import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
@@ -21,13 +20,17 @@ import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 
@@ -127,7 +130,7 @@ public class ScriptController {
     @PostMapping("/ending")
     public Result enddingSave(@RequestBody ScriptEndingDTO scriptEndingDTO) {
         ScriptEntity scriptEntity = scriptService.findOne(scriptEndingDTO.getScriptId());
-        if (scriptEntity == null){
+        if (scriptEntity == null) {
             return ResultGenerator.genFailResult(ResultCode.ADD_FAILD.getMessage());
         }
 
@@ -269,7 +272,6 @@ public class ScriptController {
     }
 
 
-
     @ApiOperation(value = "取得單一劇本資料")
     @ApiImplicitParam(name = "scriptId", value = "scriptId", required = true, dataType = "int", paramType = "path")
     @GetMapping("/{scriptId}")
@@ -313,54 +315,57 @@ public class ScriptController {
     @ApiOperation(value = "PDF檔案下載")
     @PostMapping("/download/pdf")
     @ResponseBody
-    public void downloadMixFile(@RequestBody FileDownloadDTO fileDownloadDTO,
-                                HttpServletResponse response) throws IOException {
-
+    public Result downloadMixFile(@RequestBody FileDownloadDTO fileDownloadDTO) throws IOException {
+        FileUtils fileUtils = new FileUtils();
         MediaDTO pdf = mediaService.findByScriptIdAndDescription(fileDownloadDTO.getScriptId(), fileDownloadDTO.getSheet());
         MediaDTO media = mediaService.findByScriptIdAndDescription(fileDownloadDTO.getScriptId(), fileDownloadDTO.getMedia());
 
+        //TODO 紀錄用戶下載時間
+        MemberEntity member = JwtUtils.getMember();
+        Integer memberId = member.getId();
+
+        if (pdf == null) {
+            return ResultGenerator.genFailResult(ResultCode.DATA_NOT_EXIST.getMessage());
+        }
+
         if (!pdf.getFileExtension().equals("pdf")) {
-            // 如果不是 PDF 副檔名，可以加上適當的錯誤處理
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("Only PDF files can be processed.");
-            return;
+            return ResultGenerator.genFailResult(ResultCode.UPLOAD_FORMAT_ERROR.getMessage());
         }
 
-        String pdfUrl = pdf.getFilePath();
-        String mediaUrl = media.getFilePath();
-        String outputUrl = "file/output.pdf";
+        String pdfFilePath = pdf.getFilePath();
+        String mediaFilePath = media.getFilePath();
 
-        PdfWithQrCodeUtils.mixPdfAndQrCode(mediaUrl, pdfUrl, outputUrl);
-        File file = new File(outputUrl);
-
-        if (file.exists()) {
-            response.setContentType(MediaType.APPLICATION_PDF_VALUE);  // Set the content type to PDF
-            response.setHeader("Content-Disposition", "attachment; filename=output.pdf");
-
-            try (InputStream inputStream = Files.newInputStream(file.toPath());
-                 OutputStream outputStream = response.getOutputStream()) {
-
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
-                }
-                outputStream.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            File cacheFile = fileUtils.generateCacheFile(pdf.getFilename(), mediaFilePath, pdfFilePath);
+            if (cacheFile.exists()) {
+                String filePath = uploadCacheFile(cacheFile);
+                fileUtils.deleteCacheFile(cacheFile);
+                return ResultGenerator.genSuccessResult(filePath);
+            } else {
+                return ResultGenerator.genFailResult(ResultCode.DATA_NOT_EXIST.getMessage());
             }
-        } else {
-            // Handle the case where the file doesn't exist
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            response.getWriter().write("File not found");
+        } catch (IOException e) {
+            return ResultGenerator.genFailResult("檔案處理出現錯誤：" + e.getMessage());
         }
-
     }
+
+
+    private String uploadCacheFile(File cacheFile) {
+        try {
+            byte[] bytes = Files.readAllBytes(cacheFile.toPath());
+            String mediaType = FileUtils.checkFileType(cacheFile.getName());
+            return fileService.uploadFile(bytes, cacheFile.getName(), mediaType);
+        } catch (IOException e) {
+            // 處理上傳錯誤
+            return null;
+        }
+    }
+
     public ScriptQuery tranData(ScriptEntity scriptEntity) {
         return getScriptQuery(scriptEntity);
     }
 
-    static ScriptQuery getScriptQuery(ScriptEntity scriptEntity) {
+    public static ScriptQuery getScriptQuery(ScriptEntity scriptEntity) {
         Gson gson = new Gson();
         List<String> tips = gson.fromJson(scriptEntity.getTips(), new TypeToken<List<String>>() {}.getType());
         List<String> goals = gson.fromJson(scriptEntity.getGoal(), new TypeToken<List<String>>() {}.getType());

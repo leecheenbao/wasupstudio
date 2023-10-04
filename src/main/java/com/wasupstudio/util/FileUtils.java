@@ -1,6 +1,7 @@
 package com.wasupstudio.util;
 
 import com.wasupstudio.constant.ProjectConstant;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,6 +13,7 @@ import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
 
 
+@Slf4j
 public class FileUtils {
 
 
@@ -166,6 +168,20 @@ public class FileUtils {
         return false;
     }
 
+    public File generateCacheFile(String filename, String mediaFilePath, String pdfFilePath) throws IOException {
+        String outputUrl = "file/cache_" + filename;
+        File cacheFile = new File(outputUrl);
+        PdfWithQrCodeUtils.mixPdfAndQrCode(mediaFilePath, pdfFilePath, outputUrl);
+        return cacheFile;
+    }
+
+    public void deleteCacheFile(File cacheFile) {
+        if (cacheFile.delete()) {
+            log.info(cacheFile.getName() + "檔案已成功刪除");
+        }else {
+            log.info(cacheFile.getName() + "無法刪除檔案");
+        }
+    }
     public static void main(String[] args) throws IOException {
         String filePath = "/Users/liqingbao/Downloads"; // 替換為要上傳的檔案路徑
         String fileName = "/test.png"; // 替換為要上傳的檔案名稱
