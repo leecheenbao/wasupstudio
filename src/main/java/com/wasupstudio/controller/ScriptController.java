@@ -363,10 +363,9 @@ public class ScriptController {
 
     public static ScriptQuery getScriptQuery(ScriptEntity scriptEntity) {
         Gson gson = new Gson();
-        List<String> tips = gson.fromJson(scriptEntity.getTips(), new TypeToken<List<String>>() {}.getType());
-        List<String> goals = gson.fromJson(scriptEntity.getGoal(), new TypeToken<List<String>>() {}.getType());
-        List<String> preambles = gson.fromJson(scriptEntity.getPreamble(), new TypeToken<List<String>>() {}.getType());
-
+        List<String> tips = gson.fromJson(scriptEntity.getTips(), List.class);
+        List<String> goals = gson.fromJson(scriptEntity.getGoal(), List.class);
+        List<String> preambles = gson.fromJson(scriptEntity.getPreamble(), List.class);
         ScriptQuery scriptQuery = new ScriptQuery();
         BeanUtils.copyProperties(scriptEntity, scriptQuery);
         scriptQuery.setTips(tips);
