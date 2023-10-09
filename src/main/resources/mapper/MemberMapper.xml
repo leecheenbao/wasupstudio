@@ -20,6 +20,11 @@
         <result column="count" property="count" jdbcType="INTEGER" />
     </resultMap>
 
+    <resultMap id="CategoryVo" type="com.wasupstudio.model.vo.CategoryVo">
+        <result column="category" property="category" jdbcType="VARCHAR" />
+        <result column="count" property="count" jdbcType="INTEGER" />
+    </resultMap>
+
     <select id="findAccount" resultMap="BaseResultMap" resultType="com.wasupstudio.model.entity.MemberEntity">
         SELECT * FROM wa_member WHERE email = #{email};
     </select>
@@ -42,7 +47,7 @@
         GROUP BY age_range
         ORDER BY age_range;
     </select>
-    <select id="findCategoryStatistics" resultType="com.wasupstudio.model.vo.CategoryVo">
+    <select id="findCategoryStatistics" resultMap="CategoryVo" resultType="com.wasupstudio.model.vo.CategoryVo">
         SELECT category ,COUNT(*) as count FROM wa_member wm
         WHERE category IS NOT NULL
           AND category != ''

@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class CategoryVo {
-    private String organization;
+    private String category;
     private Integer count;
 }

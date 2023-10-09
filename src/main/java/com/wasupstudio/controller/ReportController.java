@@ -39,7 +39,7 @@ public class ReportController {
 
     @ApiOperation(value = "隸屬機構統計(category)")
     @GetMapping("/category")
-    public Result getOrganization() {
+    public Result getCategory() {
         return ResultGenerator.genSuccessResult(memberService.findCategory());
     }
 

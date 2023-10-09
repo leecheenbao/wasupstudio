@@ -107,12 +107,12 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
     @Override
     public CategoryQuery findCategory() {
         List<MemberEntity> list = memberMapper.findCategory();
-        List<CategoryVo> ageDistributionsList = memberMapper.findCategoryStatistics();
-        CategoryQuery ageDistributionsQuery = new CategoryQuery();
-        ageDistributionsQuery.setCategoryDistributions(ageDistributionsList);
-        ageDistributionsQuery.setList(list);
-        ageDistributionsQuery.setTotal(list.size());
-        return ageDistributionsQuery;
+        List<CategoryVo> categoryVoList = memberMapper.findCategoryStatistics();
+        CategoryQuery categoryQuery = new CategoryQuery();
+        categoryQuery.setCategoryDistributions(categoryVoList);
+        categoryQuery.setList(list);
+        categoryQuery.setTotal(list.size());
+        return categoryQuery;
     }
 
     @Override
