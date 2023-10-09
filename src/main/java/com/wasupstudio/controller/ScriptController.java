@@ -55,18 +55,8 @@ public class ScriptController {
     @ApiOperation(value = "取得劇本資料")
     @GetMapping
     public Result getAllData() {
-        List<ScriptEntity> list = scriptService.findAllData().getList();
-        List<ScriptQuery> scriptQueryList = new ArrayList<>();
-        BasePageInfo pageInfo = new BasePageInfo<>();
-
-        for (ScriptEntity script : list) {
-            ScriptQuery scriptQuery = tranData(script);
-            scriptQuery.setMediaDTO(mediaService.findByScriptId(script.getScriptId()));
-            scriptQueryList.add(scriptQuery);
-        }
-        pageInfo.setList(scriptQueryList);
-        pageInfo.setTotal(scriptQueryList.size());
-        return ResultGenerator.genSuccessResult(scriptQueryList);
+        BasePageInfo pageInfo = scriptService.findAllData();
+        return ResultGenerator.genSuccessResult(pageInfo);
     }
 
     @ApiOperation(value = "新增一筆劇本資料")

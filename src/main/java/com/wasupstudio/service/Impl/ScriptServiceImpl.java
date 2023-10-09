@@ -2,16 +2,20 @@ package com.wasupstudio.service.Impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.wasupstudio.mapper.ScriptMapper;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.dto.ScriptDTO;
 import com.wasupstudio.model.entity.ScriptEntity;
+import com.wasupstudio.model.query.ScriptQuery;
 import com.wasupstudio.service.AbstractService;
 import com.wasupstudio.service.ScriptService;
 import com.wasupstudio.util.ValueValidator;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -60,7 +64,12 @@ public class ScriptServiceImpl extends AbstractService<ScriptEntity> implements 
     @Override
     public BasePageInfo findAllData() {
 
-        List<ScriptEntity> list = this.findAll();
+        List<ScriptEntity> scriptEntityList = this.findAll();
+        List<ScriptQuery> list = new ArrayList<>();
+        for (ScriptEntity scriptEntity : scriptEntityList){
+            ScriptQuery scriptQuery = getScriptQuery(scriptEntity);
+            list.add(scriptQuery);
+        }
         BasePageInfo basePageInfo = new BasePageInfo<>();
         basePageInfo.setList(list);
         basePageInfo.setTotal(list.size());
@@ -98,4 +107,16 @@ public class ScriptServiceImpl extends AbstractService<ScriptEntity> implements 
     }
 
 
+    public static ScriptQuery getScriptQuery(ScriptEntity scriptEntity) {
+        Gson gson = new Gson();
+        List<String> tips = gson.fromJson(scriptEntity.getTips(), List.class);
+        List<String> goals = gson.fromJson(scriptEntity.getGoal(), List.class);
+        List<String> preambles = gson.fromJson(scriptEntity.getPreamble(), List.class);
+        ScriptQuery scriptQuery = new ScriptQuery();
+        BeanUtils.copyProperties(scriptEntity, scriptQuery);
+        scriptQuery.setTips(tips);
+        scriptQuery.setGoal(goals);
+        scriptQuery.setPreamble(preambles);
+        return scriptQuery;
+    }
 }

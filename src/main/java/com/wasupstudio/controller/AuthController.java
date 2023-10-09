@@ -445,14 +445,14 @@ public class AuthController {
     @ApiOperation(value = "取得劇本資料")
     @GetMapping("/script")
     public Result getAllData() {
-        List<ScriptEntity> list = scriptService.findAllData().getList();
+        List<ScriptQuery> list = scriptService.findAllData().getList();
         List<ScriptQuery> scriptQueryList = new ArrayList<>();
         BasePageInfo pageInfo = new BasePageInfo<>();
 
-        for (ScriptEntity script : list) {
-            ScriptQuery scriptQuery = tranData(script);
-            scriptQuery.setMediaDTO(mediaService.findByScriptId(script.getScriptId()));
-            scriptQueryList.add(scriptQuery);
+        for (ScriptQuery script : list) {
+//            ScriptQuery scriptQuery = tranData(script);
+            script.setMediaDTO(mediaService.findByScriptId(script.getScriptId()));
+            scriptQueryList.add(script);
         }
         pageInfo.setList(scriptQueryList);
         pageInfo.setTotal(scriptQueryList.size());
