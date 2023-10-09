@@ -15,7 +15,6 @@ import com.wasupstudio.service.*;
 import com.wasupstudio.util.DateUtils;
 import com.wasupstudio.util.FileUtils;
 import com.wasupstudio.util.JwtUtils;
-import com.wasupstudio.util.PdfWithQrCodeUtils;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -24,15 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import static com.wasupstudio.util.FileUtils.getFileExtension;
 
