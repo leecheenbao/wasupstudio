@@ -15,7 +15,37 @@
         <result column="role" property="role" jdbcType="INTEGER"/>
     </resultMap>
 
+    <resultMap id="AgeDistributionsVo" type="com.wasupstudio.model.vo.AgeDistributionsVo">
+        <result column="age_range" property="ageRange" jdbcType="VARCHAR" />
+        <result column="count" property="count" jdbcType="INTEGER" />
+    </resultMap>
+
     <select id="findAccount" resultMap="BaseResultMap" resultType="com.wasupstudio.model.entity.MemberEntity">
         SELECT * FROM wa_member WHERE email = #{email};
+    </select>
+
+    <select id="findAgeDistributionsStatistics" resultMap="AgeDistributionsVo" resultType="com.wasupstudio.model.vo.AgeDistributionsVo">
+        SELECT
+            CASE
+                WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 0 AND 4 THEN '0-4'
+                WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 5 AND 9 THEN '5-9'
+                WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 10 AND 14 THEN '10-14'
+                WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 15 AND 19 THEN '15-19'
+                WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 20 AND 24 THEN '20-24'
+                WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 25 AND 29 THEN '25-29'
+                WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 30 AND 34 THEN '30-34'
+                ELSE '35+'
+                END AS age_range,
+            COUNT(*) AS count
+        FROM wa_member
+        WHERE birthday IS NOT NULL -- 排除生日為 NULL 的會員
+        GROUP BY age_range
+        ORDER BY age_range;
+    </select>
+    <select id="findOrganizationStatistics" resultType="com.wasupstudio.model.vo.OrganizationVo">
+        SELECT organization ,COUNT(*) as count FROM wa_member wm
+        WHERE organization IS NOT NULL
+          AND organization != ''
+        GROUP BY organization
     </select>
 </mapper>

@@ -10,6 +10,11 @@ import com.wasupstudio.model.dto.MemberDTO;
 import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
+import com.wasupstudio.model.query.AgeDistributionsQuery;
+import com.wasupstudio.model.query.OrganizationQuery;
+import com.wasupstudio.model.vo.AgeDistributionsVo;
+import com.wasupstudio.model.vo.MemberAgeVo;
+import com.wasupstudio.model.vo.OrganizationVo;
 import com.wasupstudio.service.AbstractService;
 import com.wasupstudio.service.MemberService;
 import com.wasupstudio.util.AesUtils;
@@ -80,6 +85,37 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
     }
 
     @Override
+    public BasePageInfo findLoginFor7Day() {
+        List<MemberEntity> list = memberMapper.findByLastLoginFor7Day();
+        BasePageInfo pageInfo = new BasePageInfo<>();
+        pageInfo.setList(list);
+        pageInfo.setTotal(list.size());
+        return pageInfo;
+    }
+
+    @Override
+    public AgeDistributionsQuery findAgeDistributions() {
+        List<MemberAgeVo> list = memberMapper.findAgeDistributions();
+        List<AgeDistributionsVo> ageDistributionsList = memberMapper.findAgeDistributionsStatistics();
+        AgeDistributionsQuery<MemberAgeVo> ageDistributionsQuery = new AgeDistributionsQuery<MemberAgeVo>();
+        ageDistributionsQuery.setAgeDistributions(ageDistributionsList);
+        ageDistributionsQuery.setList(list);
+        ageDistributionsQuery.setTotal(list.size());
+        return ageDistributionsQuery;
+    }
+
+    @Override
+    public OrganizationQuery findOrganization() {
+        List<MemberEntity> list = memberMapper.findOrganization();
+        List<OrganizationVo> ageDistributionsList = memberMapper.findOrganizationStatistics();
+        OrganizationQuery ageDistributionsQuery = new OrganizationQuery();
+        ageDistributionsQuery.setAgeDistributions(ageDistributionsList);
+        ageDistributionsQuery.setList(list);
+        ageDistributionsQuery.setTotal(list.size());
+        return ageDistributionsQuery;
+    }
+
+    @Override
     public void update(MemberDTO memberDTO) {
         MemberEntity memberEntity = this.findOne(memberDTO.getId());
         if (memberEntity != null){
@@ -123,7 +159,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
             }
             // TODO 測試將remember預設為true讓token時效維持7天
             String token = JwtUtils.generateToken(memberEntity, adminLoginQuery.getIsRemember());
-
+            memberEntity.setLastLogin(new Date());
             update(memberConverter.ItemToDTO(memberEntity));
             return token;
         }

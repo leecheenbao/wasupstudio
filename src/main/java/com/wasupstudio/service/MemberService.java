@@ -5,6 +5,8 @@ import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
 import com.wasupstudio.model.BasePageInfo;
+import com.wasupstudio.model.query.AgeDistributionsQuery;
+import com.wasupstudio.model.query.OrganizationQuery;
 
 public interface MemberService {
 
@@ -16,7 +18,13 @@ public interface MemberService {
 
     MemberDTO findByVerificationCode(String verificationCode);
 
-    BasePageInfo findAllData();
+    BasePageInfo<MemberEntity> findAllData();
+
+    BasePageInfo<MemberEntity> findLoginFor7Day();
+
+    AgeDistributionsQuery findAgeDistributions();
+
+    OrganizationQuery findOrganization();
 
     void update(MemberDTO memberDTO);
 
@@ -25,4 +33,6 @@ public interface MemberService {
     String login(AdminLoginQuery adminLoginQuery, AdminLoginLogQuery adminLoginLogQuery);
 
     String login(String mail);
+
+
 }
