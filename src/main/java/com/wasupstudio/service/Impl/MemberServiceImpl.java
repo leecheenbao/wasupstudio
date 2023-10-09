@@ -11,10 +11,10 @@ import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
 import com.wasupstudio.model.query.AgeDistributionsQuery;
-import com.wasupstudio.model.query.OrganizationQuery;
+import com.wasupstudio.model.query.CategoryQuery;
 import com.wasupstudio.model.vo.AgeDistributionsVo;
 import com.wasupstudio.model.vo.MemberAgeVo;
-import com.wasupstudio.model.vo.OrganizationVo;
+import com.wasupstudio.model.vo.CategoryVo;
 import com.wasupstudio.service.AbstractService;
 import com.wasupstudio.service.MemberService;
 import com.wasupstudio.util.AesUtils;
@@ -105,11 +105,11 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
     }
 
     @Override
-    public OrganizationQuery findOrganization() {
-        List<MemberEntity> list = memberMapper.findOrganization();
-        List<OrganizationVo> ageDistributionsList = memberMapper.findOrganizationStatistics();
-        OrganizationQuery ageDistributionsQuery = new OrganizationQuery();
-        ageDistributionsQuery.setAgeDistributions(ageDistributionsList);
+    public CategoryQuery findCategory() {
+        List<MemberEntity> list = memberMapper.findCategory();
+        List<CategoryVo> ageDistributionsList = memberMapper.findCategoryStatistics();
+        CategoryQuery ageDistributionsQuery = new CategoryQuery();
+        ageDistributionsQuery.setCategoryDistributions(ageDistributionsList);
         ageDistributionsQuery.setList(list);
         ageDistributionsQuery.setTotal(list.size());
         return ageDistributionsQuery;

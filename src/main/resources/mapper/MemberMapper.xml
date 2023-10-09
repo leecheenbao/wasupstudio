@@ -42,10 +42,10 @@
         GROUP BY age_range
         ORDER BY age_range;
     </select>
-    <select id="findOrganizationStatistics" resultType="com.wasupstudio.model.vo.OrganizationVo">
-        SELECT organization ,COUNT(*) as count FROM wa_member wm
-        WHERE organization IS NOT NULL
-          AND organization != ''
-        GROUP BY organization
+    <select id="findCategoryStatistics" resultType="com.wasupstudio.model.vo.CategoryVo">
+        SELECT category ,COUNT(*) as count FROM wa_member wm
+        WHERE category IS NOT NULL
+          AND category != ''
+        GROUP BY category
     </select>
 </mapper>

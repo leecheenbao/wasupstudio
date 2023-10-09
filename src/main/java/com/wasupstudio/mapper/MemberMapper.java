@@ -1,10 +1,9 @@
 package com.wasupstudio.mapper;
 
 import com.wasupstudio.model.entity.MemberEntity;
-import com.wasupstudio.model.query.AgeDistributionsQuery;
 import com.wasupstudio.model.vo.AgeDistributionsVo;
 import com.wasupstudio.model.vo.MemberAgeVo;
-import com.wasupstudio.model.vo.OrganizationVo;
+import com.wasupstudio.model.vo.CategoryVo;
 import com.wasupstudio.util.CommonMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -34,8 +33,8 @@ public interface MemberMapper extends CommonMapper<MemberEntity> {
     List<AgeDistributionsVo> findAgeDistributionsStatistics();
 
     @Select("SELECT * FROM wa_member wm WHERE organization IS NOT NULL AND organization != ''")
-    List<MemberEntity> findOrganization();
+    List<MemberEntity> findCategory();
 
-    List<OrganizationVo> findOrganizationStatistics();
+    List<CategoryVo> findCategoryStatistics();
 
 }

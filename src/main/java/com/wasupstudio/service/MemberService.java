@@ -6,7 +6,7 @@ import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.query.AgeDistributionsQuery;
-import com.wasupstudio.model.query.OrganizationQuery;
+import com.wasupstudio.model.query.CategoryQuery;
 
 public interface MemberService {
 
@@ -24,7 +24,7 @@ public interface MemberService {
 
     AgeDistributionsQuery findAgeDistributions();
 
-    OrganizationQuery findOrganization();
+    CategoryQuery findCategory();
 
     void update(MemberDTO memberDTO);
 

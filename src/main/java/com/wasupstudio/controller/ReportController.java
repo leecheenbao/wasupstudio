@@ -23,7 +23,7 @@ public class ReportController {
     * 近期登入人數(login)
     * 用戶年齡分佈(age)
     * 各劇本使用近況(script)
-    * 隸屬機構統計(organization)
+    * 隸屬機構統計(category)
     * 各劇本結局統計(script-ending)
     */
     @ApiOperation(value = "近期登入人數(login)")
@@ -37,10 +37,10 @@ public class ReportController {
         return ResultGenerator.genSuccessResult(memberService.findAgeDistributions());
     }
 
-    @ApiOperation(value = "隸屬機構統計(organization)")
-    @GetMapping("/organization")
+    @ApiOperation(value = "隸屬機構統計(category)")
+    @GetMapping("/category")
     public Result getOrganization() {
-        return ResultGenerator.genSuccessResult(memberService.findOrganization());
+        return ResultGenerator.genSuccessResult(memberService.findCategory());
     }
 
     @ApiOperation(value = "各劇本使用近況(script)")
