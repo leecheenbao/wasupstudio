@@ -27,4 +27,8 @@ public class RedisUtil {
     public String getKey(String key) {
         return redisTemplate.opsForValue().get(key);
     }
+
+    public void delete(String key){
+        redisTemplate.delete(key);
+    }
 }
