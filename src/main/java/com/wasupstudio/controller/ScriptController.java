@@ -334,7 +334,7 @@ public class ScriptController {
             File cacheFile = fileUtils.generateCacheFile(pdf.getFilename(), mediaFilePath, pdfFilePath);
             if (cacheFile.exists()) {
                 String filePath = uploadCacheFile(cacheFile);
-                fileUtils.deleteCacheFile(cacheFile);
+//                fileUtils.deleteCacheFile(cacheFile);
                 return ResultGenerator.genSuccessResult(filePath);
             } else {
                 return ResultGenerator.genFailResult(ResultCode.DATA_NOT_EXIST.getMessage());
