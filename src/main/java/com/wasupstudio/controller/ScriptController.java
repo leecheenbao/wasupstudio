@@ -341,7 +341,7 @@ public class ScriptController {
             File cacheFile = fileUtils.generateCacheFile(fileName, mediaFilePath, pdfFilePath);
             if (cacheFile.exists()) {
                 filePath = uploadCacheFile(cacheFile);
-
+                log.info("delete cache file:{}", cacheFile.delete());
                 // 儲存路徑到redis 5 min
                 redisUtil.setKeyWithExpiration(
                         getRedisKey(memberId, fileDownloadDTO), filePath, 5, TimeUnit.MINUTES);
