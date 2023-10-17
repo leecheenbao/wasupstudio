@@ -95,7 +95,7 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
             }
             if (!ValueValidator.isNullOrEmpty(taskDTO.getEndTime())) {
                 Date endTime = DateUtils.toDate(taskDTO.getEndTime(), DateUtils.YYYY_MM_DD);
-                taskEntity.setEndTime(DateUtils.getEndDate(endTime));
+                taskEntity.setEndTime(DateUtils.getStartDate(endTime));
             }
             if (!ValueValidator.isNullOrZero(taskDTO.getLearning())) {
                 taskEntity.setLearning(taskDTO.getLearning());

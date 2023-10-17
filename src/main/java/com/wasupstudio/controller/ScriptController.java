@@ -84,7 +84,6 @@ public class ScriptController {
     })
     @PostMapping("/detail")
     public Result detailSave(@RequestBody ScriptDetailDTO scriptDetailDTO) throws JsonProcessingException {
-        log.info("/detail step1");
         // 判斷詳情天數是否大於原先的script設定
         ScriptEntity scriptEntity = scriptService.findOne(scriptDetailDTO.getScriptId());
         if (scriptEntity != null) {
@@ -95,7 +94,6 @@ public class ScriptController {
 
         ScriptDetailEntity scriptDetailEntity = scriptDetailService.findByPeriod(
                 scriptDetailDTO.getScriptId(), scriptDetailDTO.getPeriod());
-        log.info("/detail delete all config scriptDetailId:{}", scriptDetailEntity.getScriptDetailId());
         studentConfigService.deleteByScriptDetailId(scriptDetailEntity.getScriptDetailId());
         parentConfigService.deleteByScriptDetailId(scriptDetailEntity.getScriptDetailId());
 

@@ -271,7 +271,7 @@ public class AuthController {
         MemberDTO memberDTO = memberService.findByVerificationCode(verificationCode);
         // 如果驗證通過，將帳號的啟用狀態設置為已啟用
         if (memberDTO.getStatus().equals(ProjectConstant.SystemAdminStatus.NOT_ENABLED)) {
-            memberDTO.setStatus(ProjectConstant.SystemAdminStatus.DISABLE);
+            memberDTO.setStatus(ProjectConstant.SystemAdminStatus.NORMAL);
             memberService.update(memberDTO);
         }
         // 返回相應的成功或失敗消息
