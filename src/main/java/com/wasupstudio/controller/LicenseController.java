@@ -12,6 +12,7 @@ import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.service.LicenseService;
 import com.wasupstudio.service.MemberService;
 import com.wasupstudio.util.DateUtils;
+import com.wasupstudio.util.JwtUtils;
 import com.wasupstudio.util.MailUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -85,39 +87,51 @@ public class LicenseController {
 
     /**
      * 新增啟動碼數據
-     *
-     * @param licenseDTO      License DTO
-     * @param bindingResult   綁定結果
      * @return Result 結果
      */
     @PostMapping
     @ApiOperation(value = "新增啟動碼數據")
-    public Result save(@RequestBody @Valid LicenseDTO licenseDTO, BindingResult bindingResult) throws Exception {
-        if (bindingResult.hasErrors()) {
-            String errorMsg = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getField() + " " + error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return ResultGenerator.genFailResult(errorMsg);
+    public Result save(@RequestParam Integer count){
+        MemberEntity member = JwtUtils.getMember();
+
+        for (int startUpCount=0 ; startUpCount < count ; startUpCount++){
+            LicenseDTO licenseDTO = LicenseDTO.builder()
+                    .startTime(new Date())
+                    .generate(member.getName())
+                    .build();
+            licenseService.save(licenseDTO);
         }
-
-        List<LicenseEntity> list = licenseService.findByEmailAndActivated(licenseDTO);
-        if (!list.isEmpty()) {
-            return ResultGenerator.genFailResult(ResultCode.LICENSE_OF_REDEMPTION_TOO_MANY_TIMES.getMessage());
-        }
-
-        MemberEntity memberEntity = memberService.getAdminByEmail(licenseDTO.getCustomerEmail());
-        if (memberEntity == null){
-            return ResultGenerator.genFailResult(ResultCode.LICENSE_OF_ACCOUNT_NOT_FOUND.getMessage());
-        }
-
-        licenseDTO.setGenerate(LicenseEnum.GENERAGE_BY_ADMIN.getDesc());
-
-        String memberId = String.valueOf(memberEntity.getId());
-        MailUtil.sendMail(ProjectConstant.MailType.START_KEY, "" ,licenseDTO.getCustomerEmail());
-        licenseService.save(licenseDTO);
-
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
     }
+
+//    @PostMapping
+//    @ApiOperation(value = "新增啟動碼數據")
+//    public Result save(@RequestBody @Valid LicenseDTO licenseDTO, BindingResult bindingResult) throws Exception {
+//        if (bindingResult.hasErrors()) {
+//            String errorMsg = bindingResult.getFieldErrors().stream()
+//                    .map(error -> error.getField() + " " + error.getDefaultMessage())
+//                    .collect(Collectors.joining(", "));
+//            return ResultGenerator.genFailResult(errorMsg);
+//        }
+//
+//        List<LicenseEntity> list = licenseService.findByEmailAndActivated(licenseDTO);
+//        if (!list.isEmpty()) {
+//            return ResultGenerator.genFailResult(ResultCode.LICENSE_OF_REDEMPTION_TOO_MANY_TIMES.getMessage());
+//        }
+//
+//        MemberEntity memberEntity = memberService.getAdminByEmail(licenseDTO.getCustomerEmail());
+//        if (memberEntity == null){
+//            return ResultGenerator.genFailResult(ResultCode.LICENSE_OF_ACCOUNT_NOT_FOUND.getMessage());
+//        }
+//
+//        licenseDTO.setGenerate(LicenseEnum.GENERAGE_BY_ADMIN.getDesc());
+//
+//        String memberId = String.valueOf(memberEntity.getId());
+//        MailUtil.sendMail(ProjectConstant.MailType.START_KEY, "" ,licenseDTO.getCustomerEmail());
+//        licenseService.save(licenseDTO);
+//
+//        return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
+//    }
 
     /**
      * 更新啟動碼數據

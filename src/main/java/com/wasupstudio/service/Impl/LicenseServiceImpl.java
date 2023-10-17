@@ -22,6 +22,7 @@ public class LicenseServiceImpl extends AbstractService<LicenseEntity> implement
 
     @Autowired
     public LicenseMapper licenseMapper;
+
     @Override
     public void save(LicenseDTO licenseDTO) {
         Date today = new Date();
@@ -42,7 +43,7 @@ public class LicenseServiceImpl extends AbstractService<LicenseEntity> implement
         String dateString = now.format(DateTimeFormatter.ofPattern("MMdd"));
         UUID uuid = UUID.randomUUID();
         String str = uuid.toString().replace("-", "");
-        String[] parts = { dateString, str.substring(0, 3), str.substring(3, 6), str.substring(6, 9), str.substring(9, 12) };
+        String[] parts = {dateString, str.substring(0, 3), str.substring(3, 6), str.substring(6, 9), str.substring(9, 12)};
         return String.join("-", parts);
     }
 
@@ -74,20 +75,12 @@ public class LicenseServiceImpl extends AbstractService<LicenseEntity> implement
     @Override
     public void update(LicenseDTO licenseDTO) {
         LicenseEntity license = this.findOne(licenseDTO.getId());
-        if (license != null){
+        if (license != null) {
             license.setActivated(licenseDTO.getActivated());
-            if (!license.getCustomerName().equals(licenseDTO.getCustomerName())){
-                license.setCustomerName(licenseDTO.getCustomerName());
-            }
-            if (!license.getCustomerEmail().equals(licenseDTO.getCustomerEmail())){
-                license.setCustomerEmail(licenseDTO.getCustomerEmail());
-            }
-            if (!license.getActivated().equals(licenseDTO.getActivated())){
-                license.setActivated(licenseDTO.getActivated());
-            }
-            if (!license.getGenerate().equals(licenseDTO.getGenerate())){
-                license.setGenerate(licenseDTO.getGenerate());
-            }
+            license.setCustomerName(licenseDTO.getCustomerName());
+            license.setCustomerEmail(licenseDTO.getCustomerEmail());
+            license.setActivated(licenseDTO.getActivated());
+            license.setGenerate(licenseDTO.getGenerate());
             this.update(license);
         }
 
