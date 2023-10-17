@@ -17,6 +17,6 @@ public interface StudentConfigMapper extends CommonMapper<StudentConfiglEntity> 
 
     void batchInsert(@Param("list") List<StudentConfiglEntity> list, @Param("scriptDetailId") Integer scriptDetailId);
 
-    @Delete("SELECT * FROM wa_script_student_config WHERE script_detail_id=#{scriptDetailId}")
+    @Delete("DELETE FROM wa_script_student_config WHERE script_detail_id=#{scriptDetailId}")
     void deleteByScriptDetailId(Integer scriptDetailId);
 }

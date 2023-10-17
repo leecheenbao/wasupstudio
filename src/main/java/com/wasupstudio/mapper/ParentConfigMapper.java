@@ -13,6 +13,6 @@ public interface ParentConfigMapper extends CommonMapper<ParentConfiglEntity> {
 
     void batchInsert(@Param("list") List<ParentConfiglEntity> list, @Param("scriptDetailId") Integer scriptDetailId);
 
-    @Delete("SELECT * FROM wa_script_parent_config WHERE script_detail_id=#{scriptDetailId}")
+    @Delete("DELETE FROM wa_script_parent_config WHERE script_detail_id=#{scriptDetailId}")
     void deleteByScriptDetailId(Integer scriptDetailId);
 }
