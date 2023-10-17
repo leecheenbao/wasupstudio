@@ -24,6 +24,11 @@ public class ParentConfigServiceImpl extends AbstractService<ParentConfiglEntity
     }
 
     @Override
+    public void deleteByScriptDetailId(Integer scriptDetailId) {
+        parentConfigMapper.deleteByScriptDetailId(scriptDetailId);
+    }
+
+    @Override
     public void batchSave(List<ParentConfiglDTO> list, Integer scriptDetailId) {
         List<ParentConfiglEntity> parentConfiglEntities = parentConfigConverter.DTOsToItems(list);
         parentConfigMapper.batchInsert(parentConfiglEntities, scriptDetailId);

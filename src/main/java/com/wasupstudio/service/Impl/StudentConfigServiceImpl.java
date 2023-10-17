@@ -27,6 +27,11 @@ public class StudentConfigServiceImpl extends AbstractService<StudentConfiglEnti
     }
 
     @Override
+    public void deleteByScriptDetailId(Integer scriptDetailId) {
+        studentConfigMapper.deleteByScriptDetailId(scriptDetailId);
+    }
+
+    @Override
     public void batchSave(List<StudentConfigDTO> list, Integer scriptDetailId) {
         List<StudentConfiglEntity> studentConfiglEntities = studentConfigConverter.DTOsToItems(list);
         studentConfigMapper.batchInsert(studentConfiglEntities, scriptDetailId);

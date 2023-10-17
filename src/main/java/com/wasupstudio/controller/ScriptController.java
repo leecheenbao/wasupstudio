@@ -108,10 +108,12 @@ public class ScriptController {
             List<StudentConfigDTO> studentConfigDTOList = scriptDetailDTO.getStudentConfigs();
             // 編輯學生設定
             if (studentConfigDTOList != null) {
+                studentConfigService.deleteByScriptDetailId(scriptDetailEntity.getScriptDetailId());
                 saveStudentConfig(studentConfiglEntityList, studentConfigDTOList, scriptDetailEntity.getScriptDetailId());
             }
             // 編輯家長設定
             if (parentConfiglDTOList != null) {
+                parentConfigService.deleteByScriptDetailId(scriptDetailEntity.getScriptDetailId());
                 saveParentConfig(parentConfiglEntityList, parentConfiglDTOList, scriptDetailEntity.getScriptDetailId());
             }
         }

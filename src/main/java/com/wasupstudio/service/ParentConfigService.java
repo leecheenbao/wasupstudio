@@ -10,6 +10,8 @@ public interface ParentConfigService {
 
     void save (ParentConfiglDTO dto);
 
+    void deleteByScriptDetailId(Integer scriptDetailId);
+
     void batchSave(List<ParentConfiglDTO> list, Integer scriptDetailId);
 
     void batchUpdate(List<ParentConfiglDTO> list, Integer scriptDetailId);

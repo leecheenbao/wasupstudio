@@ -10,6 +10,8 @@ public interface StudentConfigService {
 
     void save (StudentConfigDTO dto);
 
+    void deleteByScriptDetailId(Integer scriptDetailId);
+
     void batchSave(List<StudentConfigDTO> list, Integer scriptDetailId);
 
     StudentConfiglEntity findOne(Integer id);
