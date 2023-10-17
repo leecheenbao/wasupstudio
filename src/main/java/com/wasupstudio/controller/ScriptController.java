@@ -84,6 +84,7 @@ public class ScriptController {
     })
     @PostMapping("/detail")
     public Result detailSave(@RequestBody ScriptDetailDTO scriptDetailDTO) throws JsonProcessingException {
+        log.info("/detail step1");
         // 判斷詳情天數是否大於原先的script設定
         ScriptEntity scriptEntity = scriptService.findOne(scriptDetailDTO.getScriptId());
         if (scriptEntity != null) {
@@ -94,6 +95,7 @@ public class ScriptController {
 
         ScriptDetailEntity scriptDetailEntity = scriptDetailService.findByPeriod(
                 scriptDetailDTO.getScriptId(), scriptDetailDTO.getPeriod());
+        log.info("/detail step2");
 
         if (scriptDetailEntity == null) {
             ScriptDetailEntity entity = scriptDetailService.save(scriptDetailDTO);
@@ -108,11 +110,13 @@ public class ScriptController {
             List<StudentConfigDTO> studentConfigDTOList = scriptDetailDTO.getStudentConfigs();
             // 編輯學生設定
             if (studentConfigDTOList != null) {
+                log.info("/detail delete student config");
                 studentConfigService.deleteByScriptDetailId(scriptDetailEntity.getScriptDetailId());
                 saveStudentConfig(studentConfiglEntityList, studentConfigDTOList, scriptDetailEntity.getScriptDetailId());
             }
             // 編輯家長設定
             if (parentConfiglDTOList != null) {
+                log.info("/detail delete parent config");
                 parentConfigService.deleteByScriptDetailId(scriptDetailEntity.getScriptDetailId());
                 saveParentConfig(parentConfiglEntityList, parentConfiglDTOList, scriptDetailEntity.getScriptDetailId());
             }
