@@ -95,7 +95,9 @@ public class ScriptController {
 
         ScriptDetailEntity scriptDetailEntity = scriptDetailService.findByPeriod(
                 scriptDetailDTO.getScriptId(), scriptDetailDTO.getPeriod());
-        log.info("/detail step2");
+        log.info("/detail delete all config scriptDetailId:{}", scriptDetailEntity.getScriptDetailId());
+        studentConfigService.deleteByScriptDetailId(scriptDetailEntity.getScriptDetailId());
+        parentConfigService.deleteByScriptDetailId(scriptDetailEntity.getScriptDetailId());
 
         if (scriptDetailEntity == null) {
             ScriptDetailEntity entity = scriptDetailService.save(scriptDetailDTO);
@@ -110,14 +112,10 @@ public class ScriptController {
             List<StudentConfigDTO> studentConfigDTOList = scriptDetailDTO.getStudentConfigs();
             // 編輯學生設定
             if (studentConfigDTOList != null) {
-                log.info("/detail delete student config");
-                studentConfigService.deleteByScriptDetailId(scriptDetailEntity.getScriptDetailId());
                 saveStudentConfig(studentConfiglEntityList, studentConfigDTOList, scriptDetailEntity.getScriptDetailId());
             }
             // 編輯家長設定
             if (parentConfiglDTOList != null) {
-                log.info("/detail delete parent config");
-                parentConfigService.deleteByScriptDetailId(scriptDetailEntity.getScriptDetailId());
                 saveParentConfig(parentConfiglEntityList, parentConfiglDTOList, scriptDetailEntity.getScriptDetailId());
             }
         }
