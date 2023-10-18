@@ -1,0 +1,10 @@
+exclude:
+  license:
+       - '/swagger**/**'
+       - '/doc.html'
+       - '/auth/**'
+       - '/api/script/**'
+       - '/api/license/**'
+
+
+

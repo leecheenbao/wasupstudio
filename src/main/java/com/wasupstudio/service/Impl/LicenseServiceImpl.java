@@ -87,8 +87,8 @@ public class LicenseServiceImpl extends AbstractService<LicenseEntity> implement
     }
 
     @Override
-    public List<LicenseEntity> findByEmailAndActivated(LicenseDTO licenseDTO) {
+    public List<LicenseEntity> findByEmailAndActivated(String email) {
 
-        return licenseMapper.findByCustomerEmail(licenseDTO.getCustomerEmail());
+        return licenseMapper.findByCustomerEmail(email);
     }
 }

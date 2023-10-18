@@ -19,5 +19,5 @@ public interface LicenseService {
 
     void update(LicenseDTO licenseDTO);
 
-    List<LicenseEntity> findByEmailAndActivated(LicenseDTO licenseDTO);
+    List<LicenseEntity> findByEmailAndActivated(String mail);
 }

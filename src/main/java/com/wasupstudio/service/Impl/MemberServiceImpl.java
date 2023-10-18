@@ -1,5 +1,7 @@
 package com.wasupstudio.service.Impl;
 
+import com.google.gson.Gson;
+import com.wasupstudio.constant.BaseRedisKeyConstant;
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.constant.UserRoleConstants;
 import com.wasupstudio.converter.MemberConverter;
@@ -7,6 +9,7 @@ import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.mapper.MemberMapper;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.dto.MemberDTO;
+import com.wasupstudio.model.entity.LicenseEntity;
 import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
@@ -16,16 +19,21 @@ import com.wasupstudio.model.vo.AgeDistributionsVo;
 import com.wasupstudio.model.vo.MemberAgeVo;
 import com.wasupstudio.model.vo.CategoryVo;
 import com.wasupstudio.service.AbstractService;
+import com.wasupstudio.service.LicenseService;
 import com.wasupstudio.service.MemberService;
 import com.wasupstudio.util.AesUtils;
+import com.wasupstudio.util.DateUtils;
 import com.wasupstudio.util.JwtUtils;
+import com.wasupstudio.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -36,6 +44,11 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
     @Autowired
     public MemberConverter memberConverter;
 
+    @Autowired
+    public LicenseService licenseService;
+
+    @Resource
+    public RedisUtil redisUtil;
     @Override
     public String save(MemberDTO memberDTO) {
         if (getAdminByEmail(memberDTO.getEmail()) == null) {
@@ -150,6 +163,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
         MemberEntity memberEntity = memberMapper.findAccount(adminLoginQuery.getEmail());
 
         Boolean isTure = checkoutPassword(adminLoginQuery, memberEntity);
+
         if (isTure) {
             HashMap<String, Object> dataMap = new HashMap<>();
             dataMap.put("user", adminLoginQuery);
@@ -161,6 +175,8 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
             String token = JwtUtils.generateToken(memberEntity, adminLoginQuery.getIsRemember());
             memberEntity.setLastLogin(new Date());
             update(memberConverter.ItemToDTO(memberEntity));
+
+            checkLicense(memberEntity);
             return token;
         }
 
@@ -172,6 +188,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
         MemberEntity memberEntity = memberMapper.findAccount(mail);
         memberEntity.setLastLogin(new Date());
 
+
         if (memberEntity != null) {
             HashMap<String, Object> dataMap = new HashMap<>();
             dataMap.put("user", memberEntity);
@@ -179,7 +196,10 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
             if (memberEntity.getRole() == null) {
                 memberEntity.setRole(MemberEntity.Role.valueOf(UserRoleConstants.ROLE_USER));
             }
+
             String token = JwtUtils.generateToken(memberEntity, true);
+
+            checkLicense(memberEntity);
             return token;
         }
 
@@ -196,6 +216,43 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
             return dbData.equals(password);
         }
         return false;
+    }
+
+    public Boolean checkLicense(MemberEntity member){
+        redisUtil.delete(String.format(BaseRedisKeyConstant.LOGIN_CHECKED,member.getId()));
+        List<LicenseEntity> list = licenseService.findByEmailAndActivated(member.getEmail());
+        if (list.isEmpty()){
+            return false;
+        }
+
+        Long timeDifferenceInMillis = 0L;
+        for (LicenseEntity entity : list){
+            Long now = DateUtils.currentTimeMillis();
+            Long exp = DateUtils.getMillis(entity.getExpirationDate());
+            long res = exp - now;
+            if (timeDifferenceInMillis < res){
+                timeDifferenceInMillis = res;
+            }
+        }
+
+        // 將啟動碼是否啟動存在redis
+        long timeDifferenceInSeconds = timeDifferenceInMillis / 1000;
+        boolean check = list.size() > 0;
+        redisUtil.setExpire(BaseRedisKeyConstant.LOGIN_CHECKED , Boolean.toString(check), timeDifferenceInSeconds, member.getId());
+        return list.size() > 0;
+    }
+    public String getLoginRedisKey(MemberEntity member){
+        String loginChecked = BaseRedisKeyConstant.LOGIN_CHECKED;
+        return String.format(loginChecked, member.getId());
+    }
+
+    public static void main(String[] args) {
+        String loginChecked = BaseRedisKeyConstant.LOGIN_CHECKED;
+        String key = "123";
+        String tset =String.format(loginChecked, key);
+
+        System.out.println(tset);
+
     }
 }
 

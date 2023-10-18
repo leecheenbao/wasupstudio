@@ -16,7 +16,7 @@ public interface LicenseMapper extends CommonMapper<LicenseEntity> {
     List<LicenseEntity> findByACTDate(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
 
     @ResultMap("BaseResultMap")
-    @Select("SELECT * FROM wa_license WHERE CUSTOMER_EMAIL = #{customerMail} AND ACTIVATED = 1 ")
+    @Select("SELECT * FROM wa_license WHERE CUSTOMER_EMAIL = #{customerMail} AND ACTIVATED = 1 AND expiration_date >= NOW()")
     List<LicenseEntity> findByCustomerEmail(@Param("customerMail") String customerMail);
 
 }

@@ -222,15 +222,13 @@ public enum ResultCode {
     CAPTCHA_REGISTRT_FAILED(20127,"驗證系統繁忙中，請稍候再試"),
     LOGIN_TOO_MANY_TIMES(20130, "登入過於頻繁, 請稍後再試"),
     LOGIN_FAILED_RETRY_LOGIN(20131, "為了您帳號安全，本次登入已失效，請重新登入"),
-    WITHDRAW_ADDRESS_NOT_MATCH_RULE(20132, "提幣地址非協議地址格式，請核對後重新輸入"),
-    LIMITWATER_ERROR(20133, "平台限制流水不足，暫時無法提現"),
     UNIDENTIFIED(20134, "尚未實名認證"),
     NO_BOUND_ADDRESSES(20137, "無綁定的地址"),
 
 
     /* 序號 */
-    LICENSC_IS_USED(20136, "您嘗試啟動的序號無效或已被其他帳戶使用。請檢查後重新輸入。"),
-    GRAPHICS_VERIFICATION_AUTH_INVALID_WITHOUT_TIME_LIMIT(20137, "很抱歉，您暫時無法繼續提交。如有疑問，請聯繫客服。"),
+    LICENSE_NOT_INVALID(20135, "序號驗證失敗"),
+    LICENSE_IS_USED(20136, "您嘗試啟動的序號無效或已被其他帳戶使用。請檢查後重新輸入。"),
     LICENSE_OF_REDEMPTION_TOO_MANY_TIMES(20137, "該帳戶尚有未經啟動的序號，請先將其他未經啟用的序號註銷"),
     LICENSE_OF_REDEMPTION_EXPIRED(20138, "序號已過期"),
     LICENSE_OF_REDEMPTION_IS_USED(20139, "序號已被使用"),

@@ -1,6 +1,8 @@
-package com.wasupstudio.security;
+package com.wasupstudio.config;
 
+import com.wasupstudio.config.JwtConfig;
 import com.wasupstudio.constant.SecurityConstants;
+import com.wasupstudio.security.JwtAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

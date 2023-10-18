@@ -2,6 +2,7 @@ package com.wasupstudio.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
+import com.wasupstudio.constant.BaseRedisKeyConstant;
 import com.wasupstudio.enums.FileTypeEnum;
 import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
@@ -345,8 +346,8 @@ public class ScriptController {
                 filePath = uploadCacheFile(cacheFile);
                 log.info("delete cache file:{}", cacheFile.delete());
                 // 儲存路徑到redis 5 min
-                redisUtil.setKeyWithExpiration(
-                        getRedisKey(memberId, fileDownloadDTO), filePath, 5, TimeUnit.MINUTES);
+                redisUtil.setExpire(BaseRedisKeyConstant.FILE_DOWNLOAD, filePath, 5, TimeUnit.MINUTES);
+
                 return ResultGenerator.genSuccessResult(filePath);
             } else {
                 return ResultGenerator.genFailResult(ResultCode.DATA_NOT_EXIST.getMessage());
