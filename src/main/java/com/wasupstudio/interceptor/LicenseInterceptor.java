@@ -52,10 +52,10 @@ public class LicenseInterceptor extends HandlerInterceptorAdapter {
         boolean isAccess = true;
         ResultCode resultCode = null;
         String requestURI = request.getRequestURI();
-        // 驗證 license
+        // 檢查 license 是否有效於登入時儲存於 redis 呼叫 API 時直接取出 boolean
         String license = redisUtil.getKey(String.format(BaseRedisKeyConstant.LOGIN_CHECKED, memberId.toString()));
+        boolean checkLicense = Boolean.parseBoolean(license);
 
-        Boolean checkLicense = new Boolean(license);
         //此API是否跳過認證
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         SkipAuth skipAuth = handlerMethod.getMethodAnnotation(SkipAuth.class);

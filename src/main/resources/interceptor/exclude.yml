@@ -5,6 +5,7 @@ exclude:
        - '/auth/**'
        - '/api/script/**'
        - '/api/license/**'
+       - '/api/member/**'
 
 
 
