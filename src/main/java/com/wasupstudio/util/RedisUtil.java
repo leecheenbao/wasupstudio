@@ -1,5 +1,7 @@
 package com.wasupstudio.util;
 
+import com.wasupstudio.constant.BaseRedisKeyConstant;
+import com.wasupstudio.model.entity.MemberEntity;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -38,4 +40,8 @@ public class RedisUtil {
         redisTemplate.opsForValue().set(key, (String) value, time, TimeUnit.SECONDS);
     }
 
+    public String getLoginRedisKey(MemberEntity member){
+        String loginChecked = BaseRedisKeyConstant.LOGIN_CHECKED;
+        return String.format(loginChecked, member.getId());
+    }
 }

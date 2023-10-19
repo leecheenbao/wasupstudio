@@ -241,10 +241,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
         redisUtil.setExpire(BaseRedisKeyConstant.LOGIN_CHECKED , Boolean.toString(check), timeDifferenceInSeconds, member.getId());
         return list.size() > 0;
     }
-    public String getLoginRedisKey(MemberEntity member){
-        String loginChecked = BaseRedisKeyConstant.LOGIN_CHECKED;
-        return String.format(loginChecked, member.getId());
-    }
+
 
     public static void main(String[] args) {
         String loginChecked = BaseRedisKeyConstant.LOGIN_CHECKED;

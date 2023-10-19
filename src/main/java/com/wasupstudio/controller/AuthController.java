@@ -14,6 +14,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfo;
+import com.wasupstudio.constant.BaseRedisKeyConstant;
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.ResultGenerator;
@@ -29,10 +30,7 @@ import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
 import com.wasupstudio.model.query.ScriptQuery;
 import com.wasupstudio.service.*;
-import com.wasupstudio.util.AesUtils;
-import com.wasupstudio.util.HttpServletRequestUtils;
-import com.wasupstudio.util.JwtUtils;
-import com.wasupstudio.util.MailUtil;
+import com.wasupstudio.util.*;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,6 +84,9 @@ public class AuthController {
     @Autowired
     private MediaService mediaService;
 
+    @Autowired
+    private RedisUtil redisUtil;
+
     @ApiOperation(value = "Google註冊", notes = "如果提供了code，則會使用Google API進行註冊，否則會重定向到Google的OAuth授權頁面")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "code", value = "授權碼", required = false, dataType = "String", paramType = "query")
@@ -124,12 +125,19 @@ public class AuthController {
 
             String mail = userInfo.getEmail();
             String role = memberEntity.getRole().toString();
+            boolean checkLicense;
+            if (memberEntity.getRole().equals(MemberEntity.Role.ROLE_ADMIN)){
+                checkLicense = true;
+            } else {
+                checkLicense = Boolean.parseBoolean(redisUtil.getKey(redisUtil.getLoginRedisKey(memberEntity)));
+            }
             Map<String, Object> map = new TreeMap<>();
             map.put("mail", mail);
             map.put("token", jwtToken);
             map.put("role", role);
             map.put("memberId", memberEntity.getId());
             map.put("id", memberEntity.getId());
+            map.put("checkLicense", checkLicense);
             return new RedirectView(getURL(url, map));
         }
         return new RedirectView(url);
@@ -206,11 +214,20 @@ public class AuthController {
         }
         Authentication authentication = JwtUtils.getAuthentication(jwtToken);
         MemberEntity memberEntity = memberService.getAdminByEmail(adminLoginQuery.getEmail());
+
+        boolean checkLicense;
+        if (memberEntity.getRole().equals(MemberEntity.Role.ROLE_ADMIN)){
+            checkLicense = true;
+        } else {
+            checkLicense = Boolean.parseBoolean(redisUtil.getKey(redisUtil.getLoginRedisKey(memberEntity)));
+        }
+
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setToken(jwtToken);
         loginDTO.setMemMail(adminLoginQuery.getEmail());
         loginDTO.setRole(authentication.getAuthorities());
         loginDTO.setId(memberEntity.getId());
+        loginDTO.setCheckLicense(checkLicense);
         log.info("[會員登入成功 登入資訊 adminLoginQuery:{}]", adminLoginQuery);
         return ResultGenerator.genSuccessResult(loginDTO);
 

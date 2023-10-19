@@ -29,5 +29,7 @@ public class LoginDTO {
 	private Integer id;
 	private Collection<? extends GrantedAuthority> role;
 
+	private boolean checkLicense;
+
 
 }
