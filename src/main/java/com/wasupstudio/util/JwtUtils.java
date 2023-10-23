@@ -163,6 +163,26 @@ public class JwtUtils {
         }).orElse(null);
     }
 
+    public static MemberEntity getMember(Authentication authentication) {
+        Claims claims = getTokenBody(authentication.getCredentials().toString());
+        Map<String, Object> map = (Map<String, Object>) claims.get(SecurityConstants.TOKEN_MEMBER_INFO);
+        return Optional.ofNullable(map).map(memberMap -> {
+            String dateString = (String) memberMap.get("birthday");
+            LocalDate birthday = LocalDate.parse(dateString);
+            MemberEntity memberEntity = new MemberEntity();
+            memberEntity.setId((Integer) memberMap.get("id"));
+            memberEntity.setPhone((String) memberMap.get("phone"));
+            memberEntity.setEmail((String) memberMap.get("email"));
+            memberEntity.setStatus((Integer) memberMap.get("status"));
+            memberEntity.setGrade((Integer) memberMap.get("grade"));
+            memberEntity.setOrganization((String) memberMap.get("organization"));
+            memberEntity.setBirthday(birthday.toString());
+            memberEntity.setRole(MemberEntity.Role.valueOf((String) memberMap.get("role")));
+            memberEntity.setName((String) memberMap.get("name"));
+
+            return memberEntity;
+        }).orElse(null);
+    }
 }
 
 

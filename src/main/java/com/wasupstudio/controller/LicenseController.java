@@ -155,4 +155,37 @@ public class LicenseController {
         licenseService.update(licenseDTO);
         return ResultGenerator.genSuccessResult(ResultCode.SAVE_SUCCESS.getMessage());
     }
+
+    /**
+     * 啟動碼驗證
+     * @return Result 結果
+     */
+    @PostMapping("/verify")
+    @ApiOperation(value = "啟動碼驗證")
+    public Result verifyLicense(@RequestBody LicenseDTO licenseDTO){
+
+        MemberEntity member = JwtUtils.getMember();
+
+        licenseDTO.setLicenseKey(licenseDTO.getLicenseKey());
+        licenseDTO.setCustomerEmail(member.getEmail());
+        licenseDTO.setCustomerName(member.getName());
+
+        List<LicenseEntity> licenseEntityList = licenseService.findByEmailAndActivated(member.getEmail());
+
+        List<LicenseEntity> unused = licenseService.findByLicenseKeyAndActivated(licenseDTO.getLicenseKey(), 1);
+
+        if (licenseEntityList.size() > 0){
+            return ResultGenerator.genFailResult(ResultCode.LICENSE_OF_REDEMPTION_TOO_MANY_TIMES.getMessage());
+        }
+        if (unused.size() > 0){
+            return ResultGenerator.genFailResult(ResultCode.LICENSE_OF_REDEMPTION_IS_USED.getMessage());
+        }
+
+        boolean verify = licenseService.verify(licenseDTO);
+        if (verify){
+            return ResultGenerator.genSuccessResult(ResultCode.LICENSE_ACTIVATED_SUCCESS.getMessage());
+        }
+
+        return ResultGenerator.genFailResult(ResultCode.LICENSE_ACTIVATED_FAIL.getMessage());
+    }
 }

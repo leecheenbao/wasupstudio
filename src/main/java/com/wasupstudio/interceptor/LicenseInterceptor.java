@@ -36,17 +36,14 @@ public class LicenseInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private RedisUtil redisUtil;
 
-    private MemberEntity member;
-
-    public LicenseInterceptor() {
-    }
 
     /**
      * pre handle
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        member = JwtUtils.getMember();
+        String token = request.getHeader("Authorization").split(" ")[1];
+        MemberEntity member = JwtUtils.getMember(JwtUtils.getAuthentication(token));
 
         Integer memberId = member.getId();
         boolean isAccess = true;

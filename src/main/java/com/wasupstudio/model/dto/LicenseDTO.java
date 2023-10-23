@@ -18,4 +18,5 @@ public class LicenseDTO {
     Date startTime;
     Date endTime;
     String generate;
+    String licenseKey;
 }

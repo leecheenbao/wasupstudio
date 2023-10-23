@@ -38,6 +38,11 @@ public class LicenseServiceImpl extends AbstractService<LicenseEntity> implement
         save(licenseEntity);
     }
 
+    @Override
+    public boolean verify(LicenseDTO licenseDTO) {
+        return licenseMapper.verifyLicense(licenseDTO.getLicenseKey(), licenseDTO.getCustomerEmail(), licenseDTO.getCustomerName());
+    }
+
     public static String generate() {
         LocalDate now = LocalDate.now();
         String dateString = now.format(DateTimeFormatter.ofPattern("MMdd"));
@@ -88,7 +93,11 @@ public class LicenseServiceImpl extends AbstractService<LicenseEntity> implement
 
     @Override
     public List<LicenseEntity> findByEmailAndActivated(String email) {
-
         return licenseMapper.findByCustomerEmail(email);
+    }
+
+    @Override
+    public List<LicenseEntity> findByLicenseKeyAndActivated(String licenseKey, Integer activated) {
+        return licenseMapper.findByLicenseAndActivated(licenseKey, activated);
     }
 }

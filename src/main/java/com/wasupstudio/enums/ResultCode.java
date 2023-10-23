@@ -227,9 +227,11 @@ public enum ResultCode {
 
 
     /* 序號 */
+    LICENSE_ACTIVATED_SUCCESS(20134, "啟動碼啟用成功"),
+    LICENSE_ACTIVATED_FAIL(20134, "啟動碼啟用失敗"),
     LICENSE_NOT_INVALID(20135, "序號驗證失敗"),
     LICENSE_IS_USED(20136, "您嘗試啟動的序號無效或已被其他帳戶使用。請檢查後重新輸入。"),
-    LICENSE_OF_REDEMPTION_TOO_MANY_TIMES(20137, "該帳戶尚有未經啟動的序號，請先將其他未經啟用的序號註銷"),
+    LICENSE_OF_REDEMPTION_TOO_MANY_TIMES(20137, "該帳戶已經啟用過啟動碼"),
     LICENSE_OF_REDEMPTION_EXPIRED(20138, "序號已過期"),
     LICENSE_OF_REDEMPTION_IS_USED(20139, "序號已被使用"),
     LICENSE_OF_REDEMPTION_HAPPEN_ERROR(20140, "其他原因"),

@@ -11,6 +11,8 @@ public interface LicenseService {
 
     void save (LicenseDTO licenseDTO);
 
+    boolean verify(LicenseDTO licenseDTO);
+
     LicenseEntity findOne(Integer id);
 
     BasePageInfo findAllData();
@@ -20,4 +22,6 @@ public interface LicenseService {
     void update(LicenseDTO licenseDTO);
 
     List<LicenseEntity> findByEmailAndActivated(String mail);
+
+    List<LicenseEntity> findByLicenseKeyAndActivated(String licenseKey, Integer activated);
 }
