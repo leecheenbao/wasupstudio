@@ -57,6 +57,8 @@ public enum ResultCode {
 
     INVALID_PARAM(10000, "參數錯誤"),
     DATA_NOT_EXIST(10003, "該資料不存在"),
+    UPLOAD_FORMAT_ERROR(10007, "文件格式有誤"),
+
     UPLOAD_MAX_ERROR(10010, "%s過大，請勿超過%s"),
     NOT_AUTH_ERROR(10011, "該帳號無權限訪問"),
 
@@ -78,6 +80,8 @@ public enum ResultCode {
     MAIL_MESSAGE_SEND_ERROR(20059, "郵件發送過於頻繁，請稍後再試"),
     PASSWORD_CHANGE_SUCCESS(20060, "密碼修改成功"),
     PASSWORD_CHANGE_FAILD(20061, "密碼修改失敗，請重新嘗試"),
+    SEND_MAIL_SUCCESS(20082, "信件已發送, 如果您未收到信件, 請檢查您輸入的信箱是否正確"),
+
 
 
     /* 序號 */
