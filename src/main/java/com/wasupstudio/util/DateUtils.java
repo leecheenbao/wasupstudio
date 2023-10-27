@@ -155,6 +155,15 @@ public class DateUtils {
         return null;
     }
 
+    public static Date parse(String dateStr, String format) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat(format);
+            return sdf.parse(dateStr);
+        } catch (Exception e) {
+
+        }
+        return new Date();
+    }
     public static Date toDates(String str, String format) {
         try {
             DateFormat df = new SimpleDateFormat(format);
@@ -203,15 +212,7 @@ public class DateUtils {
         return today;
     }
 
-    public static Date parse(String dateStr, String format) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat(format);
-            return sdf.parse(dateStr);
-        } catch (Exception e) {
 
-        }
-        return new Date();
-    }
 
 
     /**

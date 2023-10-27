@@ -38,18 +38,12 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
         taskEntity.setStatus(taskDTO.getStatus());
         taskEntity.setCreateTime(new Date());
 
-        Date endTime = DateUtils.toDate(taskDTO.getEndTime(), DateUtils.YYYY_MM_DD);
+        Date endTime = DateUtils.parse(taskDTO.getEndTime(), DateUtils.YYYY_MM_DD);
         log.info("endTime:{}, taskDTO:{}", endTime, taskDTO.getEndTime());
         taskEntity.setEndTime(DateUtils.getEndDate(endTime));
         taskEntity.setLearning(taskEntity.getLearning());
 
         save(taskEntity);
-    }
-
-    public static void main(String[] args) {
-        String str = "2023-11-04";
-        Date endTime = DateUtils.toDate(str, DateUtils.YYYY_MM_DD);
-        System.out.println(endTime);
     }
 
     @Override
