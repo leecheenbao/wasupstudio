@@ -44,10 +44,10 @@ public class TaskEntity implements Serializable {
     @Column(name = "estimated_participants", nullable = false)
     private Integer estimatedParticipants;
 
-    @Column(name = "create_time", nullable = false, updatable = false)
+    @Column(name = "create_time")
     private Date createTime;
 
-    @Column(name = "end_time", nullable = false)
+    @Column(name = "end_time")
     private Date endTime;
 
     @Column(name = "status", nullable = false)
