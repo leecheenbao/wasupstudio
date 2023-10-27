@@ -8,6 +8,7 @@ import com.wasupstudio.service.AbstractService;
 import com.wasupstudio.service.TaskService;
 import com.wasupstudio.util.DateUtils;
 import com.wasupstudio.util.ValueValidator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@Slf4j
 public class TaskServiceImpl extends AbstractService<TaskEntity> implements TaskService {
     @Autowired
     public TaskMapper taskMapper;
@@ -37,10 +39,17 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
         taskEntity.setCreateTime(new Date());
 
         Date endTime = DateUtils.toDate(taskDTO.getEndTime(), DateUtils.YYYY_MM_DD);
+        log.info("endTime:{}, taskDTO:{}", endTime, taskDTO.getEndTime());
         taskEntity.setEndTime(DateUtils.getEndDate(endTime));
         taskEntity.setLearning(taskEntity.getLearning());
 
         save(taskEntity);
+    }
+
+    public static void main(String[] args) {
+        String str = "2023-11-04";
+        Date endTime = DateUtils.toDate(str, DateUtils.YYYY_MM_DD);
+        System.out.println(endTime);
     }
 
     @Override

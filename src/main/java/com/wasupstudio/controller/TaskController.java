@@ -15,6 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 @Api(tags = "任務相關 Task API")
 @RestController
 @RequestMapping("/api/task")
+@Slf4j
 public class TaskController {
 
     @Autowired
@@ -79,7 +81,7 @@ public class TaskController {
         MemberEntity member = JwtUtils.getMember();
         taskDTO.setAuthor(member.getEmail());
         taskDTO.setMemberId(member.getId());
-
+        log.info("新增任務 taskDTO:{}", taskDTO);
         taskService.save(taskDTO);
 
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
