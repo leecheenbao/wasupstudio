@@ -6,6 +6,7 @@ exclude:
        - '/api/script/**'
        - '/api/license/**'
        - '/api/member/**'
+       - '/error'
 
 
 
