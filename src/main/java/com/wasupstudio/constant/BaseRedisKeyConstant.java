@@ -12,5 +12,7 @@ public class BaseRedisKeyConstant {
     /*
     * 檔案下載緩存
     */
-    public static String FILE_DOWNLOAD = "file_download::FILE_DOWNLOAD_%s";
+    public static String FILE_DOWNLOAD = "file_download::FILE_DOWNLOAD_%s_%s";
+
+    public static Integer FIVE_MIN = 5 * 60;
 }

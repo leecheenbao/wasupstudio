@@ -8,18 +8,21 @@ import java.util.Map;
 
 public enum FileTypeEnum {
 
-    PDF("application/docs","/docs/","文件檔"),
-    IMAGE("application/image","/image/","圖片檔"),
-    VIDEO("application/video","/video/", "影音檔")
+    PDF("application/pdf","pdf/","文件檔"),
+    DOCS("application/docs","docs/","文件檔"),
+    IMAGE("application/image","image/","圖片檔"),
+    VIDEO("application/video","video/", "影音檔"),
+    CACHE_PDF("application/pdf", "cache-pdf/pdf_","暫存PDF"),
+    UNKNOWN ("unknown", "Unknown/" ,"Unknown file type")
+
     ;
 
+    public final String type;
 
+    public final String desc;
 
-    String type;
+    public final String path;
 
-    String desc;
-
-    String path;
     FileTypeEnum(String type,String path, String desc) {
         this.type = type;
         this.path = path;
