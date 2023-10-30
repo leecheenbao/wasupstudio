@@ -1,6 +1,7 @@
 package com.wasupstudio.util;
 
 import com.wasupstudio.constant.ProjectConstant;
+import com.wasupstudio.enums.FileTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -89,29 +90,6 @@ public class FileUtils {
         return "";
     }
 
-    public static File convertToFile(MultipartFile multipartFile) throws IOException, IOException {
-        File file = new File(multipartFile.getOriginalFilename());
-        Path filePath = file.toPath();
-
-        // 使用 Files.copy 方法将 MultipartFile 的内容复制到新创建的文件中
-        Files.copy(multipartFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-        return file;
-    }
-
-    public static File convertToFileAlt(MultipartFile multipartFile) throws IOException {
-        File file = new File(multipartFile.getOriginalFilename());
-
-        // 使用 FileCopyUtils 类的 copy 方法将 MultipartFile 的内容复制到新创建的文件中
-        FileCopyUtils.copy(multipartFile.getBytes(), file);
-
-        return file;
-    }
-
-    private void imageVerification(MultipartFile file) throws IOException {
-        FileUtils.validateFileSize(file);
-    }
-
     public static String readableFileSize(long size) {
         if (size <= 0) {
             return "0";
@@ -128,15 +106,15 @@ public class FileUtils {
 
         // 判斷檔案類型
         if (isVideoFile(fileExtension, VALID_VIDEO_TYPES)) {
-            return ProjectConstant.FileType.VIDEO;
+            return FileTypeEnum.VIDEO.getType();
         } else if (isImageFile(fileExtension, VALID_IMAGE_TYPES)) {
-            return ProjectConstant.FileType.IMAGE;
+            return FileTypeEnum.IMAGE.getType();
         } else if (isPdfFile(fileExtension, VALID_DOCS_TYPES)) {
-            return ProjectConstant.FileType.DOCS;
+            return FileTypeEnum.DOCS.getType();
         } else if (isPdfFile(fileExtension, VALID_PDF_TYPES)) {
-            return ProjectConstant.FileType.PDF;
+            return FileTypeEnum.PDF.getType();
         }
-        return ProjectConstant.FileType.UNKNOWN;
+        return FileTypeEnum.PDF.getType();
     }
 
     // 判斷是否為影音文件
@@ -166,34 +144,6 @@ public class FileUtils {
             }
         }
         return false;
-    }
-
-    public File generateCacheFile(String filename, String mediaFilePath, String pdfFilePath) throws IOException {
-        String outputUrl = "file/cache_" + filename;
-        File cacheFile = new File(outputUrl);
-        PdfWithQrCodeUtils.mixPdfAndQrCode(mediaFilePath, pdfFilePath, outputUrl);
-        return cacheFile;
-    }
-
-    public void deleteCacheFile(File cacheFile) {
-        if (cacheFile.delete()) {
-            log.info(cacheFile.getName() + "檔案已成功刪除");
-        }else {
-            log.info(cacheFile.getName() + "無法刪除檔案");
-        }
-    }
-    public static void main(String[] args) throws IOException {
-        String filePath = "/Users/liqingbao/Downloads"; // 替換為要上傳的檔案路徑
-        String fileName = "/test.png"; // 替換為要上傳的檔案名稱
-        String file = filePath + fileName;
-
-        // 上传文件
-        String bucketName = "fongff-bucket";
-        String objectName = "input.pdf";
-
-//        String url = uploadFile(file, objectName, bucketName);
-//        System.out.println(url);
-
     }
 }
 

@@ -2,9 +2,12 @@ package com.wasupstudio.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.sun.media.jfxmedia.Media;
 import com.wasupstudio.constant.BaseRedisKeyConstant;
 import com.wasupstudio.enums.FileTypeEnum;
 import com.wasupstudio.enums.ResultCode;
+import com.wasupstudio.exception.BussinessException;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
@@ -17,15 +20,26 @@ import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -48,6 +62,8 @@ public class ScriptController {
     private ParentConfigService parentConfigService;
     @Autowired
     private ScriptEndingService scriptEndingService;
+    @Autowired
+    private TaskService taskService;
     @Autowired
     private MediaService mediaService;
     @Autowired
@@ -217,7 +233,7 @@ public class ScriptController {
         }
 
         String originalFileName = file.getOriginalFilename();
-        String fileName = DateUtils.currentTimeMillis() + "." + getFileExtension(file.getOriginalFilename());
+        String fileName = DateUtils.currentTimeMillis() + "." + getFileExtension(Objects.requireNonNull(file.getOriginalFilename()));
         String mediaType = FileUtils.checkFileType(fileName);
 
         String filePath = fileService.uploadFile(file.getBytes(), fileName, mediaType);
@@ -227,7 +243,7 @@ public class ScriptController {
             // 取得最後一個字節獲取storage的object_name
             String[] str = mediaDTO.getFilePath().split(File.separator);
             String oldFile = str[str.length - 1];
-            fileService.removeFile(oldFile);
+            fileService.removeFile(Objects.requireNonNull(FileTypeEnum.getEnum(mediaType)).getPath() + oldFile);
             mediaDTO.setScriptId(scriptId);
             mediaDTO.setFilePath(filePath);
             mediaDTO.setMediaType(mediaType);
@@ -266,7 +282,7 @@ public class ScriptController {
         String[] str = mediaDTO.getFilePath().split(File.separator);
         String lastByte = str[str.length - 1];
 
-        fileService.removeFile(lastByte);
+        fileService.removeFile(Objects.requireNonNull(FileTypeEnum.getEnum(mediaDTO.getMediaType())).getPath() + lastByte);
         mediaService.delete(scriptId, description);
         return ResultGenerator.genSuccessResult(ResultCode.DELETE_SUCCESS.getMessage());
     }
@@ -313,21 +329,13 @@ public class ScriptController {
     }
 
     @ApiOperation(value = "PDF檔案下載")
-    @PostMapping("/download/pdf")
+    @PostMapping(value = "/download/pdf")
     @ResponseBody
     public Result downloadMixFile(@RequestBody FileDownloadDTO fileDownloadDTO) {
-        FileUtils fileUtils = new FileUtils();
-        MediaDTO pdf = mediaService.findByScriptIdAndDescription(fileDownloadDTO.getScriptId(), fileDownloadDTO.getSheet());
-        MediaDTO media = mediaService.findByScriptIdAndDescription(fileDownloadDTO.getScriptId(), fileDownloadDTO.getMedia());
-        MemberEntity member = JwtUtils.getMember();
-        Integer memberId = member.getId();
-
-        String filePath = redisUtil.getKey(getRedisKey(memberId, fileDownloadDTO));
-        if (filePath != null){
-            log.info("取得快取PDF路徑 {}", filePath);
-            return ResultGenerator.genSuccessResult(filePath);
-        }
-
+        // 取得對應PDF及影片資料
+        TaskEntity task = taskService.findOne(fileDownloadDTO.getTaskId());
+        MediaDTO pdf = mediaService.findByScriptIdAndDescription(task.getScriptId(), fileDownloadDTO.getSheet());
+        MediaDTO media = mediaService.findByScriptIdAndDescription(task.getScriptId(), fileDownloadDTO.getMedia());
         if (pdf == null) {
             return ResultGenerator.genFailResult(ResultCode.DATA_NOT_EXIST.getMessage());
         }
@@ -336,45 +344,54 @@ public class ScriptController {
             return ResultGenerator.genFailResult(ResultCode.UPLOAD_FORMAT_ERROR.getMessage());
         }
 
-        String pdfFilePath = pdf.getFilePath();
-        String mediaFilePath = media.getFilePath();
+        // 取得任務結束時間
+
+        // 取得對應會員的 redis id
+        MemberEntity member = JwtUtils.getMember();
+        Integer memberId = member.getId();
+        String redisKey = getRedisKey(memberId, fileDownloadDTO);
+        String filePath = redisUtil.getKey(redisKey);
+        if (filePath != null) {
+            log.info("取得redis KEY:{}, PDF路徑 {}", redisKey, filePath);
+            return ResultGenerator.genSuccessResult(filePath);
+        }
 
         try {
-            String fileName = AesUtils.encrypt(member.getId() + "_" + pdf.getFilename()) + "." + pdf.getFileExtension();
-            File cacheFile = fileUtils.generateCacheFile(fileName, mediaFilePath, pdfFilePath);
-            if (cacheFile.exists()) {
-                filePath = uploadCacheFile(cacheFile);
-                log.info("delete cache file:{}", cacheFile.delete());
-                // 儲存路徑到redis 5 min
-                redisUtil.setExpire(BaseRedisKeyConstant.FILE_DOWNLOAD, filePath, 5, TimeUnit.MINUTES);
-
-                return ResultGenerator.genSuccessResult(filePath);
-            } else {
-                return ResultGenerator.genFailResult(ResultCode.DATA_NOT_EXIST.getMessage());
+            // 任務時間結束直接回傳訊息
+            long time = calculateRemainingSeconds(task.getEndTime());
+            if (time < 0) {
+                String message = String.format(ResultCode.TASK_INVALID.getMessage(), task.getTaskId(),task.getCreateTime() ,task.getEndTime());
+                throw new BussinessException(message);
             }
-        } catch (IOException e) {
-            return ResultGenerator.genFailResult("檔案處理出現錯誤：" + e.getMessage());
+            filePath = PdfWithQrCodeUtils.mixPdfAndQrCode(media.getFilePath(), pdf.getFilePath());
+            // 儲存路徑到redis 依照任務時間保存
+            redisUtil.setExpire(redisKey, filePath, time);
+
+            return ResultGenerator.genSuccessResult(filePath);
+        } catch (BussinessException e) {
+            log.warn(e.getMessage());
+            return ResultGenerator.genSuccessResult(pdf.getFilePath());
         }
     }
 
-    private static String getRedisKey(Integer memberId, FileDownloadDTO fileDownloadDTO){
-        if (fileDownloadDTO == null){
-            return null;
-        }
-        String key = memberId + "_" + fileDownloadDTO.getScriptId() + "_" + fileDownloadDTO.getSheet();
-        log.info("儲存路徑至 redis KEY:{}", key);
-        return key;
+    public static long calculateRemainingSeconds(Date endTime) {
+        // 將endTime轉換為LocalDateTime
+        Instant instant = endTime.toInstant();
+        ZoneId zoneId = ZoneId.systemDefault();
+        LocalDateTime expirationTime = instant.atZone(zoneId).toLocalDateTime();
+        LocalDateTime currentTime = LocalDateTime.now();
+        // 計算當前時間到endTime的持續時間
+        Duration duration = Duration.between(currentTime, expirationTime);
+        // 獲取持續時間的秒數
+        return duration.getSeconds();
     }
 
-    private String uploadCacheFile(File cacheFile) {
-        try {
-            byte[] bytes = Files.readAllBytes(cacheFile.toPath());
-            String mediaType = FileUtils.checkFileType(cacheFile.getName());
-            return fileService.uploadFile(bytes, cacheFile.getName(), mediaType);
-        } catch (IOException e) {
-            // 處理上傳錯誤
+
+    private static String getRedisKey(Integer memberId, FileDownloadDTO fileDownloadDTO) {
+        if (fileDownloadDTO == null) {
             return null;
         }
+        return String.format(BaseRedisKeyConstant.FILE_DOWNLOAD, memberId, fileDownloadDTO.getTaskId());
     }
 
     public ScriptQuery tranData(ScriptEntity scriptEntity) {

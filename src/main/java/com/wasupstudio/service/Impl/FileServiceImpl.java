@@ -4,6 +4,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
 import com.google.common.collect.Lists;
 import com.wasupstudio.constant.ProjectConstant;
+import com.wasupstudio.enums.FileTypeEnum;
 import com.wasupstudio.service.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,14 +27,14 @@ public class FileServiceImpl implements FileService {
         Storage storage = createStorage();
 
         //上傳文件圖片到指定的存儲桶中
-        BlobId blobId = BlobId.of(BUCKET_NAME, fileName);
+        BlobId blobId = BlobId.of(BUCKET_NAME, FileTypeEnum.getEnum(mediaType).getPath() + fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
         Blob blob = storage.create(blobInfo, file);
 
         blob.toBuilder().setContentType(mediaType).build().update();
 
         //返回公開訪問的地址
-        return BUCKET_MAIN_URL + BUCKET_NAME + "/" + fileName;
+        return BUCKET_MAIN_URL + BUCKET_NAME + "/" + FileTypeEnum.getEnum(mediaType).getPath() + fileName;
     }
 
     @Override

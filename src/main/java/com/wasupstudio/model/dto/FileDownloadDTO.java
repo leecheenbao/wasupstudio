@@ -9,8 +9,9 @@ import lombok.*;
 @ToString
 public class FileDownloadDTO {
 
-    Integer scriptId;
+//    Integer scriptId;
 
+    Integer taskId;
     String sheet;
 
     String media;
