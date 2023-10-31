@@ -196,4 +196,13 @@ CREATE TABLE wa_task_assignment (
                                     FOREIGN KEY (assignee_id) REFERENCES wa_member(id)
 ) COMMENT='任務分配表';
 
+-- 登入紀錄表
+CREATE TABLE wa_login_records (
+                                  id INT AUTO_INCREMENT PRIMARY KEY COMMENT '登入ID',
+                                  user_id INT COMMENT '用戶ID',
+                                  login_time DATETIME COMMENT '登入時間',
+                                  IP_address VARCHAR(255) COMMENT 'IP位址'
+) COMMENT='登入紀錄表';
+
+
 
