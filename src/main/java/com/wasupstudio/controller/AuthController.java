@@ -14,6 +14,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfo;
+import com.wasupstudio.constant.BaseRedisKeyConstant;
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.enums.ResultCode;
 import com.wasupstudio.exception.BussinessException;
@@ -503,6 +504,7 @@ public class AuthController {
     public Object checkTaskValid(@RequestParam("taskId") Integer taskId,
                                  @RequestParam("sheet") String sheetParam,
                                  @RequestParam("media") String mediaParam) {
+
         // 取得對應PDF及影片資料
         TaskEntity task = taskService.findOne(taskId);
         MediaDTO media = mediaService.findByScriptIdAndDescription(task.getScriptId(), mediaParam);

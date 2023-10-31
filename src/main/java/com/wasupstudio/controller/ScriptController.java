@@ -325,7 +325,6 @@ public class ScriptController {
         // 取得對應PDF及影片資料
         TaskEntity task = taskService.findOne(fileDownloadDTO.getTaskId());
         MediaDTO pdf = mediaService.findByScriptIdAndDescription(task.getScriptId(), fileDownloadDTO.getSheet());
-        MediaDTO media = mediaService.findByScriptIdAndDescription(task.getScriptId(), fileDownloadDTO.getMedia());
         if (pdf == null) {
             return ResultGenerator.genFailResult(ResultCode.DATA_NOT_EXIST.getMessage());
         }
@@ -334,11 +333,12 @@ public class ScriptController {
             return ResultGenerator.genFailResult(ResultCode.UPLOAD_FORMAT_ERROR.getMessage());
         }
 
-        // 取得任務結束時間
-
-        // 取得對應會員的 redis id
         MemberEntity member = JwtUtils.getMember();
         Integer memberId = member.getId();
+        if (!Objects.equals(memberId, task.getMemberId())){
+            return ResultGenerator.genFailResult(member.getName() + "與創建任務者不符");
+        }
+        // 取得對應會員的 redis id
         String redisKey = getRedisKey(memberId, fileDownloadDTO);
         String filePath = redisUtil.getKey(redisKey);
         if (filePath != null) {
@@ -347,13 +347,7 @@ public class ScriptController {
         }
 
         try {
-            // 任務時間結束直接回傳訊息
             long time = calculateRemainingSeconds(task.getEndTime());
-            if (time < 0) {
-                String message = String.format(ResultCode.TASK_INVALID.getMessage(), task.getTaskId(),task.getCreateTime() ,task.getEndTime());
-                throw new BussinessException(message);
-            }
-//            filePath = PdfWithQrCodeUtils.mixPdfAndQrCode(media.getFilePath(), pdf.getFilePath());
             String url = BASE_URL + "/auth/download/pdf/valid?";
 
             Map<String, Object> params = new TreeMap<>();
