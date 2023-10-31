@@ -316,7 +316,14 @@ public class ScriptController {
         scriptQuery.setScriptEndingDTO(scriptEndingDTO);
         return ResultGenerator.genSuccessResult(scriptQuery);
     }
+    @ApiOperation(value = "PDF檔案下載")
+    @GetMapping(value = "/download/pdfV2")
+    @ResponseBody
+    public Result checkTaskValid(@RequestParam("taskId") Integer taskId) {
 
+        return ResultGenerator.genSuccessResult();
+
+    }
     @ApiOperation(value = "PDF檔案下載")
     @PostMapping(value = "/download/pdf")
     @ResponseBody
