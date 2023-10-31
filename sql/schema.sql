@@ -201,7 +201,7 @@ CREATE TABLE wa_login_records (
                                   id INT AUTO_INCREMENT PRIMARY KEY COMMENT '登入ID',
                                   user_id INT COMMENT '用戶ID',
                                   login_time DATETIME COMMENT '登入時間',
-                                  IP_address VARCHAR(255) COMMENT 'IP位址'
+                                  login_type INT COMMENT '登入方式 0:一般登入 1:google Auth登入'
 ) COMMENT='登入紀錄表';
 
 

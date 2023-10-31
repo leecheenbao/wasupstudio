@@ -22,7 +22,7 @@ public final class ProjectConstant {
     }
 
     public static final class FilePath {
-//        public final static String MAINPATH = "https://storage.cloud.google.com/";
+        //        public final static String MAINPATH = "https://storage.cloud.google.com/";
         public final static String MAINPATH = "https://storage.googleapis.com/";
 
         public final static String BUCKET_NAME = "wasupstudio-bucket";
@@ -34,7 +34,7 @@ public final class ProjectConstant {
     }
 
 
-    public static final class FileType{
+    public static final class FileType {
         public final static String DOCS = "application/docs";
         public final static String PDF = "application/pdf";
         public final static String IMAGE = "application/image";
@@ -47,6 +47,7 @@ public final class ProjectConstant {
         public final static String API_RESPONSE_IS_SUCCESS = "SUCCESS";
         public final static String API_RESPONSE_IS_FAIL = "FAIL";
     }
+
     public final class LiceenseStatus {
         public final static int NOT_SETTLE = 0;//未開始結算
         public final static int UNDONE = 1;//未完成
@@ -64,5 +65,10 @@ public final class ProjectConstant {
         public final static String SIGNUP = "signup";
         public final static String START_KEY = "start_key";
         public final static String LICENSING = "licensing";
+    }
+
+    public final class LoginType {
+        public final static int NORMAL = 0;
+        public final static int GOOGLE_AUTH = 1;
     }
 }

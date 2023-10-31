@@ -10,6 +10,7 @@ import com.wasupstudio.mapper.MemberMapper;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.dto.MemberDTO;
 import com.wasupstudio.model.entity.LicenseEntity;
+import com.wasupstudio.model.entity.LoginRecordsEntity;
 import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
@@ -20,6 +21,7 @@ import com.wasupstudio.model.vo.MemberAgeVo;
 import com.wasupstudio.model.vo.CategoryVo;
 import com.wasupstudio.service.AbstractService;
 import com.wasupstudio.service.LicenseService;
+import com.wasupstudio.service.LoginRecordsService;
 import com.wasupstudio.service.MemberService;
 import com.wasupstudio.util.AesUtils;
 import com.wasupstudio.util.DateUtils;
@@ -47,8 +49,12 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
     @Autowired
     public LicenseService licenseService;
 
+    @Autowired
+    public LoginRecordsService loginRecordsService;
+
     @Resource
     public RedisUtil redisUtil;
+
     @Override
     public String save(MemberDTO memberDTO) {
         if (getAdminByEmail(memberDTO.getEmail()) == null) {
@@ -131,7 +137,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
     @Override
     public void update(MemberDTO memberDTO) {
         MemberEntity memberEntity = this.findOne(memberDTO.getId());
-        if (memberEntity != null){
+        if (memberEntity != null) {
             memberEntity.setEmail(memberDTO.getEmail());
             memberEntity.setName(memberDTO.getName());
             memberEntity.setPhone(memberDTO.getPhone());
@@ -151,7 +157,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
     @Override
     public void updatePwd(MemberDTO memberDTO) {
         MemberEntity memberEntity = this.findOne(memberDTO.getId());
-        if (memberEntity != null){
+        if (memberEntity != null) {
             memberEntity.setPwd(AesUtils.encrypt(memberDTO.getPwd()));
         }
         this.update(memberEntity);
@@ -176,6 +182,13 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
             memberEntity.setLastLogin(new Date());
             update(memberConverter.ItemToDTO(memberEntity));
 
+            // 儲存登入記錄
+            LoginRecordsEntity loginRecordsEntity = LoginRecordsEntity.builder()
+                    .userId(memberEntity.getId())
+                    .loginType(ProjectConstant.LoginType.NORMAL)
+                    .loginTime(new Date())
+                    .build();
+            loginRecordsService.save(loginRecordsEntity);
             checkLicense(memberEntity);
             return token;
         }
@@ -199,6 +212,13 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
 
             String token = JwtUtils.generateToken(memberEntity, true);
 
+            // 儲存登入記錄
+            LoginRecordsEntity loginRecordsEntity = LoginRecordsEntity.builder()
+                    .userId(memberEntity.getId())
+                    .loginType(ProjectConstant.LoginType.GOOGLE_AUTH)
+                    .loginTime(new Date())
+                    .build();
+            loginRecordsService.save(loginRecordsEntity);
             checkLicense(memberEntity);
             return token;
         }
@@ -207,8 +227,8 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
     }
 
 
-    public Boolean checkoutPassword(AdminLoginQuery adminLoginQuery, MemberEntity memberEntity){
-        if (memberEntity != null){
+    public Boolean checkoutPassword(AdminLoginQuery adminLoginQuery, MemberEntity memberEntity) {
+        if (memberEntity != null) {
 
             String dbData = AesUtils.decrypt(memberEntity.getPwd());
             String password = adminLoginQuery.getPassword();
@@ -218,19 +238,19 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
         return false;
     }
 
-    public Boolean checkLicense(MemberEntity member){
-        redisUtil.delete(String.format(BaseRedisKeyConstant.LOGIN_CHECKED,member.getId()));
+    public Boolean checkLicense(MemberEntity member) {
+        redisUtil.delete(String.format(BaseRedisKeyConstant.LOGIN_CHECKED, member.getId()));
         List<LicenseEntity> list = licenseService.findByEmailAndActivated(member.getEmail());
-        if (list.isEmpty()){
+        if (list.isEmpty()) {
             return false;
         }
 
         Long timeDifferenceInMillis = 0L;
-        for (LicenseEntity entity : list){
+        for (LicenseEntity entity : list) {
             Long now = DateUtils.currentTimeMillis();
             Long exp = DateUtils.getMillis(entity.getExpirationDate());
             long res = exp - now;
-            if (timeDifferenceInMillis < res){
+            if (timeDifferenceInMillis < res) {
                 timeDifferenceInMillis = res;
             }
         }
@@ -238,7 +258,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
         // 將啟動碼是否啟動存在redis
         long timeDifferenceInSeconds = timeDifferenceInMillis / 1000;
         boolean check = list.size() > 0;
-        redisUtil.setExpire(BaseRedisKeyConstant.LOGIN_CHECKED , Boolean.toString(check), timeDifferenceInSeconds, member.getId());
+        redisUtil.setExpire(BaseRedisKeyConstant.LOGIN_CHECKED, Boolean.toString(check), timeDifferenceInSeconds, member.getId());
         return list.size() > 0;
     }
 
@@ -246,7 +266,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
     public static void main(String[] args) {
         String loginChecked = BaseRedisKeyConstant.LOGIN_CHECKED;
         String key = "123";
-        String tset =String.format(loginChecked, key);
+        String tset = String.format(loginChecked, key);
 
         System.out.println(tset);
 
