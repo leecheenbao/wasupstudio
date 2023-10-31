@@ -27,6 +27,9 @@ public class LoginRecordsEntity implements Serializable {
     @Column(name = "user_id", nullable = false)
     private Integer userId;
 
+    @Column(name = "email", nullable = false)
+    private String email;
+
     @Column(name = "login_time", nullable = false)
     private Date loginTime;
 

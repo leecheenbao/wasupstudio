@@ -185,6 +185,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
             // 儲存登入記錄
             LoginRecordsEntity loginRecordsEntity = LoginRecordsEntity.builder()
                     .userId(memberEntity.getId())
+                    .email(memberEntity.getEmail())
                     .loginType(ProjectConstant.LoginType.NORMAL)
                     .loginTime(new Date())
                     .build();
@@ -215,6 +216,7 @@ public class MemberServiceImpl extends AbstractService<MemberEntity> implements 
             // 儲存登入記錄
             LoginRecordsEntity loginRecordsEntity = LoginRecordsEntity.builder()
                     .userId(memberEntity.getId())
+                    .email(memberEntity.getEmail())
                     .loginType(ProjectConstant.LoginType.GOOGLE_AUTH)
                     .loginTime(new Date())
                     .build();

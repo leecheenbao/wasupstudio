@@ -2,12 +2,15 @@ package com.wasupstudio.controller;
 
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.Result;
+import com.wasupstudio.model.dto.LoginRecordQueryDTO;
+import com.wasupstudio.service.LoginRecordsService;
 import com.wasupstudio.service.MemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +22,10 @@ public class ReportController {
 
     @Autowired
     private MemberService memberService;
+
+    @Autowired
+    private LoginRecordsService loginRecordsService;
+
     /*
     * 近期登入人數(login)
     * 用戶年齡分佈(age)
@@ -29,8 +36,15 @@ public class ReportController {
     @ApiOperation(value = "近期登入人數(login)")
     @GetMapping("/login")
     public Result getLogin() {
-        return ResultGenerator.genSuccessResult(memberService.findLoginFor7Day());
+        return ResultGenerator.genSuccessResult(loginRecordsService.query7DayLoginRecord());
     }
+
+    @ApiOperation(value = "近期登入人數(login) - 依照時間搜尋")
+    @GetMapping("/login/day")
+    public Result getLoginByDay(@RequestBody LoginRecordQueryDTO dto) {
+        return ResultGenerator.genSuccessResult(loginRecordsService.queryLoginRecord(dto.getStartDate(), dto.getEndDate()));
+    }
+
     @ApiOperation(value = "用戶年齡分佈(age)")
     @GetMapping("/age")
     public Result getAge() {

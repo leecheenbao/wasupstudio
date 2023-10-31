@@ -7,8 +7,12 @@ public interface LoginRecordsService {
 
     void save (LoginRecordsEntity loginRecordsEntity);
 
+    void update(LoginRecordsEntity loginRecordsEntity);
+
     BasePageInfo findAllData();
 
-    void update(LoginRecordsEntity loginRecordsEntity);
+    BasePageInfo queryLoginRecord(String from, String to);
+
+    BasePageInfo query7DayLoginRecord();
 
 }
