@@ -14,18 +14,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfo;
-import com.wasupstudio.constant.BaseRedisKeyConstant;
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.enums.ResultCode;
+import com.wasupstudio.exception.BussinessException;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
-import com.wasupstudio.model.dto.LoginDTO;
-import com.wasupstudio.model.dto.MemberDTO;
-import com.wasupstudio.model.dto.ScriptDetailDTO;
-import com.wasupstudio.model.dto.ScriptEndingDTO;
+import com.wasupstudio.model.dto.*;
 import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.entity.ScriptEntity;
+import com.wasupstudio.model.entity.TaskEntity;
 import com.wasupstudio.model.query.AdminLoginLogQuery;
 import com.wasupstudio.model.query.AdminLoginQuery;
 import com.wasupstudio.model.query.ScriptQuery;
@@ -47,6 +45,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -83,7 +85,8 @@ public class AuthController {
     private ScriptDetailService scriptDetailService;
     @Autowired
     private MediaService mediaService;
-
+    @Autowired
+    private TaskService taskService;
     @Autowired
     private RedisUtil redisUtil;
 
@@ -494,8 +497,44 @@ public class AuthController {
         return ResultGenerator.genSuccessResult(scriptQuery);
     }
 
+    @ApiOperation(value = "PDF檔案下載")
+    @GetMapping(value = "/download/pdf/valid")
+    @ResponseBody
+    public Object checkTaskValid(@RequestParam("taskId") Integer taskId,
+                                 @RequestParam("sheet") String sheetParam,
+                                 @RequestParam("media") String mediaParam) {
+        // 取得對應PDF及影片資料
+        TaskEntity task = taskService.findOne(taskId);
+        MediaDTO media = mediaService.findByScriptIdAndDescription(task.getScriptId(), mediaParam);
+        try {
+            // 任務時間結束直接回傳訊息
+            long time = calculateRemainingSeconds(task.getEndTime());
+
+            if (time < 0) {
+                String message = String.format(ResultCode.TASK_INVALID.getMessage(), task.getTaskId(),DateUtils.format(task.getCreateTime()), DateUtils.format(task.getEndTime()));
+                throw new BussinessException(message);
+            }
+        } catch (BussinessException e) {
+            return e.getMessage();
+        }
+
+        return new RedirectView(media.getFilePath());
+    }
+
     public ScriptQuery tranData(ScriptEntity scriptEntity) {
         return getScriptQuery(scriptEntity);
+    }
+
+    public static long calculateRemainingSeconds(Date endTime) {
+        // 將endTime轉換為LocalDateTime
+        Instant instant = endTime.toInstant();
+        ZoneId zoneId = ZoneId.systemDefault();
+        LocalDateTime expirationTime = instant.atZone(zoneId).toLocalDateTime();
+        LocalDateTime currentTime = LocalDateTime.now();
+        // 計算當前時間到endTime的持續時間
+        Duration duration = Duration.between(currentTime, expirationTime);
+        // 獲取持續時間的秒數
+        return duration.getSeconds();
     }
 }
 

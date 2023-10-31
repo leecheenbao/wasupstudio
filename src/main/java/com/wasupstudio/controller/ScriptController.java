@@ -18,6 +18,7 @@ import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,10 +29,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static com.wasupstudio.util.FileUtils.getFileExtension;
 
@@ -59,6 +57,9 @@ public class ScriptController {
     private FileService fileService;
     @Autowired
     private RedisUtil redisUtil;
+
+    @Value("${base.url}")
+    private String BASE_URL;
 
     @ApiOperation(value = "取得劇本資料")
     @GetMapping
@@ -316,14 +317,7 @@ public class ScriptController {
         scriptQuery.setScriptEndingDTO(scriptEndingDTO);
         return ResultGenerator.genSuccessResult(scriptQuery);
     }
-    @ApiOperation(value = "PDF檔案下載")
-    @GetMapping(value = "/download/pdfV2")
-    @ResponseBody
-    public Result checkTaskValid(@RequestParam("taskId") Integer taskId) {
 
-        return ResultGenerator.genSuccessResult();
-
-    }
     @ApiOperation(value = "PDF檔案下載")
     @PostMapping(value = "/download/pdf")
     @ResponseBody
@@ -359,7 +353,18 @@ public class ScriptController {
                 String message = String.format(ResultCode.TASK_INVALID.getMessage(), task.getTaskId(),task.getCreateTime() ,task.getEndTime());
                 throw new BussinessException(message);
             }
-            filePath = PdfWithQrCodeUtils.mixPdfAndQrCode(media.getFilePath(), pdf.getFilePath());
+//            filePath = PdfWithQrCodeUtils.mixPdfAndQrCode(media.getFilePath(), pdf.getFilePath());
+            String url = BASE_URL + "/auth/download/pdf/valid?";
+
+            Map<String, Object> params = new TreeMap<>();
+            params.put("taskId", task.getTaskId());
+            params.put("sheet", fileDownloadDTO.getSheet());
+            params.put("media", fileDownloadDTO.getMedia());
+            CashFlowUtils cashFlowUtils = new CashFlowUtils();
+            String dataInfo = cashFlowUtils.getDataInfo(params);
+
+            filePath = PdfWithQrCodeUtils.mixPdfAndQrCode(url + dataInfo, pdf.getFilePath());
+
             // 儲存路徑到redis 依照任務時間保存
             redisUtil.setExpire(redisKey, filePath, time);
 
