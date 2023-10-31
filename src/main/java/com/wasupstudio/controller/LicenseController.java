@@ -93,8 +93,10 @@ public class LicenseController {
     @ApiOperation(value = "新增啟動碼數據")
     public Result save(@RequestParam Integer count){
         MemberEntity member = JwtUtils.getMember();
-
-        for (int startUpCount=0 ; startUpCount < count ; startUpCount++){
+        if(member.getRole().equals(MemberEntity.Role.ROLE_ADMIN)){
+            member.setName("Admin - " + member.getName());
+        }
+        for (int startUpCount = 0 ; startUpCount < count ; startUpCount++){
             LicenseDTO licenseDTO = LicenseDTO.builder()
                     .startTime(new Date())
                     .generate(member.getName())
@@ -104,34 +106,6 @@ public class LicenseController {
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
     }
 
-//    @PostMapping
-//    @ApiOperation(value = "新增啟動碼數據")
-//    public Result save(@RequestBody @Valid LicenseDTO licenseDTO, BindingResult bindingResult) throws Exception {
-//        if (bindingResult.hasErrors()) {
-//            String errorMsg = bindingResult.getFieldErrors().stream()
-//                    .map(error -> error.getField() + " " + error.getDefaultMessage())
-//                    .collect(Collectors.joining(", "));
-//            return ResultGenerator.genFailResult(errorMsg);
-//        }
-//
-//        List<LicenseEntity> list = licenseService.findByEmailAndActivated(licenseDTO);
-//        if (!list.isEmpty()) {
-//            return ResultGenerator.genFailResult(ResultCode.LICENSE_OF_REDEMPTION_TOO_MANY_TIMES.getMessage());
-//        }
-//
-//        MemberEntity memberEntity = memberService.getAdminByEmail(licenseDTO.getCustomerEmail());
-//        if (memberEntity == null){
-//            return ResultGenerator.genFailResult(ResultCode.LICENSE_OF_ACCOUNT_NOT_FOUND.getMessage());
-//        }
-//
-//        licenseDTO.setGenerate(LicenseEnum.GENERAGE_BY_ADMIN.getDesc());
-//
-//        String memberId = String.valueOf(memberEntity.getId());
-//        MailUtil.sendMail(ProjectConstant.MailType.START_KEY, "" ,licenseDTO.getCustomerEmail());
-//        licenseService.save(licenseDTO);
-//
-//        return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
-//    }
 
     /**
      * 更新啟動碼數據

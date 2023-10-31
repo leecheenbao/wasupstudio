@@ -31,7 +31,7 @@ public class LicenseServiceImpl extends AbstractService<LicenseEntity> implement
         licenseEntity.setLicenseKey(generate());
         licenseEntity.setActivated(CommonStatusEnum.DISABLE.getType());
         licenseEntity.setActivationDate(today);
-        licenseEntity.setExpirationDate(DateUtils.addDays(today, 7));
+        licenseEntity.setExpirationDate(DateUtils.addDays(today, 5000));
         licenseEntity.setCustomerEmail(licenseDTO.getCustomerEmail());
         licenseEntity.setCustomerName(licenseDTO.getCustomerName());
         licenseEntity.setGenerate(licenseDTO.getGenerate());
