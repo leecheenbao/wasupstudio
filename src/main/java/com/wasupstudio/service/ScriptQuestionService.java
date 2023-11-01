@@ -4,16 +4,21 @@ import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.dto.ScriptQuestionDTO;
 import com.wasupstudio.model.entity.ScriptQuestionEntity;
 
-public interface ScriptQuestionOptionService {
+public interface ScriptQuestionService {
 
     void save(ScriptQuestionDTO dto);
 
     void delete(Integer questionId);
 
-    BasePageInfo<ScriptQuestionEntity> findByTaskId(Integer taskId);
+    BasePageInfo findByTaskId(Integer taskId);
 
-    BasePageInfo<ScriptQuestionEntity> findAllData();
+    BasePageInfo findAllData();
 
     void update(ScriptQuestionDTO dto);
+
+    BasePageInfo findReportForEnding();
+
+    BasePageInfo scoreDistribution();
+
 
 }

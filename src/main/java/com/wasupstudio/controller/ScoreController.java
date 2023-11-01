@@ -6,7 +6,7 @@ import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
 import com.wasupstudio.model.dto.ScriptQuestionDTO;
 import com.wasupstudio.model.entity.ScriptQuestionEntity;
-import com.wasupstudio.service.ScriptQuestionOptionService;
+import com.wasupstudio.service.ScriptQuestionService;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +22,13 @@ import java.util.List;
 public class ScoreController {
 
     @Autowired
-    ScriptQuestionOptionService scriptQuestionOptionService;
+    ScriptQuestionService scriptQuestionService;
 
     @ApiOperation(value = "批量新增任務資料", notes = "批量新增學習單資料，並回傳 Result 結果")
     @PostMapping
     public Result save(@RequestBody @Valid List<ScriptQuestionDTO> scriptQuestionDTOs) {
         for (ScriptQuestionDTO scriptQuestionDTO : scriptQuestionDTOs){
-            scriptQuestionOptionService.save(scriptQuestionDTO);
+            scriptQuestionService.save(scriptQuestionDTO);
         }
         return ResultGenerator.genSuccessResult(ResultCode.ADD_SUCCESS.getMessage());
     }
@@ -37,13 +37,13 @@ public class ScoreController {
     @ApiImplicitParam(name = "questionId", value = "questionId", required = true, dataType = "int")
     @DeleteMapping("/{questionId}")
     public Result delete(@PathVariable Integer questionId) {
-        scriptQuestionOptionService.delete(questionId);
+        scriptQuestionService.delete(questionId);
         return ResultGenerator.genSuccessResult(ResultCode.DELETE_SUCCESS.getMessage());
     }
     @ApiOperation(value = "取得所有分數資料")
     @GetMapping
     public Result getAllData() {
-        BasePageInfo pageInfo = scriptQuestionOptionService.findAllData();
+        BasePageInfo pageInfo = scriptQuestionService.findAllData();
         return ResultGenerator.genSuccessResult(pageInfo);
     }
 
@@ -54,7 +54,7 @@ public class ScoreController {
     })
     @GetMapping("/{taskId}")
     public Result getOneData(@PathVariable Integer taskId) {
-        BasePageInfo<ScriptQuestionEntity> scriptQuestionEntity = scriptQuestionOptionService.findByTaskId(taskId);
+        BasePageInfo<ScriptQuestionEntity> scriptQuestionEntity = scriptQuestionService.findByTaskId(taskId);
         if (scriptQuestionEntity == null){
             return ResultGenerator.genSuccessResult(ResultCode.DATA_NOT_EXIST.getMessage());
         }

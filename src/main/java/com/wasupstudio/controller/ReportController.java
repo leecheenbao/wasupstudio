@@ -1,10 +1,12 @@
 package com.wasupstudio.controller;
 
 import com.wasupstudio.exception.ResultGenerator;
+import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
 import com.wasupstudio.model.dto.LoginRecordQueryDTO;
 import com.wasupstudio.service.LoginRecordsService;
 import com.wasupstudio.service.MemberService;
+import com.wasupstudio.service.ScriptQuestionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -26,12 +28,16 @@ public class ReportController {
     @Autowired
     private LoginRecordsService loginRecordsService;
 
+    @Autowired
+    private ScriptQuestionService scriptQuestionService;
+
     /*
-    * 近期登入人數(login)
-    * 用戶年齡分佈(age)
-    * 各劇本使用近況(script)
-    * 隸屬機構統計(category)
+    * 近期登入人數(login) V
+    * 用戶年齡分佈(age) V
+    * 隸屬機構統計(category) V
     * 各劇本結局統計(script-ending)
+    * 各劇本使用近況(script)
+    * 各劇本答題狀況
     */
     @ApiOperation(value = "近期登入人數(login)")
     @GetMapping("/login")
@@ -66,7 +72,8 @@ public class ReportController {
     @ApiOperation(value = "各劇本結局統計(script-ending)")
     @GetMapping("/script-ending")
     public Result getScriptEnding() {
-        return ResultGenerator.genSuccessResult();
+        BasePageInfo basePageInfo = scriptQuestionService.findReportForEnding();
+        return ResultGenerator.genSuccessResult(basePageInfo);
     }
 
 }

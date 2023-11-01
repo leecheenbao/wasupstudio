@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wasupstudio.mapper.ScriptQuestionMapper">
+
+    <resultMap id="BaseResultMap" type="com.wasupstudio.model.query.QuestionReportQuery">
+        <result column="task_id" property="taskId" jdbcType="INTEGER"/>
+        <result column="script_id" property="scriptId" jdbcType="INTEGER"/>
+        <result column="period" property="period" jdbcType="INTEGER"/>
+        <result column="stu_content" property="stuContent" jdbcType="VARCHAR"/>
+        <result column="stu_description" property="stuDescription" jdbcType="VARCHAR"/>
+        <result column="stu_orderly" property="stuOrderly" jdbcType="INTEGER"/>
+        <result column="stu_relation" property="stuRelation" jdbcType="INTEGER"/>
+        <result column="par_content" property="parContent" jdbcType="VARCHAR"/>
+        <result column="par_description" property="parDescription" jdbcType="VARCHAR"/>
+        <result column="par_orderly" property="parOrderly" jdbcType="INTEGER"/>
+        <result column="par_relation" property="parRelation" jdbcType="INTEGER"/>
+
+    </resultMap>
+
+    <select id="findReportForEnding" resultMap="BaseResultMap" resultType="com.wasupstudio.model.query.QuestionReportQuery">
+        SELECT
+            wsq.task_id, wt.task_name, wsq.period,
+            wsq.script_id, ws.title,
+            wsd.stu_content, wssc.stu_description,
+            SUM(wssc.stu_orderly) AS stu_orderly,
+            SUM(wssc.stu_relation) AS stu_relation,
+            wsd.par_content, wspc.par_description,
+            SUM(wspc.par_orderly) AS par_orderly,
+            SUM(wspc.par_relation) AS par_relation
+        FROM wa_script_question wsq
+                 JOIN wa_task wt ON wt.task_id = wsq.task_id
+                 JOIN wa_script ws ON ws.script_id =wsq.script_id
+                 JOIN wa_script_detail wsd ON wsd.script_id = wsq.script_id AND wsd.period = wsq.period
+                 JOIN wa_script_parent_config wspc ON wspc.id = wsq.par_ans
+                 JOIN wa_script_student_config wssc ON wssc.id = wsq.stu_ans
+        GROUP BY wsq.task_id, wsq.period, wsq.script_id, wsd.stu_content, wssc.stu_description, wsd.par_content, wspc.par_description
+        ORDER BY script_id ,task_id , period ;
+    </select>
+
+    <select id="scoreDistribution" resultMap="BaseResultMap" resultType="com.wasupstudio.model.query.QuestionResultQuery">
+        -- 各個任務分數分佈
+        SELECT
+            subquery.title,
+            subquery.script_id,
+            subquery.task_id,
+            orderlyTotal,
+            relationTotal,
+            CASE
+                WHEN orderlyTotal &gt; 0 AND relationTotal &lt; 0 THEN '結局一'
+                WHEN orderlyTotal &gt; 0 AND relationTotal &lt; 0 THEN '結局二'
+                WHEN orderlyTotal &lt; 0 AND relationTotal &gt; 0 THEN '結局三'
+                WHEN orderlyTotal &lt; 0 AND relationTotal &lt; 0 THEN '結局四'
+            END AS relationTotalGreaterThanZero
+        FROM (
+            SELECT
+            ws.title,
+            wsq.script_id,
+            wsq.task_id,
+            CASE
+                WHEN SUM(wssc.stu_orderly + wspc.par_orderly) = 0 THEN 1
+                ELSE SUM(wssc.stu_orderly + wspc.par_orderly)
+            END AS orderlyTotal,
+            CASE
+                WHEN SUM(wssc.stu_relation + wspc.par_relation) = 0 THEN 1
+                ELSE SUM(wssc.stu_relation + wspc.par_relation)
+            END AS relationTotal
+        FROM wa_script_question wsq
+        JOIN wa_script_parent_config wspc ON wspc.id = wsq.par_ans
+        JOIN wa_script_student_config wssc ON wssc.id = wsq.stu_ans
+        JOIN wa_script ws ON ws.script_id = wsq.script_id
+        GROUP BY wsq.script_id, wsq.task_id, ws.title
+        ) AS subquery
+        ORDER BY script_id, task_id;
+    </select>
+</mapper>
