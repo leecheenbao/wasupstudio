@@ -8,6 +8,7 @@ exclude:
        - '/api/member/**'
        - '/error'
        - '/api/script/download/pdf/valid'
+       - '/api/cash/**'
 
 
 

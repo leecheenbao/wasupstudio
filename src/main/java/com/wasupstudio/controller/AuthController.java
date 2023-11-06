@@ -106,7 +106,6 @@ public class AuthController {
     })
     @GetMapping("/google-login")
     public Result googleLogin() throws Exception {
-        log.info("google 登入info map:{}", map);
         return getGoogleOAuth(BASE_URL + REDIRECT_URI + ProjectConstant.GoogleOAuthPath.LOGIN);
     }
 
