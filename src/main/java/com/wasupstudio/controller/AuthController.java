@@ -106,6 +106,7 @@ public class AuthController {
     })
     @GetMapping("/google-login")
     public Result googleLogin() throws Exception {
+        log.info("google 登入info map:{}", map);
         return getGoogleOAuth(BASE_URL + REDIRECT_URI + ProjectConstant.GoogleOAuthPath.LOGIN);
     }
 
@@ -142,7 +143,6 @@ public class AuthController {
             map.put("memberId", memberEntity.getId());
             map.put("id", memberEntity.getId());
             map.put("checkLicense", checkLicense);
-            log.info("google 登入info map:{}", map);
             return new RedirectView(getURL(url, map));
         }
         return new RedirectView(url);
@@ -164,8 +164,21 @@ public class AuthController {
             if (memberEntity != null) {
                 String jwtToken = memberService.login(userInfo.getEmail());
                 Authentication authentication = JwtUtils.getAuthentication(jwtToken);
-                url = "https://wasupstudionobullying.com?token=" + jwtToken + "&email=" + userInfo.getEmail() + "&role=" + authentication.getAuthorities();
-                return new RedirectView(url);
+                boolean checkLicense;
+                if (memberEntity.getRole().equals(MemberEntity.Role.ROLE_ADMIN)){
+                    checkLicense = true;
+                } else {
+                    checkLicense = Boolean.parseBoolean(redisUtil.getKey(redisUtil.getLoginRedisKey(memberEntity)));
+                }
+
+                Map<String, Object> map = new TreeMap<>();
+                map.put("mail", userInfo.getEmail());
+                map.put("token", jwtToken);
+                map.put("role", authentication.getAuthorities());
+                map.put("memberId", memberEntity.getId());
+                map.put("id", memberEntity.getId());
+                map.put("checkLicense", checkLicense);
+                return new RedirectView(getURL(url, map));
             } else {
                 MemberDTO memberDTO = new MemberDTO();
                 memberDTO.setEmail(userInfo.getEmail());
