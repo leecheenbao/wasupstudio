@@ -76,4 +76,10 @@ public class ReportController {
         return ResultGenerator.genSuccessResult(basePageInfo);
     }
 
+    @ApiOperation(value = "各劇本結局統計(script-ending)")
+    @GetMapping("/script-distribution")
+    public Result getScriptDistribution() {
+        BasePageInfo basePageInfo = scriptQuestionService.scoreDistribution();
+        return ResultGenerator.genSuccessResult(basePageInfo);
+    }
 }

@@ -3,15 +3,12 @@ package com.wasupstudio.service.Impl;
 import com.wasupstudio.converter.ScriptQuestionConverter;
 import com.wasupstudio.mapper.ScriptQuestionMapper;
 import com.wasupstudio.model.BasePageInfo;
-import com.wasupstudio.model.dto.ScriptDetailDTO;
 import com.wasupstudio.model.dto.ScriptQuestionDTO;
 import com.wasupstudio.model.entity.ScriptDetailEntity;
 import com.wasupstudio.model.entity.ScriptEntity;
 import com.wasupstudio.model.entity.ScriptQuestionEntity;
 import com.wasupstudio.model.entity.TaskEntity;
-import com.wasupstudio.model.query.QuestionReportQuery;
-import com.wasupstudio.model.query.QuestionResultQuery;
-import com.wasupstudio.model.query.ScriptQuery;
+import com.wasupstudio.model.query.*;
 import com.wasupstudio.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -158,7 +155,27 @@ public class ScriptQuestionServiceImpl extends AbstractService<ScriptQuestionEnt
             combinedMap.put(key, values);
         }
 
+        List<Map.Entry<String, Integer[]>> combinedList = new ArrayList<>(combinedMap.entrySet());
 
+         results = new ArrayList<>();
+        for (Map.Entry<String, Integer[]> res :combinedList){
+            String[] key = res.getKey().split("-");
+            Integer taskId = Integer.valueOf(key[0]);
+            Integer scriptId = Integer.valueOf(key[1]);
+            System.out.println(key);
+            Integer[] value = res.getValue();
+            Integer orderlyTotal = value[0];
+            Integer relationTotal = value[1];
+
+            QuestionResultQuery query = new QuestionResultQuery();
+            query.setScriptId(scriptId);
+            query.setTaskId(taskId);
+            query.setOrderlyTotal(BigDecimal.valueOf(orderlyTotal));
+            query.setRelationTotal(BigDecimal.valueOf(relationTotal));
+
+            results.add(query);
+
+        }
         BasePageInfo basePageInfo = new BasePageInfo<>();
         basePageInfo.setList(results);
         basePageInfo.setTotal(results.size());
@@ -168,9 +185,61 @@ public class ScriptQuestionServiceImpl extends AbstractService<ScriptQuestionEnt
     @Override
     public BasePageInfo scoreDistribution() {
 
-        List<QuestionResultQuery> list = scriptQuestionMapper.scoreDistribution();
+        List<ScoreDistributionQuery> list = scriptQuestionMapper.scoreDistribution();
+        Map<Integer, Map<String, Integer>> scriptResultStatistics = new HashMap<>();
+
+        for (ScoreDistributionQuery result : list) {
+            Integer scriptId = result.getScriptId();
+            String endingResult = result.getResult();
+
+            // 檢查是否已經有此劇本的統計數據
+            if (!scriptResultStatistics.containsKey(scriptId)) {
+                scriptResultStatistics.put(scriptId, new HashMap<>());
+            }
+
+            Map<String, Integer> resultStats = scriptResultStatistics.get(scriptId);
+
+            // 更新結局統計數量
+            resultStats.put(endingResult, resultStats.getOrDefault(endingResult, 0) + 1);
+        }
+
+
+        List<QuestionResultQuery> details = findReportForEnding().getList();
+        Map<Integer, List<QuestionResultQuery>> scriptIdToDetailsMap = new HashMap<>();
+
+        for (QuestionResultQuery detail : details) {
+            Integer scriptId = detail.getScriptId();
+
+            // 檢查 Map 中是否已經有這個 scriptId，如果沒有，創建一個新 List
+            if (!scriptIdToDetailsMap.containsKey(scriptId)) {
+                scriptIdToDetailsMap.put(scriptId, new ArrayList<>());
+            }
+
+            // 取得相應 scriptId 的 List，並將 detail 加入其中
+            List<QuestionResultQuery> scriptDetailsList = scriptIdToDetailsMap.get(scriptId);
+            scriptDetailsList.add(detail);
+        }
+
+        // 遍歷 scriptIdToDetailsMap，為每個 scriptId 計算統計並添加到 resultStatisticsList
+        List<StatisticsQuery> resultStatisticsList = new ArrayList<>();
+        for (Map.Entry<Integer, List<QuestionResultQuery>> entry : scriptIdToDetailsMap.entrySet()) {
+            Integer scriptId = entry.getKey();
+            List<QuestionResultQuery> scriptDetailsList = entry.getValue();
+            ScriptEntity script = scriptService.findOne(scriptId);
+
+            StatisticsQuery statisticsQuery = new StatisticsQuery();
+            statisticsQuery.setId(scriptId);
+            statisticsQuery.setResult(script.getTitle());
+            statisticsQuery.setCount(scriptResultStatistics.get(scriptId).size());
+            statisticsQuery.setDetail(scriptDetailsList);
+
+            resultStatisticsList.add(statisticsQuery);
+        }
+
+        System.out.println(resultStatisticsList);
+
         BasePageInfo basePageInfo = new BasePageInfo<>();
-        basePageInfo.setList(list);
+        basePageInfo.setList(resultStatisticsList);
         basePageInfo.setTotal(list.size());
         return basePageInfo;
     }

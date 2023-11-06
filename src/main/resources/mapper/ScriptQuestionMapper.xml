@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.wasupstudio.mapper.ScriptQuestionMapper">
 
-    <resultMap id="BaseResultMap" type="com.wasupstudio.model.query.QuestionReportQuery">
+    <resultMap id="QuestionQueryMap" type="com.wasupstudio.model.query.QuestionReportQuery">
         <result column="task_id" property="taskId" jdbcType="INTEGER"/>
         <result column="script_id" property="scriptId" jdbcType="INTEGER"/>
         <result column="period" property="period" jdbcType="INTEGER"/>
@@ -14,10 +14,19 @@
         <result column="par_description" property="parDescription" jdbcType="VARCHAR"/>
         <result column="par_orderly" property="parOrderly" jdbcType="INTEGER"/>
         <result column="par_relation" property="parRelation" jdbcType="INTEGER"/>
-
     </resultMap>
 
-    <select id="findReportForEnding" resultMap="BaseResultMap" resultType="com.wasupstudio.model.query.QuestionReportQuery">
+    <resultMap id="DistributionQueryResultMap" type="com.wasupstudio.model.query.ScoreDistributionQuery">
+        <result column="task_id" property="taskId" jdbcType="INTEGER"/>
+        <result column="script_id" property="scriptId" jdbcType="INTEGER"/>
+        <result column="stu_content" property="stuContent" jdbcType="VARCHAR"/>
+        <result column="par_content" property="parContent" jdbcType="VARCHAR"/>
+        <result column="orderlyTotal" property="orderlyTotal" jdbcType="INTEGER"/>
+        <result column="relationTotal" property="relationTotal" jdbcType="INTEGER"/>
+        <result column="result" property="result" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="findReportForEnding" resultMap="QuestionQueryMap" resultType="com.wasupstudio.model.query.QuestionReportQuery">
         SELECT
             wsq.task_id, wt.task_name, wsq.period,
             wsq.script_id, ws.title,
@@ -37,7 +46,7 @@
         ORDER BY script_id ,task_id , period ;
     </select>
 
-    <select id="scoreDistribution" resultMap="BaseResultMap" resultType="com.wasupstudio.model.query.QuestionResultQuery">
+    <select id="scoreDistribution" resultMap="DistributionQueryResultMap" resultType="com.wasupstudio.model.query.ScoreDistributionQuery">
         -- 各個任務分數分佈
         SELECT
             subquery.title,
@@ -46,11 +55,11 @@
             orderlyTotal,
             relationTotal,
             CASE
-                WHEN orderlyTotal &gt; 0 AND relationTotal &lt; 0 THEN '結局一'
+                WHEN orderlyTotal &gt; 0 AND relationTotal &gt; 0 THEN '結局一'
                 WHEN orderlyTotal &gt; 0 AND relationTotal &lt; 0 THEN '結局二'
                 WHEN orderlyTotal &lt; 0 AND relationTotal &gt; 0 THEN '結局三'
                 WHEN orderlyTotal &lt; 0 AND relationTotal &lt; 0 THEN '結局四'
-            END AS relationTotalGreaterThanZero
+            END AS result
         FROM (
             SELECT
             ws.title,

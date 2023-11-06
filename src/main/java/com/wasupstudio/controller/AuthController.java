@@ -142,6 +142,7 @@ public class AuthController {
             map.put("memberId", memberEntity.getId());
             map.put("id", memberEntity.getId());
             map.put("checkLicense", checkLicense);
+            log.info("google 登入info map:{}", map);
             return new RedirectView(getURL(url, map));
         }
         return new RedirectView(url);
