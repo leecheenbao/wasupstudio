@@ -2,7 +2,10 @@ package com.wasupstudio.controller;
 
 import static com.wasupstudio.constant.ProjectConstant.APIStatus.API_RESPONSE_IS_SUCCESS;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.constant.ProjectConstant.OrderStatus;
 import com.wasupstudio.exception.ResultGenerator;
@@ -16,6 +19,7 @@ import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.model.entity.OrderEntity;
 import com.wasupstudio.model.entity.OrderItemEntity;
 import com.wasupstudio.model.entity.ProductEntity;
+import com.wasupstudio.service.MemberService;
 import com.wasupstudio.service.OrderItemService;
 import com.wasupstudio.service.OrderService;
 import com.wasupstudio.service.ProductService;
@@ -45,6 +49,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.spring.web.json.Json;
 
 
 @Api(tags = "金流相關 API")
@@ -60,13 +65,12 @@ public class CashFlowController {
     private String hashIV;
     @Value("${newebpay.merchantID}")
     private String merchantID;
-
     @Autowired
     OrderService orderService;
-
     @Autowired
     OrderItemService orderItemService;
-
+    @Autowired
+    MemberService memberService;
     @Autowired
     ProductService productService;
 
@@ -74,7 +78,9 @@ public class CashFlowController {
     @PostMapping(value = "/order")
     @Transactional
     protected Result createOrderList(@RequestBody OrderDTO orderDTO) throws Exception {
-        System.out.println("orderDTO = " + orderDTO);
+        MemberEntity member = memberService.getAdminByEmail(orderDTO.getEmail());
+
+        log.info("orderDTO = " + orderDTO);
         List<String> productIds = orderDTO.getProducts().stream()
                 .map(OrderItemDTO::getProductId)
                 .collect(Collectors.toList());
@@ -84,21 +90,19 @@ public class CashFlowController {
         //根據productEntities過濾出products中的productId並找到其價格，乘上products中的數量，並加總
         BigDecimal totalPrice = orderDTO.getProducts().stream()
                 .map(item -> productEntities.stream()
-                        .filter(productEntity -> productEntity.getProductId()
-                                .equals(Long.valueOf(item.getProductId()))).findFirst()
-                        .map(productEntity -> productEntity.getPrice()
-                                .multiply(BigDecimal.valueOf(item.getQuantity())))
+                        .filter(productEntity -> productEntity.getProductId().equals(Long.valueOf(item.getProductId()))).findFirst()
+                        .map(productEntity -> productEntity.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                         .orElseThrow(RuntimeException::new))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         long orderId = System.currentTimeMillis() / 1000; //TODO 待確定訂單編號規則
 
-        saveOrder(orderDTO, totalPrice, orderId);
+        saveOrder(member, orderDTO, totalPrice, orderId);
 
         saveOrderItem(orderDTO, productEntityMap, orderId);
 
         // 前端頁面會送來未加密過的資訊，利用這個API把資訊加密之後送到三方
-        return ResultGenerator.genSuccessResult(getCashFlowData(totalPrice, orderId));
+        return ResultGenerator.genSuccessResult(getCashFlowData(member, totalPrice, orderId));
     }
 
     @ApiOperation("藍新callback方法")
@@ -108,7 +112,9 @@ public class CashFlowController {
         //接收三方收到的訊息然後解密處理實作callback方法
         CashFlowUtils cashFlowUtils = new CashFlowUtils();
         String decrypt = cashFlowUtils.decrypt(cashFlowReturnDataDTO.getTradeInfo(), hashKey, hashIV);
-        CashFlowReturnData data = new Gson().fromJson(decrypt, CashFlowReturnData.class);
+        System.out.println(decrypt);
+        JsonObject jsonObject = toJson(decrypt);
+        CashFlowReturnData data = new Gson().fromJson(jsonObject, CashFlowReturnData.class);
         updateOrderStatus(data);
         if (API_RESPONSE_IS_SUCCESS.equals(data.getStatus())) {
             MailUtil.sendMail(ProjectConstant.MailType.LICENSING,
@@ -117,6 +123,25 @@ public class CashFlowController {
         }
         log.info("callback result, {}", decrypt);
         return ResultGenerator.genSuccessResult(decrypt);
+    }
+
+    private JsonObject toJson(String input){
+        String[] keyValuePairs = input.split("&");
+
+        // Create a JSON object to store the data
+        JsonObject jsonObject = new JsonObject();
+
+        for (String pair : keyValuePairs) {
+            // Split each key-value pair by "="
+            String[] parts = pair.split("=");
+            if (parts.length == 2) {
+                // Add the key-value pair to the JSON object
+                jsonObject.addProperty(parts[0], parts[1]);
+            }
+        }
+        // Print the JSON object
+        System.out.println(jsonObject.toString());
+        return jsonObject;
     }
 
     private void updateOrderStatus(CashFlowReturnData data) {
@@ -135,7 +160,7 @@ public class CashFlowController {
     }
 
 
-    private CashFlowData getCashFlowData(BigDecimal totalPrice, long orderId) throws Exception {
+    private CashFlowData getCashFlowData(MemberEntity member, BigDecimal totalPrice, long orderId) throws Exception {
         CashFlowUtils cashFlowUtils = new CashFlowUtils();
         Map<String, Object> params = new TreeMap<>();
         params.put("MerchantID", merchantID);
@@ -144,10 +169,8 @@ public class CashFlowController {
         params.put("Version", "2.0");
         params.put("MerchantOrderNo", "SW_" + orderId);
         params.put("Amt", totalPrice.intValueExact());
-        params.put("ItemDesc",
-                Objects.requireNonNull(JwtUtils.getMember()).getId() + ":" + "sw" + orderId); //商品資訊
-        params.put("Email", "a3583798@gmail.com"); //TODO 改從token來
-//    params.put("Email", Objects.requireNonNull(JwtUtils.getMember()).getEmail());
+        params.put("ItemDesc", member.getId() + ":" + "sw" + orderId); //商品資訊
+        params.put("Email", member.getEmail()); //TODO 改從token來
 
         params.put("NotifyURL",
                 "https://dbd4-2001-b011-6c03-9aed-e4c7-482e-87d8-7887.ngrok-free.app/wasupstudio/api/cash/callback");
@@ -182,20 +205,17 @@ public class CashFlowController {
         orderItemService.save(orderItemEntities);
     }
 
-    private void saveOrder(OrderDTO orderDTO, BigDecimal totalPrice, long orderId) {
-        MemberEntity member = JwtUtils.getMember();
+    private void saveOrder(MemberEntity member, OrderDTO orderDTO, BigDecimal totalPrice, long orderId) {
         OrderEntity orderEntity = new OrderEntity();
         orderEntity.setOrderId(orderId);
-        orderEntity.setUserId(Objects.requireNonNull(JwtUtils.getMember()).getId());
+        orderEntity.setUserId(Objects.requireNonNull(member.getId()));
         orderEntity.setRecipient(orderDTO.getRecipient());
         orderEntity.setPhone(orderDTO.getPhone());
         orderEntity.setAddress(orderDTO.getAddress());
         orderEntity.setTotalPrice(totalPrice);
         orderEntity.setStatus(String.valueOf(OrderStatus.UNDONE));
-        Date date = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
-        orderEntity.setCreateTime(date);
-        orderEntity.setUpdateTime(date);
+        orderEntity.setCreateTime(new Date());
+        orderEntity.setUpdateTime(new Date());
         orderService.save(orderEntity);
-
     }
 }

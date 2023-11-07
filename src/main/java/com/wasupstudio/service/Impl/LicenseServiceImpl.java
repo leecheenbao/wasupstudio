@@ -30,7 +30,7 @@ public class LicenseServiceImpl extends AbstractService<LicenseEntity> implement
         LicenseEntity licenseEntity = new LicenseEntity();
         licenseEntity.setLicenseKey(generate());
         licenseEntity.setActivated(CommonStatusEnum.DISABLE.getType());
-        licenseEntity.setActivationDate(today);
+        licenseEntity.setCreateDate(today);
         licenseEntity.setExpirationDate(DateUtils.addDays(today, 5000));
         licenseEntity.setCustomerEmail(licenseDTO.getCustomerEmail());
         licenseEntity.setCustomerName(licenseDTO.getCustomerName());
@@ -40,7 +40,10 @@ public class LicenseServiceImpl extends AbstractService<LicenseEntity> implement
 
     @Override
     public boolean verify(LicenseDTO licenseDTO) {
-        return licenseMapper.verifyLicense(licenseDTO.getLicenseKey(), licenseDTO.getCustomerEmail(), licenseDTO.getCustomerName());
+        return licenseMapper.verifyLicense(licenseDTO.getLicenseKey(),
+                licenseDTO.getCustomerEmail(),
+                licenseDTO.getCustomerName(),
+                new Date());
     }
 
     public static String generate() {

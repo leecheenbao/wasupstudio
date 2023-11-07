@@ -20,6 +20,7 @@ public class OrderDTO {
 
   private String address;
 
+  private String email;
   @Data
   @ToString
   @AllArgsConstructor

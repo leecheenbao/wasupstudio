@@ -22,8 +22,11 @@ public interface LicenseMapper extends CommonMapper<LicenseEntity> {
 
     @ResultMap("BaseResultMap")
     @Update("UPDATE wa_license SET activated=1, customer_name=#{customerName}," +
-            "customer_email=#{customerMail} WHERE license_key =#{licenseKey} AND activated = 0")
-    boolean verifyLicense(@Param("licenseKey") String licenseKey, @Param("customerMail") String customerMail, @Param("customerName") String customerName);
+            "customer_email=#{customerMail} , create_date = #{createDate}WHERE license_key =#{licenseKey} AND activated = 0")
+    boolean verifyLicense(@Param("licenseKey") String licenseKey,
+                          @Param("customerMail") String customerMail,
+                          @Param("customerName") String customerName,
+                          @Param("createDate") Date createDate);
 
     @ResultMap("BaseResultMap")
     @Update("SELECT * FROM wa_license WHERE license_key =#{licenseKey}")

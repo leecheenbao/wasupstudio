@@ -45,6 +45,13 @@ public class LicenseEntity implements Serializable {
      */
     @Column(name = "expiration_date")
     private Date expirationDate;
+
+    /**
+     * 到期日期
+     */
+    @Column(name = "create_date")
+    private Date createDate;
+
     /**
      * 客戶姓名
      */
