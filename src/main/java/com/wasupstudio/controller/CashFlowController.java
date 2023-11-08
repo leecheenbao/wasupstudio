@@ -1,12 +1,7 @@
 package com.wasupstudio.controller;
 
-import static com.wasupstudio.constant.ProjectConstant.APIStatus.API_RESPONSE_IS_SUCCESS;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.constant.ProjectConstant.OrderStatus;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.CashFlowData;
@@ -24,32 +19,20 @@ import com.wasupstudio.service.OrderItemService;
 import com.wasupstudio.service.OrderService;
 import com.wasupstudio.service.ProductService;
 import com.wasupstudio.util.CashFlowUtils;
-import com.wasupstudio.util.JwtUtils;
-import com.wasupstudio.util.MailUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.spring.web.json.Json;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static com.wasupstudio.constant.ProjectConstant.APIStatus.API_RESPONSE_IS_SUCCESS;
 
 
 @Api(tags = "金流相關 API")
@@ -57,6 +40,9 @@ import springfox.documentation.spring.web.json.Json;
 @RequestMapping("/api/cash")
 @Slf4j
 public class CashFlowController {
+
+    @Value("${newebpay.notifyURL}")
+    private String notifyURL; //當前配置文件
 
     /* 正式 */
     @Value("${newebpay.hashKey}")
@@ -109,23 +95,28 @@ public class CashFlowController {
     @PostMapping(value = "/callback")
     protected Result getReturnData(@ModelAttribute CashFlowReturnDataDTO cashFlowReturnDataDTO)
             throws Exception {
-        //接收三方收到的訊息然後解密處理實作callback方法
+        // 接收三方收到的訊息然後解密處理實作callback方法
         CashFlowUtils cashFlowUtils = new CashFlowUtils();
         String decrypt = cashFlowUtils.decrypt(cashFlowReturnDataDTO.getTradeInfo(), hashKey, hashIV);
-        System.out.println(decrypt);
-        JsonObject jsonObject = toJson(decrypt);
-        CashFlowReturnData data = new Gson().fromJson(jsonObject, CashFlowReturnData.class);
-        updateOrderStatus(data);
-        if (API_RESPONSE_IS_SUCCESS.equals(data.getStatus())) {
-            MailUtil.sendMail(ProjectConstant.MailType.LICENSING,
-                    String.valueOf(Objects.requireNonNull(JwtUtils.getMember()).getId()),
-                    Objects.requireNonNull(JwtUtils.getMember()).getEmail()); //TODO 增加寄出授權碼
-        }
         log.info("callback result, {}", decrypt);
-        return ResultGenerator.genSuccessResult(decrypt);
+        Gson gson = new Gson();
+        CashFlowReturnData data = gson.fromJson(decrypt, CashFlowReturnData.class);
+
+        // 更改交易裝態
+        updateOrderStatus(data);
+
+        // 發送信件給USER
+//        if (API_RESPONSE_IS_SUCCESS.equals(data.getStatus())) {
+//            MailUtil.sendMail(ProjectConstant.MailType.LICENSING,
+//                    String.valueOf(Objects.requireNonNull(JwtUtils.getMember()).getId()),
+//                    Objects.requireNonNull(JwtUtils.getMember()).getEmail()); //TODO 增加寄出授權碼
+//        }
+        log.info("發送交易成功通知信給客戶, {}", decrypt);
+        return ResultGenerator.genSuccessResult("交易成功");
     }
 
-    private JsonObject toJson(String input){
+    private static JsonObject toJson(String input){
+
         String[] keyValuePairs = input.split("&");
 
         // Create a JSON object to store the data
@@ -144,17 +135,26 @@ public class CashFlowController {
         return jsonObject;
     }
 
+    public static void main(String[] args) {
+        String json = "{\"Status\":\"SUCCESS\",\"Message\":\"\\u6388\\u6b0a\\u6210\\u529f\",\"Result\":{\"MerchantID\":\"MS148818392\",\"Amt\":1350,\"TradeNo\":\"23110811063750643\",\"MerchantOrderNo\":\"SW_1699412782\",\"RespondType\":\"JSON\",\"IP\":\"60.251.53.109\",\"EscrowBank\":\"HNCB\",\"PaymentType\":\"CREDIT\",\"RespondCode\":\"00\",\"Auth\":\"215465\",\"Card6No\":\"400022\",\"Card4No\":\"1111\",\"Exp\":\"3512\",\"AuthBank\":\"KGI\",\"TokenUseStatus\":0,\"InstFirst\":0,\"InstEach\":0,\"Inst\":0,\"ECI\":\"\",\"PayTime\":\"2023-11-08 11:06:37\",\"PaymentMethod\":\"CREDIT\"}}\n";
+        System.out.println(json);
+        Gson gson = new Gson();
+        CashFlowReturnData data = gson.fromJson(json, CashFlowReturnData.class);
+        System.out.println(data.getStatus());
+        System.out.println(data.getMessage());
+        System.out.println(data.getResult());
+    }
     private void updateOrderStatus(CashFlowReturnData data) {
         String status = data.getStatus();
         CashFlowReturnData.Result result = data.getResult();
         OrderEntity orderEntity = new OrderEntity();
-        orderEntity.setOrderId(Long.parseLong(result.getMerchantOrderNo().substring(2))); //移除 SW_
-        orderEntity.setUpdateTime(
-                Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        String merchantOrderNo = result.getMerchantOrderNo().replace("SW_", "");
+        orderEntity.setOrderId(Long.parseLong(merchantOrderNo)); //移除 SW_
+        orderEntity.setUpdateTime(new Date());
         if (API_RESPONSE_IS_SUCCESS.equals(status)) {
-            orderEntity.setStatus(String.valueOf(OrderStatus.SUCCESS));
+            orderEntity.setStatus(OrderStatus.SUCCESS);
         } else {
-            orderEntity.setStatus(String.valueOf(OrderStatus.FAIL));
+            orderEntity.setStatus(OrderStatus.FAIL);
         }
         orderService.updateData(orderEntity);
     }
@@ -171,12 +171,7 @@ public class CashFlowController {
         params.put("Amt", totalPrice.intValueExact());
         params.put("ItemDesc", member.getId() + ":" + "sw" + orderId); //商品資訊
         params.put("Email", member.getEmail()); //TODO 改從token來
-
-        params.put("NotifyURL",
-                "https://dbd4-2001-b011-6c03-9aed-e4c7-482e-87d8-7887.ngrok-free.app/wasupstudio/api/cash/callback");
-//    params.put("ReturnURL",
-//        "https://dbd4-2001-b011-6c03-9aed-e4c7-482e-87d8-7887.ngrok-free.app/wasupstudio/api/cash/callback");
-//        "https://webhook.site/860d9743-b740-493c-b0b1-8f75ee7184d5");
+        params.put("NotifyURL", notifyURL);
 
         String dataInfo = cashFlowUtils.getDataInfo(params);
         String tradeInfo = cashFlowUtils.encrypt(dataInfo, hashKey, hashIV);
@@ -213,7 +208,7 @@ public class CashFlowController {
         orderEntity.setPhone(orderDTO.getPhone());
         orderEntity.setAddress(orderDTO.getAddress());
         orderEntity.setTotalPrice(totalPrice);
-        orderEntity.setStatus(String.valueOf(OrderStatus.UNDONE));
+        orderEntity.setStatus(OrderStatus.UNDONE);
         orderEntity.setCreateTime(new Date());
         orderEntity.setUpdateTime(new Date());
         orderService.save(orderEntity);

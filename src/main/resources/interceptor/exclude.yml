@@ -8,7 +8,9 @@ exclude:
        - '/api/member/**'
        - '/error'
        - '/api/script/download/pdf/valid'
-       - '/api/cash/**'
+       - '/form'
+       - '/api/cash/order'
+       - '/api/cash/callback'
 
 
 

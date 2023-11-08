@@ -42,7 +42,7 @@ public class OrderEntity {
   private BigDecimal totalPrice;
 
   @Column(name = "status")
-  private String status;
+  private Integer status;
 
   @Column(name = "create_time")
   private Date createTime;

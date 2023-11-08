@@ -3,30 +3,34 @@ package com.wasupstudio.util;
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.enums.MailEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.io.ClassPathResource;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 @Slf4j
 public class MailUtil {
 
-    private static String user = "paul.lee.2022.09@gmail.com";
-    private static String pwd = "ogeplmjxvktfyefd";
-    private static String from = "paul.lee.2022.09@gmail.com";
     private static final String MAIL_FORGET_VERIFY_URL = "https://wasupstudionobullying.com/wasupstudio/auth/reset/";
-//    private static final String MAIL_FORGET_VERIFY_URL = "http://localhost:8080/wasupstudio/auth/reset/";
     private static final String MAIL_SIGNUP_VERIFY_URL = "https://wasupstudionobullying.com/wasupstudio/auth/verify/";
-//    private static final String MAIL_SIGNUP_VERIFY_URL = "http://localhost:8080/wasupstudio/auth/verify/";
 
     public static void sendMail(String action, String content, String mailTo) throws Exception {
+        Properties properties = PropertieUtils.getProperties("application.properties");
+        String mailUsername = properties.getProperty("MAIL_USERNAME");
+        String pwd = properties.getProperty("MAIL_PASSWORD");
+        String user = properties.getProperty("MAIL_USER");
+        String from = properties.getProperty("MAIL_USER");
         try {
 
-            user = "paul.lee.2022.09@gmail.com";
-            pwd = "ogeplmjxvktfyefd";
             Session mailSession = Session.getInstance(setMailProperties(), new javax.mail.Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(user, pwd);
@@ -94,9 +98,9 @@ public class MailUtil {
     }
 
     public static void main(String[] args) {
-        String verificationCode = "your_verification_code";
-        StringBuffer emailContent = mainContent(forgetContent(verificationCode).toString());
-        System.out.println(emailContent.toString());
+        Properties properties = PropertieUtils.getProperties("application.properties");
+        String mailUsername = properties.getProperty("MAIL_USERNAME");
+        System.out.println(mailUsername);
     }
 
     public static StringBuffer mainContent(String content) {
