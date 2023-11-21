@@ -2,6 +2,7 @@ package com.wasupstudio.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.constant.ProjectConstant.OrderStatus;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.CashFlowData;
@@ -19,6 +20,8 @@ import com.wasupstudio.service.OrderItemService;
 import com.wasupstudio.service.OrderService;
 import com.wasupstudio.service.ProductService;
 import com.wasupstudio.util.CashFlowUtils;
+import com.wasupstudio.util.JwtUtils;
+import com.wasupstudio.util.MailUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -95,10 +98,12 @@ public class CashFlowController {
     @PostMapping(value = "/callback")
     protected Result getReturnData(@ModelAttribute CashFlowReturnDataDTO cashFlowReturnDataDTO)
             throws Exception {
+        log.info("callback init result:{}", cashFlowReturnDataDTO);
+
         // 接收三方收到的訊息然後解密處理實作callback方法
         CashFlowUtils cashFlowUtils = new CashFlowUtils();
         String decrypt = cashFlowUtils.decrypt(cashFlowReturnDataDTO.getTradeInfo(), hashKey, hashIV);
-        log.info("callback result, {}", decrypt);
+        log.info("callback result:{}", decrypt);
         Gson gson = new Gson();
         CashFlowReturnData data = gson.fromJson(decrypt, CashFlowReturnData.class);
 
@@ -106,11 +111,11 @@ public class CashFlowController {
         updateOrderStatus(data);
 
         // 發送信件給USER
-//        if (API_RESPONSE_IS_SUCCESS.equals(data.getStatus())) {
-//            MailUtil.sendMail(ProjectConstant.MailType.LICENSING,
-//                    String.valueOf(Objects.requireNonNull(JwtUtils.getMember()).getId()),
-//                    Objects.requireNonNull(JwtUtils.getMember()).getEmail()); //TODO 增加寄出授權碼
-//        }
+        if (API_RESPONSE_IS_SUCCESS.equals(data.getStatus())) {
+            MailUtil.sendMail(ProjectConstant.MailType.LICENSING,
+                    String.valueOf(Objects.requireNonNull(JwtUtils.getMember()).getId()),
+                    Objects.requireNonNull(JwtUtils.getMember()).getEmail()); //TODO 增加寄出授權碼
+        }
         log.info("發送交易成功通知信給客戶, {}", decrypt);
         return ResultGenerator.genSuccessResult("交易成功");
     }
@@ -151,6 +156,7 @@ public class CashFlowController {
         String merchantOrderNo = result.getMerchantOrderNo().replace("SW_", "");
         orderEntity.setOrderId(Long.parseLong(merchantOrderNo)); //移除 SW_
         orderEntity.setUpdateTime(new Date());
+        log.info("金流 callback data:{}", data);
         if (API_RESPONSE_IS_SUCCESS.equals(status)) {
             orderEntity.setStatus(OrderStatus.SUCCESS);
         } else {
