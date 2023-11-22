@@ -129,7 +129,7 @@ public class CashFlowController {
                 vo.setAmount(order.getTotalPrice());
                 vo.setEmail(order.getAddress());
                 vo.setOrderId(order.getOrderId());
-                vo.setLicense(license);
+                vo.setLicense(licenseEntity.getLicenseKey());
                 vo.setCount(order.getQuantity());
                 MailUtil.sendMail(vo, order.getAddress()); //TODO 增加寄出授權碼
             }
