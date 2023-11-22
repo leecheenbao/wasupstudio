@@ -2,19 +2,14 @@ package com.wasupstudio.util;
 
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.enums.MailEnum;
+import com.wasupstudio.model.vo.LicenseMailVo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.io.ClassPathResource;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 @Slf4j
@@ -23,6 +18,53 @@ public class MailUtil {
     private static final String MAIL_FORGET_VERIFY_URL = "https://wasupstudionobullying.com/wasupstudio/auth/reset/";
     private static final String MAIL_SIGNUP_VERIFY_URL = "https://wasupstudionobullying.com/wasupstudio/auth/verify/";
 
+    public static void sendMail(LicenseMailVo vo, String mailTo) throws Exception {
+        Properties properties = PropertieUtils.getProperties("application.properties");
+        String pwd = properties.getProperty("MAIL_PASSWORD");
+        String user = properties.getProperty("MAIL_USER");
+        String from = properties.getProperty("MAIL_USER");
+        try {
+
+            Session mailSession = Session.getInstance(setMailProperties(), new javax.mail.Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(user, pwd);
+                }
+            });
+
+
+            // 開啟Session的debug模式，這樣就可以查看到程序發送Email的運行狀態
+            mailSession.setDebug(false);
+
+            // 產生整封 email 的主體 message
+            MimeMessage message = new MimeMessage(mailSession);
+
+            // 文字部份，注意 img src 部份要用 cid:接下面附檔的header
+            MimeBodyPart textPart = new MimeBodyPart();
+            StringBuffer html = new StringBuffer();
+
+            // 啟動碼寄送
+            message.setSubject(MailEnum.MAIL_SUBTITLE_START_KEY.getDesc());
+            html = mainContent(String.valueOf(licenseContent(vo)));
+
+
+            textPart.setContent(html.toString(), "text/html; charset=UTF-8");
+
+            // 圖檔部份，注意 html 用 cid:image，則header要設<image>
+            Multipart email = new MimeMultipart();
+            email.addBodyPart(textPart);
+            message.setContent(email);
+            // Set From: header field of the header.
+            message.setFrom(new InternetAddress(from, mailTo));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTo));
+            // Send message
+            Transport.send(message);
+
+            log.info("[發送 啟動碼 信件 成功] >> from:{}, to:{}", from, mailTo);
+        } catch (MessagingException e) {
+            log.error("[發送 啟動碼 信件 失敗] >> from:{}, to:{}\n exception:{}", from, mailTo, e);
+            e.printStackTrace();
+        }
+    }
     public static void sendMail(String action, String content, String mailTo) throws Exception {
         Properties properties = PropertieUtils.getProperties("application.properties");
         String mailUsername = properties.getProperty("MAIL_USERNAME");
@@ -57,10 +99,6 @@ public class MailUtil {
             if (action.equals(ProjectConstant.MailType.FORGET)) {
                 message.setSubject(MailEnum.MAIL_SUBTITLE_FORGET.getDesc());
                 html = mainContent(String.valueOf(forgetContent(content)));
-            }
-            // 啟動碼寄送
-            if (action.equals(ProjectConstant.MailType.START_KEY)) {
-                message.setSubject(MailEnum.MAIL_SUBTITLE_START_KEY.getDesc());
             }
 
             textPart.setContent(html.toString(), "text/html; charset=UTF-8");
@@ -165,6 +203,28 @@ public class MailUtil {
             "               text-align: center; text-decoration: none; padding: 13px 17px; display: block; border-radius: 4px; " +
             "               white-space: nowrap;'>" +
             "               啟用連結請點我</a>"
+        );
+        return html;
+    }
+
+    public static StringBuffer licenseContent(LicenseMailVo licenseMailVo) {
+        StringBuffer html = new StringBuffer();
+        // 獲取當前日期和時間
+        String currentDate = DateUtils.getCurrentDateTimeFormatted();
+        // 開始構建HTML內容
+        html.append(
+                        "            <p>親愛的用戶，您好</p>" +
+                        "            <p>感謝您的支持，您在「我們班的叢林法則」的訂單已成立，以下為您的訂單資訊：</p>" +
+                        "            <p>訂單編號：" + licenseMailVo.getOrderId() + "</p>" +
+                        "            <p>訂單總額：" + licenseMailVo.getAmount() + "</p>" +
+                        "            <p>購買份數：" + licenseMailVo.getCount() + "</p>" +
+                        "            <p>購買人姓名：" + licenseMailVo.getName() + "</p>" +
+                        "            <p>購買人Email：" + licenseMailVo.getEmail() + "</p>" +
+                        "＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝" +
+                        "<p>以下為您的註冊碼</p>" +
+                        licenseMailVo.getLicense()
+
+
         );
         return html;
     }

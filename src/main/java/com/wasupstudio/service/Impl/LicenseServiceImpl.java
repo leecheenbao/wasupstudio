@@ -39,6 +39,22 @@ public class LicenseServiceImpl extends AbstractService<LicenseEntity> implement
     }
 
     @Override
+    public LicenseEntity genLicense(LicenseDTO licenseDTO) {
+        Date today = new Date();
+
+        LicenseEntity licenseEntity = new LicenseEntity();
+        licenseEntity.setLicenseKey(generate());
+        licenseEntity.setActivated(CommonStatusEnum.DISABLE.getType());
+        licenseEntity.setCreateDate(today);
+        licenseEntity.setExpirationDate(DateUtils.addDays(today, 5000));
+        licenseEntity.setCustomerEmail(licenseDTO.getCustomerEmail());
+        licenseEntity.setCustomerName(licenseDTO.getCustomerName());
+        licenseEntity.setGenerate(licenseDTO.getGenerate());
+        save(licenseEntity);
+        return licenseMapper.findByLicenseKey(licenseEntity.getLicenseKey());
+    }
+
+    @Override
     public boolean verify(LicenseDTO licenseDTO) {
         return licenseMapper.verifyLicense(licenseDTO.getLicenseKey(),
                 licenseDTO.getCustomerEmail(),

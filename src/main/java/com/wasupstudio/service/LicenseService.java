@@ -11,6 +11,8 @@ public interface LicenseService {
 
     void save (LicenseDTO licenseDTO);
 
+    LicenseEntity genLicense(LicenseDTO licenseDTO);
+
     boolean verify(LicenseDTO licenseDTO);
 
     LicenseEntity findOne(Integer id);

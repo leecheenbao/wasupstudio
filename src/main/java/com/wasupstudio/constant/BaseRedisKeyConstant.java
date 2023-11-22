@@ -14,5 +14,6 @@ public class BaseRedisKeyConstant {
     */
     public static String FILE_DOWNLOAD = "file_download::FILE_DOWNLOAD_%s_%s";
 
+    public static String ORDER_LICENCE = "order_license::ORDER_LICENSE_%s";
     public static Integer FIVE_MIN = 5 * 60;
 }

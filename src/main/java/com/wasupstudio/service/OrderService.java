@@ -1,19 +1,16 @@
 package com.wasupstudio.service;
 
 import com.wasupstudio.model.BasePageInfo;
-import com.wasupstudio.model.dto.OrderDTO;
 import com.wasupstudio.model.entity.OrderEntity;
-import java.util.Date;
+import com.wasupstudio.model.query.OrderQuery;
 
 public interface OrderService {
 
   void save(OrderEntity orderEntity);
 
-  OrderEntity findOne(Integer id);
+  OrderQuery findOne(Long id);
 
   BasePageInfo findAllData();
-
-  BasePageInfo findByACTDate(Date startTime, Date endTime);
 
   void updateData(OrderEntity orderEntity);
 }

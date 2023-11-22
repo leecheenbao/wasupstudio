@@ -2,26 +2,23 @@ package com.wasupstudio.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.wasupstudio.constant.ProjectConstant;
+import com.wasupstudio.constant.BaseRedisKeyConstant;
 import com.wasupstudio.constant.ProjectConstant.OrderStatus;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.CashFlowData;
 import com.wasupstudio.model.CashFlowReturnData;
 import com.wasupstudio.model.Result;
 import com.wasupstudio.model.dto.CashFlowReturnDataDTO;
+import com.wasupstudio.model.dto.LicenseDTO;
 import com.wasupstudio.model.dto.OrderDTO;
 import com.wasupstudio.model.dto.OrderDTO.OrderItemDTO;
-import com.wasupstudio.model.entity.MemberEntity;
-import com.wasupstudio.model.entity.OrderEntity;
-import com.wasupstudio.model.entity.OrderItemEntity;
-import com.wasupstudio.model.entity.ProductEntity;
-import com.wasupstudio.service.MemberService;
-import com.wasupstudio.service.OrderItemService;
-import com.wasupstudio.service.OrderService;
-import com.wasupstudio.service.ProductService;
+import com.wasupstudio.model.entity.*;
+import com.wasupstudio.model.query.OrderQuery;
+import com.wasupstudio.model.vo.LicenseMailVo;
+import com.wasupstudio.service.*;
 import com.wasupstudio.util.CashFlowUtils;
-import com.wasupstudio.util.JwtUtils;
 import com.wasupstudio.util.MailUtil;
+import com.wasupstudio.util.RedisUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +59,10 @@ public class CashFlowController {
     MemberService memberService;
     @Autowired
     ProductService productService;
+    @Autowired
+    LicenseService licenseService;
+    @Autowired
+    private RedisUtil redisUtil;
 
     @ApiOperation("取得藍新加密資料(一般)/建立訂單")
     @PostMapping(value = "/order")
@@ -106,17 +107,35 @@ public class CashFlowController {
         log.info("callback result:{}", decrypt);
         Gson gson = new Gson();
         CashFlowReturnData data = gson.fromJson(decrypt, CashFlowReturnData.class);
-
+        Long merchantOrderNo = Long.valueOf(data.getResult().getMerchantOrderNo().replace("SW_", ""));
         // 更改交易裝態
         updateOrderStatus(data);
+        // 取得訂單資訊
+        OrderQuery order = orderService.findOne(merchantOrderNo);
+        LicenseDTO licenseDTO = LicenseDTO.builder()
+                .startTime(new Date())
+                .generate(order.getAddress())
+                .build();
 
-        // 發送信件給USER
-        if (API_RESPONSE_IS_SUCCESS.equals(data.getStatus())) {
-            MailUtil.sendMail(ProjectConstant.MailType.LICENSING,
-                    String.valueOf(Objects.requireNonNull(JwtUtils.getMember()).getId()),
-                    Objects.requireNonNull(JwtUtils.getMember()).getEmail()); //TODO 增加寄出授權碼
+        String redisKey = String.format(BaseRedisKeyConstant.ORDER_LICENCE, order.getOrderId());
+
+        String license = redisUtil.getKey(redisKey);
+        if (license == null){
+            LicenseEntity licenseEntity = licenseService.genLicense(licenseDTO);
+            redisUtil.setKey(redisKey, licenseEntity.getLicenseKey());
+            // 把訂單資訊發送信件給USER
+            if (API_RESPONSE_IS_SUCCESS.equals(data.getStatus())) {
+                LicenseMailVo vo = new LicenseMailVo();
+                vo.setAmount(order.getTotalPrice());
+                vo.setEmail(order.getAddress());
+                vo.setOrderId(order.getOrderId());
+                vo.setLicense(license);
+                vo.setCount(order.getQuantity());
+                MailUtil.sendMail(vo, order.getAddress()); //TODO 增加寄出授權碼
+            }
+            log.info("發送交易成功通知信給客戶, {}", decrypt);
         }
-        log.info("發送交易成功通知信給客戶, {}", decrypt);
+
         return ResultGenerator.genSuccessResult("交易成功");
     }
 
@@ -212,7 +231,7 @@ public class CashFlowController {
         orderEntity.setUserId(Objects.requireNonNull(member.getId()));
         orderEntity.setRecipient(orderDTO.getRecipient());
         orderEntity.setPhone(orderDTO.getPhone());
-        orderEntity.setAddress(orderDTO.getAddress());
+        orderEntity.setAddress(orderDTO.getEmail());
         orderEntity.setTotalPrice(totalPrice);
         orderEntity.setStatus(OrderStatus.UNDONE);
         orderEntity.setCreateTime(new Date());

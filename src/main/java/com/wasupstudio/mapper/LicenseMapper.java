@@ -29,6 +29,6 @@ public interface LicenseMapper extends CommonMapper<LicenseEntity> {
                           @Param("createDate") Date createDate);
 
     @ResultMap("BaseResultMap")
-    @Update("SELECT * FROM wa_license WHERE license_key =#{licenseKey}")
+    @Select("SELECT * FROM wa_license WHERE license_key =#{licenseKey}")
     LicenseEntity findByLicenseKey(@Param("licenseKey") String licenseKey);
 }

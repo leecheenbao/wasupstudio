@@ -15,6 +15,7 @@ import java.util.Date;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "wa_license")
 public class LicenseEntity implements Serializable {
 
