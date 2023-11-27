@@ -43,7 +43,7 @@ CREATE TABLE wa_orders (
                            phone VARCHAR(255) NOT NULL COMMENT '收件人電話',
                            address VARCHAR(255) NOT NULL COMMENT '收件地址',
                            total_price DECIMAL(10,2) NOT NULL COMMENT '總價格',
-                           status VARCHAR(255) NOT NULL COMMENT '訂單狀態',
+                           status VARCHAR(255) NOT NULL COMMENT '訂單狀態 0:完成 1:未完成 2:失敗',
                            create_time TIMESTAMP NOT NULL COMMENT '訂單創建時間',
                            update_time TIMESTAMP NOT NULL COMMENT '訂單更新時間',
                            PRIMARY KEY (order_id)
