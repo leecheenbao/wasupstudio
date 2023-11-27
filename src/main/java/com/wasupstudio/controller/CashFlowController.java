@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.wasupstudio.constant.BaseRedisKeyConstant;
 import com.wasupstudio.constant.ProjectConstant.OrderStatus;
 import com.wasupstudio.exception.ResultGenerator;
+import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.CashFlowData;
 import com.wasupstudio.model.CashFlowReturnData;
 import com.wasupstudio.model.Result;
@@ -12,6 +13,7 @@ import com.wasupstudio.model.dto.CashFlowReturnDataDTO;
 import com.wasupstudio.model.dto.LicenseDTO;
 import com.wasupstudio.model.dto.OrderDTO;
 import com.wasupstudio.model.dto.OrderDTO.OrderItemDTO;
+import com.wasupstudio.model.dto.OrderSearchDTO;
 import com.wasupstudio.model.entity.*;
 import com.wasupstudio.model.query.OrderQuery;
 import com.wasupstudio.model.vo.LicenseMailVo;
@@ -63,7 +65,13 @@ public class CashFlowController {
     LicenseService licenseService;
     @Autowired
     private RedisUtil redisUtil;
-
+    @ApiOperation("取得藍新加密資料(一般)/建立訂單")
+    @GetMapping(value = "/order")
+    @Transactional
+    protected Result getOrderList(@RequestBody OrderSearchDTO orderSearchDTO) throws Exception {
+        BasePageInfo allData = orderService.findByCondiction(orderSearchDTO);
+        return ResultGenerator.genSuccessResult(allData);
+    }
     @ApiOperation("取得藍新加密資料(一般)/建立訂單")
     @PostMapping(value = "/order")
     @Transactional
@@ -140,35 +148,6 @@ public class CashFlowController {
         return ResultGenerator.genSuccessResult("交易成功");
     }
 
-    private static JsonObject toJson(String input){
-
-        String[] keyValuePairs = input.split("&");
-
-        // Create a JSON object to store the data
-        JsonObject jsonObject = new JsonObject();
-
-        for (String pair : keyValuePairs) {
-            // Split each key-value pair by "="
-            String[] parts = pair.split("=");
-            if (parts.length == 2) {
-                // Add the key-value pair to the JSON object
-                jsonObject.addProperty(parts[0], parts[1]);
-            }
-        }
-        // Print the JSON object
-        System.out.println(jsonObject.toString());
-        return jsonObject;
-    }
-
-    public static void main(String[] args) {
-        String json = "{\"Status\":\"SUCCESS\",\"Message\":\"\\u6388\\u6b0a\\u6210\\u529f\",\"Result\":{\"MerchantID\":\"MS148818392\",\"Amt\":1350,\"TradeNo\":\"23110811063750643\",\"MerchantOrderNo\":\"SW_1699412782\",\"RespondType\":\"JSON\",\"IP\":\"60.251.53.109\",\"EscrowBank\":\"HNCB\",\"PaymentType\":\"CREDIT\",\"RespondCode\":\"00\",\"Auth\":\"215465\",\"Card6No\":\"400022\",\"Card4No\":\"1111\",\"Exp\":\"3512\",\"AuthBank\":\"KGI\",\"TokenUseStatus\":0,\"InstFirst\":0,\"InstEach\":0,\"Inst\":0,\"ECI\":\"\",\"PayTime\":\"2023-11-08 11:06:37\",\"PaymentMethod\":\"CREDIT\"}}\n";
-        System.out.println(json);
-        Gson gson = new Gson();
-        CashFlowReturnData data = gson.fromJson(json, CashFlowReturnData.class);
-        System.out.println(data.getStatus());
-        System.out.println(data.getMessage());
-        System.out.println(data.getResult());
-    }
     private void updateOrderStatus(CashFlowReturnData data) {
         String status = data.getStatus();
         CashFlowReturnData.Result result = data.getResult();
