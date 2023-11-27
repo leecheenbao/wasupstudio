@@ -65,7 +65,7 @@ public class CashFlowController {
     LicenseService licenseService;
     @Autowired
     private RedisUtil redisUtil;
-    @ApiOperation("取得藍新加密資料(一般)/建立訂單")
+    @ApiOperation("取得訂單資料")
     @GetMapping(value = "/order")
     @Transactional
     protected Result getOrderList(@RequestBody OrderSearchDTO orderSearchDTO) throws Exception {

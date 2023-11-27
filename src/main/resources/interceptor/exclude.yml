@@ -1,6 +1,7 @@
 exclude:
   license:
        - '/swagger**/**'
+       - '/webjars/**'
        - '/doc.html'
        - '/auth/**'
        - '/api/script/**'
