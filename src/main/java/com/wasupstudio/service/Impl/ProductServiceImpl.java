@@ -41,7 +41,11 @@ public class ProductServiceImpl extends AbstractService<ProductEntity> implement
 
     @Override
     public BasePageInfo findAllData() {
-        return null;
+        List<ProductEntity> products = findAll();
+        BasePageInfo basePageInfo = new BasePageInfo<>();
+        basePageInfo.setList(products);
+        basePageInfo.setTotal(products.size());
+        return basePageInfo;
     }
 
     @Override

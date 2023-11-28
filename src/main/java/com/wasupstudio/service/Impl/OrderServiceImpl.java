@@ -15,37 +15,40 @@ import java.util.List;
 @Service
 public class OrderServiceImpl extends AbstractService<OrderEntity> implements OrderService {
 
-  @Autowired
-  private OrderMapper orderMapper;
-  @Override
-  public OrderQuery findOne(Long orderId) {
-    OrderQuery order = orderMapper.getOrderDetail(orderId);
-    return order;
-  }
+    @Autowired
+    private OrderMapper orderMapper;
 
-  @Override
-  public BasePageInfo findAllData() {
-    List<OrderEntity> list = orderMapper.selectAll();
-    BasePageInfo basePageInfo = new BasePageInfo<>();
-    basePageInfo.setList(list);
-    basePageInfo.setTotal(list.size());
-    return basePageInfo;
-  }
+    @Override
+    public OrderQuery findOne(Long orderId) {
+        OrderQuery order = orderMapper.getOrderDetail(orderId);
+        return order;
+    }
 
-  @Override
-  public BasePageInfo findByCondiction(OrderSearchDTO orderSearchDTO) {
-    String orderId = orderSearchDTO.getOrderId().toUpperCase();
-    orderId = orderId.replace("SW_","");
-    orderSearchDTO.setOrderId(orderId);
-    List<OrderEntity> list = orderMapper.findByCondiction(orderSearchDTO);
-    BasePageInfo basePageInfo = new BasePageInfo<>();
-    basePageInfo.setList(list);
-    basePageInfo.setTotal(list.size());
-    return basePageInfo;
-  }
+    @Override
+    public BasePageInfo findAllData() {
+        List<OrderEntity> list = orderMapper.selectAll();
+        BasePageInfo basePageInfo = new BasePageInfo<>();
+        basePageInfo.setList(list);
+        basePageInfo.setTotal(list.size());
+        return basePageInfo;
+    }
 
-  @Override
-  public void updateData(OrderEntity orderEntity) {
-    this.update(orderEntity);
-  }
+    @Override
+    public BasePageInfo findByCondiction(OrderSearchDTO orderSearchDTO) {
+        if (orderSearchDTO.getOrderId() != null) {
+            String orderId = orderSearchDTO.getOrderId().toUpperCase();
+            orderId = orderId.replace("SW_", "");
+            orderSearchDTO.setOrderId(orderId);
+        }
+        List<OrderEntity> list = orderMapper.findByCondiction(orderSearchDTO);
+        BasePageInfo basePageInfo = new BasePageInfo<>();
+        basePageInfo.setList(list);
+        basePageInfo.setTotal(list.size());
+        return basePageInfo;
+    }
+
+    @Override
+    public void updateData(OrderEntity orderEntity) {
+        this.update(orderEntity);
+    }
 }

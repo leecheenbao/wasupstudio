@@ -10,8 +10,8 @@ exclude:
        - '/error'
        - '/api/script/download/pdf/valid'
        - '/form'
-       - '/api/cash/order'
-       - '/api/cash/callback'
+       - '/api/cash/**'
+
 
 
 

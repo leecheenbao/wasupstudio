@@ -1,7 +1,6 @@
 package com.wasupstudio.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.wasupstudio.constant.BaseRedisKeyConstant;
 import com.wasupstudio.constant.ProjectConstant.OrderStatus;
 import com.wasupstudio.exception.ResultGenerator;
@@ -65,6 +64,14 @@ public class CashFlowController {
     LicenseService licenseService;
     @Autowired
     private RedisUtil redisUtil;
+    @ApiOperation("取得產品")
+    @GetMapping(value = "/products")
+    @Transactional
+    protected Result getProduct() {
+        BasePageInfo allData = productService.findAllData();
+        return ResultGenerator.genSuccessResult(allData);
+    }
+
     @ApiOperation("取得訂單資料")
     @GetMapping(value = "/order")
     @Transactional
