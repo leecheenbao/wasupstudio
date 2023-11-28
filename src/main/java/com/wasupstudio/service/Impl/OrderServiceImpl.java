@@ -19,8 +19,16 @@ public class OrderServiceImpl extends AbstractService<OrderEntity> implements Or
     private OrderMapper orderMapper;
 
     @Override
-    public OrderQuery findOne(Long orderId) {
-        OrderQuery order = orderMapper.getOrderDetail(orderId);
+    public OrderEntity findOne(Long id) {
+        OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setOrderId(id);
+        OrderEntity order = orderMapper.selectOne(orderEntity);
+        return order;
+    }
+
+    @Override
+    public List<OrderQuery> findOrderDetail(Long orderId) {
+        List<OrderQuery> order = orderMapper.getOrderDetail(orderId);
         return order;
     }
 

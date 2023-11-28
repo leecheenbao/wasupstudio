@@ -53,4 +53,9 @@ public class ProductServiceImpl extends AbstractService<ProductEntity> implement
         ProductEntity product = productConverter.DTOtoItem(productDTO);
         update(product);
     }
+
+    @Override
+    public void subProduct(Long product, Integer quantity) {
+        productMapper.subProduct(product, quantity);
+    }
 }

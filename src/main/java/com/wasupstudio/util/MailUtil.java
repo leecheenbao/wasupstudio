@@ -217,7 +217,6 @@ public class MailUtil {
                         "            <p>感謝您的支持，您在「我們班的叢林法則」的訂單已成立，以下為您的訂單資訊：</p>" +
                         "            <p>訂單編號：" + licenseMailVo.getOrderId() + "</p>" +
                         "            <p>訂單總額：" + licenseMailVo.getAmount() + "</p>" +
-                        "            <p>購買份數：" + licenseMailVo.getCount() + "</p>" +
                         "            <p>購買人姓名：" + licenseMailVo.getName() + "</p>" +
                         "            <p>購買人Email：" + licenseMailVo.getEmail() + "</p>" +
                         "＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝" +

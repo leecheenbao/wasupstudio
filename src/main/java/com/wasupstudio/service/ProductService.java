@@ -14,4 +14,6 @@ public interface ProductService {
 
   BasePageInfo findAllData();
   void update(ProductDTO productDTO);
+
+  void subProduct(Long orderId, Integer quantity);
 }

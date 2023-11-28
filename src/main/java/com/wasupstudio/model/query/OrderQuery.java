@@ -18,6 +18,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class OrderQuery implements Serializable {
     private Long orderId;
+    private Long productId;
     private Integer userId;
     private String recipient;
     private String phone;
@@ -27,9 +28,5 @@ public class OrderQuery implements Serializable {
     private Date createTime;
     private Date updateTime;
     private Integer quantity;
-
-
-
-
 }
 

@@ -11,7 +11,7 @@ import java.util.List;
 @Mapper
 public interface OrderMapper extends CommonMapper<OrderEntity> {
 
-    OrderQuery getOrderDetail(Long orderId);
+    List<OrderQuery> getOrderDetail(Long orderId);
 
     List<OrderEntity> findByCondiction(OrderSearchDTO orderSearchDTO);
 }

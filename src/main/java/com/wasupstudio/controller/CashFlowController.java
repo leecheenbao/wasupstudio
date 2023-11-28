@@ -32,6 +32,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 import static com.wasupstudio.constant.ProjectConstant.APIStatus.API_RESPONSE_IS_SUCCESS;
 
@@ -126,7 +127,7 @@ public class CashFlowController {
         // 更改交易裝態
         updateOrderStatus(data);
         // 取得訂單資訊
-        OrderQuery order = orderService.findOne(merchantOrderNo);
+        OrderEntity order = orderService.findOne(merchantOrderNo);
         LicenseDTO licenseDTO = LicenseDTO.builder()
                 .startTime(new Date())
                 .generate(order.getAddress())
@@ -146,10 +147,10 @@ public class CashFlowController {
                 vo.setOrderId(order.getOrderId());
                 vo.setName(order.getRecipient());
                 vo.setLicense(licenseEntity.getLicenseKey());
-                vo.setCount(order.getQuantity());
                 MailUtil.sendMail(vo, order.getAddress()); //TODO 增加寄出授權碼
             }
             log.info("發送交易成功通知信給客戶, {}", decrypt);
+            productService.findAllData();
         }
 
         return ResultGenerator.genSuccessResult("交易成功");
@@ -163,12 +164,22 @@ public class CashFlowController {
         orderEntity.setOrderId(Long.parseLong(merchantOrderNo)); //移除 SW_
         orderEntity.setUpdateTime(new Date());
         log.info("金流 callback data:{}", data);
+        List<OrderQuery> orderQuery = orderService.findOrderDetail(Long.valueOf(merchantOrderNo));
+        for (OrderQuery query : orderQuery){
+            Long productId = query.getProductId();
+            Integer quantity = query.getQuantity();
+            if (query.getStatus().equals(OrderStatus.UNDONE)){
+                productService.subProduct(productId, quantity);
+            }
+        }
+
         if (API_RESPONSE_IS_SUCCESS.equals(status)) {
             orderEntity.setStatus(OrderStatus.SUCCESS);
         } else {
             orderEntity.setStatus(OrderStatus.FAIL);
         }
         orderService.updateData(orderEntity);
+
     }
 
 

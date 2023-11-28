@@ -4,7 +4,7 @@
 <mapper namespace="com.wasupstudio.mapper.OrderMapper">
 
     <select id="getOrderDetail" resultType="com.wasupstudio.model.query.OrderQuery">
-        SELECT wo.* , woi.quantity  FROM wa_orders wo
+        SELECT wo.* , woi.quantity, woi.product_id  FROM wa_orders wo
         JOIN wa_order_items woi ON wo.order_id = woi.order_id
         WHERE wo.order_id = #{orderId};
     </select>
