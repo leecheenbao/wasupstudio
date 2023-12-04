@@ -19,8 +19,7 @@
     <resultMap id="DistributionQueryResultMap" type="com.wasupstudio.model.query.ScoreDistributionQuery">
         <result column="task_id" property="taskId" jdbcType="INTEGER"/>
         <result column="script_id" property="scriptId" jdbcType="INTEGER"/>
-        <result column="stu_content" property="stuContent" jdbcType="VARCHAR"/>
-        <result column="par_content" property="parContent" jdbcType="VARCHAR"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
         <result column="orderlyTotal" property="orderlyTotal" jdbcType="INTEGER"/>
         <result column="relationTotal" property="relationTotal" jdbcType="INTEGER"/>
         <result column="result" property="result" jdbcType="VARCHAR"/>
@@ -79,6 +78,10 @@
         JOIN wa_script ws ON ws.script_id = wsq.script_id
         GROUP BY wsq.script_id, wsq.task_id, ws.title
         ) AS subquery
+        WHERE 1=1
+        <if test="taskId != null">
+            AND task_id = #{taskId}
+        </if>
         ORDER BY script_id, task_id;
     </select>
 </mapper>

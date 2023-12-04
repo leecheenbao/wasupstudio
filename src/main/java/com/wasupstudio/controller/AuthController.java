@@ -520,7 +520,7 @@ public class AuthController {
 
         // 取得對應PDF及影片資料
         TaskEntity task = taskService.findOne(taskId);
-        MediaDTO media = mediaService.findByScriptIdAndDescription(task.getScriptId(), mediaParam);
+        MediaDTO mediaDTO = mediaService.scriptEndingFile(taskId);
         try {
             // 任務時間結束直接回傳訊息
             long time = calculateRemainingSeconds(task.getEndTime());
@@ -533,7 +533,7 @@ public class AuthController {
             return e.getMessage();
         }
 
-        return new RedirectView(media.getFilePath());
+        return new RedirectView(mediaDTO.getFilePath());
     }
 
     public ScriptQuery tranData(ScriptEntity scriptEntity) {

@@ -19,5 +19,5 @@ public interface ScriptQuestionMapper extends CommonMapper<ScriptQuestionEntity>
 
     List<QuestionReportQuery> findReportForEnding();
 
-    List<ScoreDistributionQuery> scoreDistribution();
+    List<ScoreDistributionQuery> scoreDistribution(@Param("taskId") Integer taskId);
 }

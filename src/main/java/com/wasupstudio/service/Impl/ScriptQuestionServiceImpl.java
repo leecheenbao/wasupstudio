@@ -183,9 +183,18 @@ public class ScriptQuestionServiceImpl extends AbstractService<ScriptQuestionEnt
         return basePageInfo;
     }
     @Override
+    public BasePageInfo scoreDistribution(Integer taskId) {
+        List<ScoreDistributionQuery> list = scriptQuestionMapper.scoreDistribution(taskId);
+        BasePageInfo basePageInfo = new BasePageInfo<>();
+        basePageInfo.setList(list);
+        basePageInfo.setTotal(list.size());
+        return basePageInfo;
+    }
+
+    @Override
     public BasePageInfo scoreDistribution() {
 
-        List<ScoreDistributionQuery> list = scriptQuestionMapper.scoreDistribution();
+        List<ScoreDistributionQuery> list = scriptQuestionMapper.scoreDistribution(null);
         Map<Integer, Map<String, Integer>> scriptResultStatistics = new HashMap<>();
 
         for (ScoreDistributionQuery result : list) {

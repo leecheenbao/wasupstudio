@@ -16,6 +16,7 @@ import com.wasupstudio.service.*;
 import com.wasupstudio.util.*;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -316,6 +317,18 @@ public class ScriptController {
         scriptQuery.setScriptDetail(details);
         scriptQuery.setScriptEndingDTO(scriptEndingDTO);
         return ResultGenerator.genSuccessResult(scriptQuery);
+    }
+    @ApiOperation(value = "PDF檔案下載")
+    @PostMapping(value = "/download/pdfV2")
+    @ResponseBody
+    public Result downloadMixFileV2(@RequestBody FileDownloadDTO fileDownloadDTO) {
+        Integer taskId = fileDownloadDTO.getTaskId();
+        MediaDTO mediaDTO = mediaService.scriptEndingFile(taskId);
+        if (mediaDTO == null || StringUtils.isBlank(mediaDTO.getFilePath())){
+            return ResultGenerator.genFailResult(ResultCode.DATA_NOT_EXIST.getMessage());
+        }
+        String filePath = mediaDTO.getFilePath();
+        return ResultGenerator.genSuccessResult(filePath);
     }
 
     @ApiOperation(value = "PDF檔案下載")

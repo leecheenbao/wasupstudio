@@ -1,12 +1,15 @@
 package com.wasupstudio.service.Impl;
 
 import com.wasupstudio.converter.MediaConverter;
+import com.wasupstudio.enums.ScriptEndingEnum;
 import com.wasupstudio.mapper.MediaMapper;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.dto.MediaDTO;
 import com.wasupstudio.model.entity.MediaEntity;
+import com.wasupstudio.model.query.ScoreDistributionQuery;
 import com.wasupstudio.service.AbstractService;
 import com.wasupstudio.service.MediaService;
+import com.wasupstudio.service.ScriptQuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,9 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
     private MediaMapper mediaMapper;
     @Autowired
     private MediaConverter mediaConverter;
+
+    @Autowired
+    private ScriptQuestionService scriptQuestionService;
 
     @Override
     public void save(MediaDTO mediaDTO) {
@@ -52,6 +58,26 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
             return mediaConverter.itemToDto(mediaEntity);
         }
         return null;
+    }
+
+    @Override
+    public MediaDTO scriptEndingFile(Integer taskId) {
+        BasePageInfo basePageInfo = scriptQuestionService.scoreDistribution(taskId);
+        List<ScoreDistributionQuery> list = basePageInfo.getList();
+        if (list.isEmpty()){
+            return null;
+        }
+
+        Integer scritpId = null;
+        String result = null;
+
+        for (ScoreDistributionQuery item : list){
+            scritpId = item.getScriptId();
+            result = item.getResult();
+        }
+        String desc = ScriptEndingEnum.getType(result).getType();
+        MediaDTO byScriptIdAndDescription = findByScriptIdAndDescription(scritpId, desc);
+        return byScriptIdAndDescription;
     }
 
     @Override

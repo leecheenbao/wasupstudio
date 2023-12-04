@@ -18,7 +18,8 @@ public interface ScriptQuestionService {
 
     BasePageInfo findReportForEnding();
 
-    BasePageInfo scoreDistribution();
+    BasePageInfo scoreDistribution(Integer taskId);
 
+    BasePageInfo scoreDistribution();
 
 }
