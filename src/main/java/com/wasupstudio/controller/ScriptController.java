@@ -361,16 +361,11 @@ public class ScriptController {
 
         try {
             long time = calculateRemainingSeconds(task.getEndTime());
-            if (time < 0 ){
-                String message = String.format(ResultCode.TASK_INVALID.getMessage(), task.getTaskId(),DateUtils.format(task.getCreateTime()), DateUtils.format(task.getEndTime()));
-                return ResultGenerator.genFailResult(message);
-            }
+
             String url = BASE_URL + "/auth/download/pdf/valid?";
 
             Map<String, Object> params = new TreeMap<>();
             params.put("taskId", task.getTaskId());
-            params.put("sheet", fileDownloadDTO.getSheet());
-            params.put("media", fileDownloadDTO.getMedia());
             CashFlowUtils cashFlowUtils = new CashFlowUtils();
             String dataInfo = cashFlowUtils.getDataInfo(params);
 

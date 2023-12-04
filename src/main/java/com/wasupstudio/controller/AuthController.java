@@ -514,9 +514,7 @@ public class AuthController {
     @ApiOperation(value = "PDF檔案下載")
     @GetMapping(value = "/download/pdf/valid")
     @ResponseBody
-    public Object checkTaskValid(@RequestParam("taskId") Integer taskId,
-                                 @RequestParam("sheet") String sheetParam,
-                                 @RequestParam("media") String mediaParam) {
+    public Object checkTaskValid(@RequestParam("taskId") Integer taskId) {
 
         // 取得對應PDF及影片資料
         TaskEntity task = taskService.findOne(taskId);
