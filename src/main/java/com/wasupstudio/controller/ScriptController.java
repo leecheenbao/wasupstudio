@@ -372,7 +372,9 @@ public class ScriptController {
             filePath = PdfWithQrCodeUtils.mixPdfAndQrCode(url + dataInfo, pdf.getFilePath());
 
             // 儲存路徑到redis 依照任務時間保存
-            redisUtil.setExpire(redisKey, filePath, time);
+            if (time > 0 ){
+                redisUtil.setExpire(redisKey, filePath, time);
+            }
 
             return ResultGenerator.genSuccessResult(filePath);
         } catch (BussinessException e) {
