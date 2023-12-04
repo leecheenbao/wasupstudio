@@ -130,7 +130,7 @@ public class AuthController {
             String mail = userInfo.getEmail();
             String role = memberEntity.getRole().toString();
             boolean checkLicense;
-            if (memberEntity.getRole().equals(MemberEntity.Role.ROLE_ADMIN)){
+            if (memberEntity.getRole().equals(MemberEntity.Role.ROLE_ADMIN)) {
                 checkLicense = true;
             } else {
                 checkLicense = Boolean.parseBoolean(redisUtil.getKey(redisUtil.getLoginRedisKey(memberEntity)));
@@ -164,7 +164,7 @@ public class AuthController {
                 String jwtToken = memberService.login(userInfo.getEmail());
                 Authentication authentication = JwtUtils.getAuthentication(jwtToken);
                 boolean checkLicense;
-                if (memberEntity.getRole().equals(MemberEntity.Role.ROLE_ADMIN)){
+                if (memberEntity.getRole().equals(MemberEntity.Role.ROLE_ADMIN)) {
                     checkLicense = true;
                 } else {
                     checkLicense = Boolean.parseBoolean(redisUtil.getKey(redisUtil.getLoginRedisKey(memberEntity)));
@@ -233,7 +233,7 @@ public class AuthController {
         MemberEntity memberEntity = memberService.getAdminByEmail(adminLoginQuery.getEmail());
 
         boolean checkLicense;
-        if (memberEntity.getRole().equals(MemberEntity.Role.ROLE_ADMIN)){
+        if (memberEntity.getRole().equals(MemberEntity.Role.ROLE_ADMIN)) {
             checkLicense = true;
         } else {
             checkLicense = Boolean.parseBoolean(redisUtil.getKey(redisUtil.getLoginRedisKey(memberEntity)));
@@ -524,7 +524,7 @@ public class AuthController {
             long time = calculateRemainingSeconds(task.getEndTime());
 
             if (time < 0) {
-                String message = String.format(ResultCode.TASK_INVALID.getMessage(), task.getTaskId(),DateUtils.format(task.getCreateTime()), DateUtils.format(task.getEndTime()));
+                String message = String.format(ResultCode.TASK_INVALID.getMessage(), DateUtils.format(task.getCreateTime()), DateUtils.format(task.getEndTime()));
                 throw new BussinessException(message);
             }
         } catch (BussinessException e) {

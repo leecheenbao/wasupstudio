@@ -83,7 +83,7 @@ public enum ResultCode {
     SEND_MAIL_SUCCESS(20082, "信件已發送, 如果您未收到信件, 請檢查您輸入的信箱是否正確"),
 
     /* 任務 */
-    TASK_INVALID(20100, "taskId: %s 任務時間已經結束 %s - %s"),
+    TASK_INVALID(20100, "任務時間已經結束 %s - %s"),
 
     /* 序號 */
     LICENSE_ACTIVATED_SUCCESS(20134, "啟動碼啟用成功"),
