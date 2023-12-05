@@ -318,13 +318,14 @@ public class ScriptController {
         scriptQuery.setScriptEndingDTO(scriptEndingDTO);
         return ResultGenerator.genSuccessResult(scriptQuery);
     }
+
     @ApiOperation(value = "PDF檔案下載")
     @PostMapping(value = "/download/pdfV2")
     @ResponseBody
     public Result downloadMixFileV2(@RequestBody FileDownloadDTO fileDownloadDTO) {
         Integer taskId = fileDownloadDTO.getTaskId();
         MediaDTO mediaDTO = mediaService.scriptEndingFile(taskId);
-        if (mediaDTO == null || StringUtils.isBlank(mediaDTO.getFilePath())){
+        if (mediaDTO == null || StringUtils.isBlank(mediaDTO.getFilePath())) {
             return ResultGenerator.genFailResult(ResultCode.DATA_NOT_EXIST.getMessage());
         }
         String filePath = mediaDTO.getFilePath();
@@ -348,7 +349,7 @@ public class ScriptController {
 
         MemberEntity member = JwtUtils.getMember();
         Integer memberId = member.getId();
-        if (!Objects.equals(memberId, task.getMemberId())){
+        if (!Objects.equals(memberId, task.getMemberId())) {
             return ResultGenerator.genFailResult(member.getName() + "與創建任務者不符");
         }
         // 取得對應會員的 redis id
@@ -372,7 +373,7 @@ public class ScriptController {
             filePath = PdfWithQrCodeUtils.mixPdfAndQrCode(url + dataInfo, pdf.getFilePath());
 
             // 儲存路徑到redis 依照任務時間保存
-            if (time > 0 ){
+            if (time > 0) {
                 redisUtil.setExpire(redisKey, filePath, time);
             }
 
@@ -418,5 +419,54 @@ public class ScriptController {
         scriptQuery.setGoal(goals);
         scriptQuery.setPreamble(preambles);
         return scriptQuery;
+    }
+
+    public static void main(String[] args) {
+        Set set = new HashSet<>();
+        Queue<String> myQueue = new PriorityQueue<>();
+        myQueue.add("Task 1");
+        myQueue.add("Task 2");
+        myQueue.add("Task 3");
+        System.out.println(myQueue.poll());  // 輸出: Task 1
+        myQueue.remove();
+        System.out.println();  // 輸出: [Task 2, Task 3]
+        System.out.println(myQueue);
+
+    }
+
+    public static class Person {
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String newName) {
+            if (newName != null && !newName.isEmpty()) {
+                name = newName;
+            }
+        }
+    }
+
+    public static class Animal {
+        void bark() {
+            System.out.println("Animal can bark");
+        }
+
+        void eat() {
+            System.out.println("Animal is eating");
+        }
+    }
+
+    public static class Dog extends Animal {
+        void bark() {
+            System.out.println("Dog is barking");
+        }
+    }
+
+    public static class Cat extends Animal {
+        void bark() {
+            System.out.println("Cat is barking");
+        }
     }
 }

@@ -38,7 +38,6 @@ CREATE TABLE wa_license (
 -- 創建「訂單」表
 CREATE TABLE wa_orders (
                            order_id INT NOT NULL COMMENT '訂單編號',
-                           user_id INT NOT NULL COMMENT '用戶編號',
                            recipient VARCHAR(255) NOT NULL COMMENT '收件人姓名',
                            phone VARCHAR(255) NOT NULL COMMENT '收件人電話',
                            address VARCHAR(255) NOT NULL COMMENT '收件地址',

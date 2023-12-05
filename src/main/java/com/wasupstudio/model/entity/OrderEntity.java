@@ -26,9 +26,6 @@ public class OrderEntity {
   @Column(name = "order_id")
   private Long orderId;
 
-  @Column(name = "user_id")
-  private Integer userId;
-
   @Column(name = "recipient")
   private String recipient;
 

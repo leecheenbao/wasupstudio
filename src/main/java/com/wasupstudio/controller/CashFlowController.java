@@ -84,8 +84,6 @@ public class CashFlowController {
     @PostMapping(value = "/order")
     @Transactional
     protected Result createOrderList(@RequestBody OrderDTO orderDTO) throws Exception {
-        MemberEntity member = memberService.getAdminByEmail(orderDTO.getEmail());
-
         log.info("orderDTO = " + orderDTO);
         List<String> productIds = orderDTO.getProducts().stream()
                 .map(OrderItemDTO::getProductId)
@@ -103,12 +101,12 @@ public class CashFlowController {
 
         long orderId = System.currentTimeMillis() / 1000; //TODO 待確定訂單編號規則
 
-        saveOrder(member, orderDTO, totalPrice, orderId);
+        saveOrder(orderDTO, totalPrice, orderId);
 
         saveOrderItem(orderDTO, productEntityMap, orderId);
 
         // 前端頁面會送來未加密過的資訊，利用這個API把資訊加密之後送到三方
-        return ResultGenerator.genSuccessResult(getCashFlowData(member, totalPrice, orderId));
+        return ResultGenerator.genSuccessResult(getCashFlowData(orderDTO.getEmail(), totalPrice, orderId));
     }
 
     @ApiOperation("藍新callback方法")
@@ -183,7 +181,7 @@ public class CashFlowController {
     }
 
 
-    private CashFlowData getCashFlowData(MemberEntity member, BigDecimal totalPrice, long orderId) throws Exception {
+    private CashFlowData getCashFlowData(String email, BigDecimal totalPrice, long orderId) throws Exception {
         CashFlowUtils cashFlowUtils = new CashFlowUtils();
         Map<String, Object> params = new TreeMap<>();
         params.put("MerchantID", merchantID);
@@ -192,8 +190,8 @@ public class CashFlowController {
         params.put("Version", "2.0");
         params.put("MerchantOrderNo", "SW_" + orderId);
         params.put("Amt", totalPrice.intValueExact());
-        params.put("ItemDesc", member.getId() + ":" + "sw" + orderId); //商品資訊
-        params.put("Email", member.getEmail()); //TODO 改從token來
+        params.put("ItemDesc", "sw" + orderId); //商品資訊
+        params.put("Email", email); //TODO 改從token來
         params.put("NotifyURL", notifyURL);
 
         String dataInfo = cashFlowUtils.getDataInfo(params);
@@ -223,10 +221,10 @@ public class CashFlowController {
         orderItemService.save(orderItemEntities);
     }
 
-    private void saveOrder(MemberEntity member, OrderDTO orderDTO, BigDecimal totalPrice, long orderId) {
+    private void saveOrder(OrderDTO orderDTO, BigDecimal totalPrice, long orderId) {
         OrderEntity orderEntity = new OrderEntity();
         orderEntity.setOrderId(orderId);
-        orderEntity.setUserId(Objects.requireNonNull(member.getId()));
+//        orderEntity.setUserId(Objects.requireNonNull(email);
         orderEntity.setRecipient(orderDTO.getRecipient());
         orderEntity.setPhone(orderDTO.getPhone());
         orderEntity.setAddress(orderDTO.getEmail());
