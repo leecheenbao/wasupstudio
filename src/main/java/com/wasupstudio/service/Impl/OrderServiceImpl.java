@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -64,14 +65,12 @@ public class OrderServiceImpl extends AbstractService<OrderEntity> implements Or
     public OrderEntity findOne(Long id) {
         OrderEntity orderEntity = new OrderEntity();
         orderEntity.setOrderId(id);
-        OrderEntity order = orderMapper.selectOne(orderEntity);
-        return order;
+        return orderMapper.selectOne(orderEntity);
     }
 
     @Override
     public List<OrderQuery> findOrderDetail(Long orderId) {
-        List<OrderQuery> order = orderMapper.getOrderDetail(orderId);
-        return order;
+        return orderMapper.getOrderDetail(orderId);
     }
 
     @Override
@@ -103,6 +102,7 @@ public class OrderServiceImpl extends AbstractService<OrderEntity> implements Or
     }
 
     @Override
+    @Transactional
     public CashFlowData creatOrder(OrderDTO orderDTO) {
         try {
             log.info("orderDTO = " + orderDTO);
@@ -127,9 +127,7 @@ public class OrderServiceImpl extends AbstractService<OrderEntity> implements Or
 
             saveOrderItem(orderDTO, productEntityMap, orderId);
 
-            CashFlowData cashFlowData = getCashFlowData(orderDTO.getEmail(), totalPrice, orderId);
-
-            return cashFlowData;
+            return getCashFlowData(orderDTO.getEmail(), totalPrice, orderId);
         } catch (Exception e) {
 
         }
@@ -138,6 +136,7 @@ public class OrderServiceImpl extends AbstractService<OrderEntity> implements Or
     }
 
     @Override
+    @Transactional
     public Boolean orderCallBack(CashFlowReturnDataDTO cashFlowReturnDataDTO) {
         try {
             // 接收三方收到的訊息然後解密處理實作callback方法
@@ -175,10 +174,8 @@ public class OrderServiceImpl extends AbstractService<OrderEntity> implements Or
                 }
                 log.info("發送交易成功通知信給客戶, {}", decrypt);
                 productService.findAllData();
+                return true;
             }
-
-            return true;
-
         } catch (Exception e) {
             e.printStackTrace();
         }
