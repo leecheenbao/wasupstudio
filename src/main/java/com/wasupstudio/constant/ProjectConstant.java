@@ -71,4 +71,9 @@ public final class ProjectConstant {
         public final static int NORMAL = 0;
         public final static int GOOGLE_AUTH = 1;
     }
+
+    public final class TradeType {
+        public final static String SUCCESS = "交易成功";
+        public final static String FAIL = "交易失敗";
+    }
 }

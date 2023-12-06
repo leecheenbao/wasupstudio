@@ -1,6 +1,9 @@
 package com.wasupstudio.service;
 
 import com.wasupstudio.model.BasePageInfo;
+import com.wasupstudio.model.CashFlowData;
+import com.wasupstudio.model.dto.CashFlowReturnDataDTO;
+import com.wasupstudio.model.dto.OrderDTO;
 import com.wasupstudio.model.dto.OrderSearchDTO;
 import com.wasupstudio.model.entity.OrderEntity;
 import com.wasupstudio.model.query.OrderQuery;
@@ -18,4 +21,8 @@ public interface OrderService {
 
   BasePageInfo findByCondiction(OrderSearchDTO orderSearchDTO);
   void updateData(OrderEntity orderEntity);
+
+  CashFlowData creatOrder(OrderDTO orderDTO);
+
+  Boolean orderCallBack(CashFlowReturnDataDTO cashFlowReturnDataDTO);
 }

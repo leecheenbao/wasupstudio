@@ -36,5 +36,3 @@ localhost:8080/wasupstudio
   * 啟動碼管理
   * 使用者統計檢視
 * 金流串接
-
-.
