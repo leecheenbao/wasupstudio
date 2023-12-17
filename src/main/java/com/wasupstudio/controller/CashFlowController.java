@@ -43,7 +43,7 @@ public class CashFlowController {
     }
 
     @ApiOperation("取得訂單資料")
-    @GetMapping(value = "/order")
+    @PostMapping(value = "/orders")
     @Transactional
     protected Result getOrderList(@RequestBody OrderSearchDTO orderSearchDTO) throws Exception {
         BasePageInfo allData = orderService.findByCondiction(orderSearchDTO);
