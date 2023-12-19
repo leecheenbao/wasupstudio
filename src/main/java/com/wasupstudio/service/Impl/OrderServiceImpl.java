@@ -22,6 +22,7 @@ import com.wasupstudio.util.CashFlowUtils;
 import com.wasupstudio.util.MailUtil;
 import com.wasupstudio.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -84,7 +85,7 @@ public class OrderServiceImpl extends AbstractService<OrderEntity> implements Or
 
     @Override
     public BasePageInfo findByCondiction(OrderSearchDTO orderSearchDTO) {
-        if (orderSearchDTO.getOrderId() != null) {
+        if (!StringUtils.isBlank(orderSearchDTO.getOrderId())) {
             String orderId = orderSearchDTO.getOrderId().toUpperCase();
             orderId = orderId.replace("SW_", "");
             orderSearchDTO.setOrderId(orderId);

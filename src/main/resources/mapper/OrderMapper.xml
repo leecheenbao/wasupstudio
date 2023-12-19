@@ -11,7 +11,7 @@
 
     <select id="findByCondiction" resultType="com.wasupstudio.model.entity.OrderEntity">
         SELECT * FROM wa_orders WHERE 1=1
-        <if test="orderId != null">
+        <if test="orderId != null and orderId !=''">
             AND order_id = #{orderId}
         </if>
         <if test="recipient != null and recipient !=''">
