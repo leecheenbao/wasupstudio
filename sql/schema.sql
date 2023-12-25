@@ -146,8 +146,8 @@ CREATE TABLE wa_script_question (
                                     task_id INT NOT NULL COMMENT '任務 ID',
                                     script_id INT NOT NULl COMMENT '劇本 ID',
                                     period INT COMMENT '天數',
-                                    par_ans VARCHAR(10) NOT NULL COMMENT '家長答案選項',
-                                    stu_ans VARCHAR(10) NOT NULL COMMENT '學生答案選項',
+                                    par_ans VARCHAR(10) COMMENT '家長答案選項',
+                                    stu_ans VARCHAR(10) COMMENT '學生答案選項',
                                     PRIMARY KEY (question_id)
 ) COMMENT='問題統計表';
 
