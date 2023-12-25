@@ -34,11 +34,11 @@ public class PdfWithQrCodeUtils {
     public static String mixPdfAndQrCode(String qrCodeContent, String pdfUrl) {
         String filePath = "";
         try {
-            int qrCodeSize = 98;
+            int qrCodeSize = 90;
 
             // Create QR Code
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
-            BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeContent, BarcodeFormat.QR_CODE, qrCodeSize - 40, qrCodeSize - 40, getQRCodeHints());
+            BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeContent, BarcodeFormat.QR_CODE, qrCodeSize - 35, qrCodeSize - 35, getQRCodeHints());
             BufferedImage qrCodeImage = createQRCodeImage(bitMatrix);
 
             File file = convertPDFToJavaFile(pdfUrl);
@@ -57,7 +57,7 @@ public class PdfWithQrCodeUtils {
             float pageHeight = page.getMediaBox().getHeight();
 
             try (PDPageContentStream contentStream = new PDPageContentStream(document, page, PDPageContentStream.AppendMode.APPEND, true, true)) {
-                contentStream.drawImage(qrCodePDImageXObject, (int) (pageWidth - qrCodeSize - 25), (int) (pageHeight - qrCodeSize - 15), qrCodeSize, qrCodeSize);
+                contentStream.drawImage(qrCodePDImageXObject, (int) (pageWidth - qrCodeSize - 15), (int) (pageHeight - qrCodeSize - 10), qrCodeSize, qrCodeSize);
             }
 
             // Save the modified PDF document to a ByteArrayOutputStream
