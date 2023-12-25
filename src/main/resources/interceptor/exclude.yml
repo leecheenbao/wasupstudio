@@ -2,16 +2,15 @@ exclude:
   license:
        - '/swagger**/**'
        - '/webjars/**'
-       - '/doc.html'
+       - '/api/cash/**'
        - '/auth/**'
        - '/api/script/**'
        - '/api/license/**'
        - '/api/member/**'
-       - '/error'
        - '/api/script/download/pdf/valid'
+       - '/doc.html'
+       - '/error'
        - '/form'
-       - '/api/cash/**'
-       - '/api/cash/products'
 
 
 
