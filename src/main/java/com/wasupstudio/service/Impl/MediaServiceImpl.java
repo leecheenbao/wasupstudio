@@ -6,10 +6,12 @@ import com.wasupstudio.mapper.MediaMapper;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.dto.MediaDTO;
 import com.wasupstudio.model.entity.MediaEntity;
+import com.wasupstudio.model.entity.TaskEntity;
 import com.wasupstudio.model.query.ScoreDistributionQuery;
 import com.wasupstudio.service.AbstractService;
 import com.wasupstudio.service.MediaService;
 import com.wasupstudio.service.ScriptQuestionService;
+import com.wasupstudio.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,8 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
 
     @Autowired
     private ScriptQuestionService scriptQuestionService;
+    @Autowired
+    private TaskService taskService;
 
     @Override
     public void save(MediaDTO mediaDTO) {
@@ -63,13 +67,12 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
     @Override
     public MediaDTO scriptEndingFile(Integer taskId) {
         BasePageInfo basePageInfo = scriptQuestionService.scoreDistribution(taskId);
-        List<ScoreDistributionQuery> list = basePageInfo.getList();
-        if (list.isEmpty()){
-            return null;
-        }
 
-        Integer scritpId = null;
-        String result = null;
+        TaskEntity task = taskService.findOne(taskId);
+        List<ScoreDistributionQuery> list = basePageInfo.getList();
+
+        Integer scritpId = task.getScriptId();
+        String result = ScriptEndingEnum.SCRIPT_ENDING_ONE.getDesc();
 
         for (ScoreDistributionQuery item : list){
             scritpId = item.getScriptId();
