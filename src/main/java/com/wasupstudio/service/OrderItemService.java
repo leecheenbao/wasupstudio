@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface OrderItemService {
 
-//  void save(OrderItemDTO orderItemDTO);
-//
   void save(List<OrderItemEntity> orderItemEntities);
+
+  List<OrderItemEntity> getOrderItemList(Long productId);
 }

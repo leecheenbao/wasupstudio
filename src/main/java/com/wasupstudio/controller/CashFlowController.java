@@ -8,6 +8,7 @@ import com.wasupstudio.model.Result;
 import com.wasupstudio.model.dto.CashFlowReturnDataDTO;
 import com.wasupstudio.model.dto.OrderDTO;
 import com.wasupstudio.model.dto.OrderSearchDTO;
+import com.wasupstudio.model.dto.ProductDTO;
 import com.wasupstudio.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,12 +35,35 @@ public class CashFlowController {
     @Autowired
     LicenseService licenseService;
 
-    @ApiOperation("取得產品")
+    @ApiOperation("取得產品資訊")
     @GetMapping(value = "/products")
     @Transactional
     protected Result getProduct() {
         BasePageInfo allData = productService.findAllData();
         return ResultGenerator.genSuccessResult(allData);
+    }
+
+    @ApiOperation("新增產品資訊")
+    @PostMapping(value = "/products")
+    @Transactional
+    protected Result insertProduct(@RequestBody ProductDTO productDTO) {
+        productService.save(productDTO);
+        return ResultGenerator.genSuccessResult();
+    }
+    @ApiOperation("刪除產品資訊")
+    @DeleteMapping(value = "/products/{productId}")
+    @Transactional
+    protected Result deleteProduct(@PathVariable Long productId) {
+        productService.delete(productId);
+        return ResultGenerator.genSuccessResult();
+    }
+    @ApiOperation("更新產品資訊")
+    @PutMapping(value = "/products/{productId}")
+    @Transactional
+    protected Result updateProduct(@PathVariable Integer productId, @RequestBody ProductDTO productDTO) {
+        productDTO.setProductId(Long.valueOf(productId));
+        productService.update(productDTO);
+        return ResultGenerator.genSuccessResult();
     }
 
     @ApiOperation("取得訂單資料")

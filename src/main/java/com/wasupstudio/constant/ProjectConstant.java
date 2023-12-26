@@ -7,7 +7,7 @@ package com.wasupstudio.constant;
  **/
 public final class ProjectConstant {
 
-    public final class SystemAdminStatus {
+    public static final class SystemAdminStatus {
 
         public final static int NOT_ENABLED = 0;// 未啟用
         public final static int NORMAL = 1;// 正常
@@ -15,7 +15,7 @@ public final class ProjectConstant {
         public final static int DELETED = 3;// 删除
     }
 
-    public final class GoogleOAuthPath {
+    public static final class GoogleOAuthPath {
         public final static String REDRIEC = "https://wasupstudionobullying.com";
         public final static String SIGNUP = "/signup2callback";
         public final static String LOGIN = "/login2callback";
@@ -48,32 +48,37 @@ public final class ProjectConstant {
         public final static String API_RESPONSE_IS_FAIL = "FAIL";
     }
 
-    public final class LiceenseStatus {
+    public static final class LiceenseStatus {
         public final static int NOT_SETTLE = 0;//未開始結算
         public final static int UNDONE = 1;//未完成
         public final static int DONE = 2;//已完成
     }
 
-    public final class OrderStatus {
+    public static final class OrderStatus {
         public final static int SUCCESS = 0;
         public final static int UNDONE = 1;
         public final static int FAIL = 2;
     }
 
-    public final class MailType {
+    public static final class MailType {
         public final static String FORGET = "forget";
         public final static String SIGNUP = "signup";
         public final static String START_KEY = "start_key";
         public final static String LICENSING = "licensing";
     }
 
-    public final class LoginType {
+    public static final class LoginType {
         public final static int NORMAL = 0;
         public final static int GOOGLE_AUTH = 1;
     }
 
-    public final class TradeType {
+    public static final class TradeType {
         public final static String SUCCESS = "交易成功";
         public final static String FAIL = "交易失敗";
+    }
+
+    public static final class ProductDefaultQuantity {
+        public static int DEFAULT = 5000000;
+
     }
 }

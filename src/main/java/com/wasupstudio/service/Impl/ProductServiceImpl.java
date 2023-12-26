@@ -1,17 +1,20 @@
 package com.wasupstudio.service.Impl;
 
+import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.converter.ProductConverter;
+import com.wasupstudio.exception.BussinessException;
 import com.wasupstudio.mapper.ProductMapper;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.dto.ProductDTO;
+import com.wasupstudio.model.entity.OrderItemEntity;
 import com.wasupstudio.model.entity.ProductEntity;
 import com.wasupstudio.service.AbstractService;
+import com.wasupstudio.service.OrderItemService;
 import com.wasupstudio.service.ProductService;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ProductServiceImpl extends AbstractService<ProductEntity> implements ProductService {
@@ -22,10 +25,25 @@ public class ProductServiceImpl extends AbstractService<ProductEntity> implement
     @Autowired
     ProductConverter productConverter;
 
+    @Autowired
+    OrderItemService orderItemService;
+
     @Override
     public void save(ProductDTO productDTO) {
+        if (productDTO.getQuantity() == null){
+            productDTO.setQuantity(ProjectConstant.ProductDefaultQuantity.DEFAULT);
+        }
         ProductEntity product = productConverter.DTOtoItem(productDTO);
         save(product);
+    }
+
+    @Override
+    public void delete(Long productId) {
+        List<OrderItemEntity> orderItemList = orderItemService.getOrderItemList(productId);
+        if (orderItemList.size() != 0) {
+            throw new BussinessException("無法刪除");
+        }
+        deleteById(Math.toIntExact(productId));
     }
 
     @Override
