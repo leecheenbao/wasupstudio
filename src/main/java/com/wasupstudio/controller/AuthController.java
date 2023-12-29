@@ -41,6 +41,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.print.attribute.standard.Media;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -514,11 +515,16 @@ public class AuthController {
     @ApiOperation(value = "PDF檔案下載")
     @GetMapping(value = "/download/pdf/valid")
     @ResponseBody
-    public Object checkTaskValid(@RequestParam("taskId") Integer taskId) {
+    public Object checkTaskValid(@RequestParam("taskId") Integer taskId, @RequestParam("media") String media) {
 
         // 取得對應PDF及影片資料
         TaskEntity task = taskService.findOne(taskId);
-        MediaDTO mediaDTO = mediaService.scriptEndingFile(taskId);
+        MediaDTO mediaDTO = new MediaDTO();
+        if (media.contains("ending")){
+            mediaDTO = mediaService.scriptEndingFile(taskId);
+        } else {
+            mediaDTO = mediaService.findByScriptIdAndDescription(task.getScriptId(), media);
+        }
         try {
             // 任務時間結束直接回傳訊息
             long time = calculateRemainingSeconds(task.getEndTime());

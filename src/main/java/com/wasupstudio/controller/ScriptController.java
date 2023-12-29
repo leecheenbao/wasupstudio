@@ -367,6 +367,7 @@ public class ScriptController {
 
             Map<String, Object> params = new TreeMap<>();
             params.put("taskId", task.getTaskId());
+            params.put("media", fileDownloadDTO.getMedia());
             CashFlowUtils cashFlowUtils = new CashFlowUtils();
             String dataInfo = cashFlowUtils.getDataInfo(params);
 
