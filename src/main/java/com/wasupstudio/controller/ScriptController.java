@@ -402,7 +402,7 @@ public class ScriptController {
         if (fileDownloadDTO == null) {
             return null;
         }
-        return String.format(BaseRedisKeyConstant.FILE_DOWNLOAD, memberId, fileDownloadDTO.getTaskId());
+        return String.format(BaseRedisKeyConstant.FILE_DOWNLOAD, memberId, fileDownloadDTO.getTaskId() + "_" + fileDownloadDTO.getMedia());
     }
 
     public ScriptQuery tranData(ScriptEntity scriptEntity) {
