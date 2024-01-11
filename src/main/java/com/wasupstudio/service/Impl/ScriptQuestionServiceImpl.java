@@ -5,7 +5,6 @@ import com.wasupstudio.mapper.ScriptQuestionMapper;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.dto.ScriptQuestionDTO;
 import com.wasupstudio.model.entity.ScriptDetailEntity;
-import com.wasupstudio.model.entity.ScriptEntity;
 import com.wasupstudio.model.entity.ScriptQuestionEntity;
 import com.wasupstudio.model.entity.TaskEntity;
 import com.wasupstudio.model.query.*;
@@ -193,65 +192,62 @@ public class ScriptQuestionServiceImpl extends AbstractService<ScriptQuestionEnt
 
     @Override
     public BasePageInfo scoreDistribution() {
+        List<QuestionReportV2Query> list = scriptQuestionMapper.scoreDistributionV2();
 
-        List<ScoreDistributionQuery> list = scriptQuestionMapper.scoreDistribution(null);
-        Map<Integer, Map<String, Integer>> scriptResultStatistics = new HashMap<>();
+        Map<Integer, Map<String, Integer>> resultMap = new HashMap<>();
 
-        for (ScoreDistributionQuery result : list) {
-            Integer scriptId = result.getScriptId();
-            String endingResult = result.getResult();
+        for (QuestionReportV2Query item : list) {
+            Integer scriptId = item.getScriptId();
+            String result = item.getResult();
 
-            // 檢查是否已經有此劇本的統計數據
-            if (!scriptResultStatistics.containsKey(scriptId)) {
-                scriptResultStatistics.put(scriptId, new HashMap<>());
-            }
+            // Get or create the scriptMap for the current scriptId
+            Map<String, Integer> scriptMap = resultMap.getOrDefault(scriptId, new HashMap<>());
 
-            Map<String, Integer> resultStats = scriptResultStatistics.get(scriptId);
+            // Increment the count for the current result in the scriptMap
+            scriptMap.put(result, scriptMap.getOrDefault(result, 0) + 1);
 
-            // 更新結局統計數量
-            resultStats.put(endingResult, resultStats.getOrDefault(endingResult, 0) + 1);
+            // Update the resultMap with the modified scriptMap
+            resultMap.put(scriptId, scriptMap);
         }
 
+        List<EndingReportQuery> endingReportList = new ArrayList<>();
 
-        List<QuestionResultQuery> details = findReportForEnding().getList();
-        Map<Integer, List<QuestionResultQuery>> scriptIdToDetailsMap = new HashMap<>();
-
-        for (QuestionResultQuery detail : details) {
-            Integer scriptId = detail.getScriptId();
-
-            // 檢查 Map 中是否已經有這個 scriptId，如果沒有，創建一個新 List
-            if (!scriptIdToDetailsMap.containsKey(scriptId)) {
-                scriptIdToDetailsMap.put(scriptId, new ArrayList<>());
-            }
-
-            // 取得相應 scriptId 的 List，並將 detail 加入其中
-            List<QuestionResultQuery> scriptDetailsList = scriptIdToDetailsMap.get(scriptId);
-            scriptDetailsList.add(detail);
-        }
-
-        // 遍歷 scriptIdToDetailsMap，為每個 scriptId 計算統計並添加到 resultStatisticsList
-        List<StatisticsQuery> resultStatisticsList = new ArrayList<>();
-        for (Map.Entry<Integer, List<QuestionResultQuery>> entry : scriptIdToDetailsMap.entrySet()) {
+        for (Map.Entry<Integer, Map<String, Integer>> entry : resultMap.entrySet()) {
             Integer scriptId = entry.getKey();
-            List<QuestionResultQuery> scriptDetailsList = entry.getValue();
-            ScriptEntity script = scriptService.findOne(scriptId);
+            Map<String, Integer> resultCountMap = entry.getValue();
 
-            StatisticsQuery statisticsQuery = new StatisticsQuery();
-            statisticsQuery.setId(scriptId);
-            statisticsQuery.setResult(script.getTitle());
-            statisticsQuery.setCount(scriptResultStatistics.get(scriptId).size());
-            statisticsQuery.setDetail(scriptDetailsList);
+            EndingReportQuery endingReportQuery = new EndingReportQuery();
+            endingReportQuery.setScriptId(scriptId);
+            // Iterate through resultCountMap and set counts in ResultEndingQuery
+            List<ResultEndingQuery> resultEndingQueryList = new ArrayList<>();
+            for (Map.Entry<String, Integer> resultEntry : resultCountMap.entrySet()) {
+                ResultEndingQuery resultEndingQuery = new ResultEndingQuery();
+                String result = resultEntry.getKey();
+                Integer count = resultEntry.getValue();
+                resultEndingQuery.setResult(result);
+                resultEndingQuery.setCount(count);
 
-            resultStatisticsList.add(statisticsQuery);
+                endingReportQuery.setScriptId(scriptId);
+                List<QuestionReportV2Query> questionReportV2QueryList = new ArrayList<>();
+                for (QuestionReportV2Query questionReportV2Query : list) {
+                    System.out.println(questionReportV2Query.getScriptId());
+                    if (questionReportV2Query.getScriptId().equals(scriptId)){
+                        questionReportV2QueryList.add(questionReportV2Query);
+                    }
+                }
+                endingReportQuery.setDetail(questionReportV2QueryList);
+                endingReportQuery.setResult(resultEndingQueryList);
+                resultEndingQueryList.add(resultEndingQuery);
+            }
+            endingReportList.add(endingReportQuery);
         }
-
-        System.out.println(resultStatisticsList);
 
         BasePageInfo basePageInfo = new BasePageInfo<>();
-        basePageInfo.setList(resultStatisticsList);
-        basePageInfo.setTotal(list.size());
+        basePageInfo.setList(endingReportList);
+        basePageInfo.setTotal(endingReportList.size());
         return basePageInfo;
     }
+
 
     public static void main(String[] args) {
         BigDecimal test = BigDecimal.ZERO;

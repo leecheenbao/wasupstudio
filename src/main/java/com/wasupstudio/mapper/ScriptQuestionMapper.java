@@ -2,6 +2,7 @@ package com.wasupstudio.mapper;
 
 import com.wasupstudio.model.entity.ScriptQuestionEntity;
 import com.wasupstudio.model.query.QuestionReportQuery;
+import com.wasupstudio.model.query.QuestionReportV2Query;
 import com.wasupstudio.model.query.QuestionResultQuery;
 import com.wasupstudio.model.query.ScoreDistributionQuery;
 import com.wasupstudio.util.CommonMapper;
@@ -20,4 +21,7 @@ public interface ScriptQuestionMapper extends CommonMapper<ScriptQuestionEntity>
     List<QuestionReportQuery> findReportForEnding();
 
     List<ScoreDistributionQuery> scoreDistribution(@Param("taskId") Integer taskId);
+
+    List<QuestionReportV2Query> scoreDistributionV2();
+
 }
