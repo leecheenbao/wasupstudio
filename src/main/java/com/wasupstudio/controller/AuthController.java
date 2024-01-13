@@ -30,8 +30,10 @@ import com.wasupstudio.model.query.AdminLoginQuery;
 import com.wasupstudio.model.query.ScriptQuery;
 import com.wasupstudio.service.*;
 import com.wasupstudio.util.*;
+import io.netty.util.internal.StringUtil;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -521,10 +523,9 @@ public class AuthController {
         TaskEntity task = taskService.findOne(taskId);
         MediaDTO mediaDTO = mediaService.findByScriptIdAndDescription(task.getScriptId(), media);
 
-//        if (media.contains("ending")){
-//            mediaDTO = mediaService.scriptEndingFile(taskId);
-//        } else {
-//        }
+        if (StringUtils.isBlank(media)){
+            throw new BussinessException("找不到檔案");
+        }
 
         log.info("task:{}, 結局:{}", taskId, mediaDTO);
         try {
@@ -532,7 +533,7 @@ public class AuthController {
             long time = calculateRemainingSeconds(task.getEndTime());
 
             if (time < 0) {
-                String message = String.format(ResultCode.TASK_INVALID.getMessage(), DateUtils.format(task.getCreateTime()), DateUtils.format(task.getEndTime()));
+                String message = String.format(ResultCode.TASK_INVALID.getMessage(), DateUtils.getStartDate(task.getCreateTime()), DateUtils.getEndDate(task.getEndTime()));
                 throw new BussinessException(message);
             }
         } catch (BussinessException e) {
