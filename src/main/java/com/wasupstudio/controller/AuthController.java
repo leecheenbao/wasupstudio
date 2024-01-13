@@ -17,7 +17,9 @@ import com.google.api.services.oauth2.model.Userinfo;
 import com.wasupstudio.constant.BaseRedisKeyConstant;
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.enums.ResultCode;
+import com.wasupstudio.exception.BusinessException;
 import com.wasupstudio.exception.BussinessException;
+import com.wasupstudio.exception.CommonError;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
@@ -524,7 +526,7 @@ public class AuthController {
         MediaDTO mediaDTO = mediaService.findByScriptIdAndDescription(task.getScriptId(), media);
 
         if (StringUtils.isBlank(media)){
-            throw new BussinessException("找不到檔案");
+            throw new BusinessException(CommonError.DATA_NOT_EXISTED);
         }
 
         log.info("task:{}, 結局:{}", taskId, mediaDTO);

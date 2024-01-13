@@ -338,6 +338,9 @@ public class ScriptController {
     public Result downloadMixFile(@RequestBody FileDownloadDTO fileDownloadDTO) {
         // 取得對應PDF及影片資料
         TaskEntity task = taskService.findOne(fileDownloadDTO.getTaskId());
+        if (task == null) {
+            return ResultGenerator.genFailResult(ResultCode.DATA_NOT_EXIST.getMessage());
+        }
         MediaDTO pdf = mediaService.findByScriptIdAndDescription(task.getScriptId(), fileDownloadDTO.getSheet());
         if (pdf == null) {
             return ResultGenerator.genFailResult(ResultCode.DATA_NOT_EXIST.getMessage());
