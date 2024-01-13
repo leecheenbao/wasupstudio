@@ -519,12 +519,12 @@ public class AuthController {
 
         // 取得對應PDF及影片資料
         TaskEntity task = taskService.findOne(taskId);
-        MediaDTO mediaDTO;
-        if (media.contains("ending")){
-            mediaDTO = mediaService.scriptEndingFile(taskId);
-        } else {
-            mediaDTO = mediaService.findByScriptIdAndDescription(task.getScriptId(), media);
-        }
+        MediaDTO mediaDTO = mediaService.findByScriptIdAndDescription(task.getScriptId(), media);
+
+//        if (media.contains("ending")){
+//            mediaDTO = mediaService.scriptEndingFile(taskId);
+//        } else {
+//        }
 
         log.info("task:{}, 結局:{}", taskId, mediaDTO);
         try {
