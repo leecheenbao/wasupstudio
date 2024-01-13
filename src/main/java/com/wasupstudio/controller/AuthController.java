@@ -519,12 +519,14 @@ public class AuthController {
 
         // 取得對應PDF及影片資料
         TaskEntity task = taskService.findOne(taskId);
-        MediaDTO mediaDTO = new MediaDTO();
+        MediaDTO mediaDTO;
         if (media.contains("ending")){
             mediaDTO = mediaService.scriptEndingFile(taskId);
         } else {
             mediaDTO = mediaService.findByScriptIdAndDescription(task.getScriptId(), media);
         }
+
+        log.info("task:{}, 結局:{}", taskId, mediaDTO);
         try {
             // 任務時間結束直接回傳訊息
             long time = calculateRemainingSeconds(task.getEndTime());
