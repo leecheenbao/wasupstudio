@@ -14,12 +14,9 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfo;
-import com.wasupstudio.constant.BaseRedisKeyConstant;
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.enums.ResultCode;
-import com.wasupstudio.exception.BusinessException;
 import com.wasupstudio.exception.BussinessException;
-import com.wasupstudio.exception.CommonError;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
@@ -32,7 +29,6 @@ import com.wasupstudio.model.query.AdminLoginQuery;
 import com.wasupstudio.model.query.ScriptQuery;
 import com.wasupstudio.service.*;
 import com.wasupstudio.util.*;
-import io.netty.util.internal.StringUtil;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -45,7 +41,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.print.attribute.standard.Media;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -526,7 +521,7 @@ public class AuthController {
         MediaDTO mediaDTO = mediaService.findByScriptIdAndDescription(task.getScriptId(), media);
 
         if (StringUtils.isBlank(media)){
-            throw new BusinessException(CommonError.DATA_NOT_EXISTED);
+            throw new BussinessException(ResultCode.DATA_NOT_EXIST.getMessage());
         }
 
         log.info("task:{}, 結局:{}", taskId, mediaDTO);
