@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 public enum ScriptEndingEnum {
-    SCRIPT_ENDING_ONE("endingMovie1","結局一"),
-    SCRIPT_ENDING_TWO("endingMovie2","結局二"),
-    SCRIPT_ENDING_THREE("endingMovie3","結局三"),
-    SCRIPT_ENDING_FOUR("endingMovie4", "結局四")
+    SCRIPT_ENDING_ONE("endingMovie-1","結局一"),
+    SCRIPT_ENDING_TWO("endingMovie-2","結局二"),
+    SCRIPT_ENDING_THREE("endingMovie-3","結局三"),
+    SCRIPT_ENDING_FOUR("endingMovie-4", "結局四")
     ;
 
 
