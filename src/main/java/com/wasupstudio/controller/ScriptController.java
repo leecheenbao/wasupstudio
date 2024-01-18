@@ -320,19 +320,6 @@ public class ScriptController {
     }
 
     @ApiOperation(value = "PDF檔案下載")
-    @PostMapping(value = "/download/pdfV2")
-    @ResponseBody
-    public Result downloadMixFileV2(@RequestBody FileDownloadDTO fileDownloadDTO) {
-        Integer taskId = fileDownloadDTO.getTaskId();
-        MediaDTO mediaDTO = mediaService.scriptEndingFile(taskId);
-        if (mediaDTO == null || StringUtils.isBlank(mediaDTO.getFilePath())) {
-            return ResultGenerator.genFailResult(ResultCode.DATA_NOT_EXIST.getMessage());
-        }
-        String filePath = mediaDTO.getFilePath();
-        return ResultGenerator.genSuccessResult(filePath);
-    }
-
-    @ApiOperation(value = "PDF檔案下載")
     @PostMapping(value = "/download/pdf")
     @ResponseBody
     public Result downloadMixFile(@RequestBody FileDownloadDTO fileDownloadDTO) {

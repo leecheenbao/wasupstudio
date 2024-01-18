@@ -511,6 +511,20 @@ public class AuthController {
         return ResultGenerator.genSuccessResult(scriptQuery);
     }
 
+    @ApiOperation(value = "QRCOD檔案下載")
+    @GetMapping(value = "/download/qrcode/{taskId}")
+    @ResponseBody
+    public Result downloadMixFileV2(@PathVariable Integer taskId) {
+        String url = BASE_URL + "/auth/download/pdf/valid?";
+
+        Map<String, Object> params = new TreeMap<>();
+        params.put("taskId", taskId);
+        CashFlowUtils cashFlowUtils = new CashFlowUtils();
+        String dataInfo = cashFlowUtils.getDataInfo(params);
+
+        return ResultGenerator.genSuccessResult(url + dataInfo);
+    }
+
     @ApiOperation(value = "PDF檔案下載")
     @GetMapping(value = "/download/pdf/valid")
     @ResponseBody
