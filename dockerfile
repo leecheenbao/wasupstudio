@@ -1,9 +1,11 @@
 FROM eucm/maven
 
-# 設置時區
-RUN apk add --no-cache tzdata
-ENV TZ=Asia/Taipei
+# Set the timezone
+RUN apk --no-cache add tzdata \
+    && ln -sf /usr/share/zoneinfo/Asia/Taipei /etc/localtime \
+    && echo "Asia/Taipei" > /etc/timezone
 
+# Set the locale to UTF-8
 ENV LANG C.UTF-8
 
 WORKDIR /app
