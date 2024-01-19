@@ -382,7 +382,7 @@ public class DateUtils {
         dateEnd.set(Calendar.HOUR_OF_DAY, 23);
         dateEnd.set(Calendar.MINUTE, 59);
         dateEnd.set(Calendar.SECOND, 59);
-        dateEnd.set(Calendar.MILLISECOND, 999);
+//        dateEnd.set(Calendar.MILLISECOND, 99);
         return dateEnd.getTime();
     }
 

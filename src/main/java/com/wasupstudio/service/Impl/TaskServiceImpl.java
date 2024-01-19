@@ -39,13 +39,20 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
         taskEntity.setCreateTime(new Date());
 
         Date endTime = DateUtils.parse(taskDTO.getEndTime(), DateUtils.YYYY_MM_DD_HH_MM_SS);
+        endTime = DateUtils.getEndDate(endTime);
         log.info("endTime:{}, taskDTO:{}", endTime, taskDTO.getEndTime());
-        taskEntity.setEndTime(DateUtils.getStartDate(endTime));
+
+        taskEntity.setEndTime(endTime);
         taskEntity.setLearning(taskEntity.getLearning());
 
         save(taskEntity);
     }
 
+    public static void main(String[] args) {
+        Date endTime = DateUtils.parse("2023-01-19", DateUtils.YYYY_MM_DD_HH_MM_SS);
+
+        System.out.println(DateUtils.getEndDate(endTime));
+    }
     @Override
     public TaskEntity findOne(Integer id) {
         return this.findById(id);
@@ -97,8 +104,11 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
                 taskEntity.setStatus(taskDTO.getStatus());
             }
             if (!ValueValidator.isNullOrEmpty(taskDTO.getEndTime())) {
-                Date endTime = DateUtils.toDate(taskDTO.getEndTime(), DateUtils.YYYY_MM_DD);
-                taskEntity.setEndTime(DateUtils.getStartDate(endTime));
+                Date endTime = DateUtils.parse(taskDTO.getEndTime(), DateUtils.YYYY_MM_DD_HH_MM_SS);
+                endTime = DateUtils.getEndDate(endTime);
+                log.info("endTime:{}, taskDTO:{}", endTime, taskDTO.getEndTime());
+
+                taskEntity.setEndTime(endTime);
             }
             if (!ValueValidator.isNullOrZero(taskDTO.getLearning())) {
                 taskEntity.setLearning(taskDTO.getLearning());
