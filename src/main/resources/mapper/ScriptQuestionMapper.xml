@@ -94,8 +94,8 @@
             relationTotal,
             CASE
                 WHEN orderlyTotal &gt; 0 AND relationTotal &gt; 0 THEN '結局一'
-                WHEN orderlyTotal &lt; 0 AND relationTotal &lt; 0 THEN '結局二'
-                WHEN orderlyTotal &lt; 0 AND relationTotal &gt; 0 THEN '結局三'
+                WHEN orderlyTotal &lt; 0 AND relationTotal &gt; 0 THEN '結局二'
+                WHEN orderlyTotal &lt; 0 AND relationTotal &lt; 0 THEN '結局三'
                 WHEN orderlyTotal &gt; 0 AND relationTotal &lt; 0 THEN '結局四'
             END AS result
         FROM (
