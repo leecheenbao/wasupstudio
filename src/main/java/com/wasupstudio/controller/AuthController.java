@@ -282,7 +282,9 @@ public class AuthController {
     public Result sendMail(@RequestBody @Valid MemberDTO memberDTO) throws Exception {
         /* 註冊成功發送驗證信 */
         MemberEntity memberEntity = memberService.getAdminByEmail(memberDTO.getEmail());
-        if (memberEntity != null) {
+
+        /* 如果帳號存在且未啟用，則發送驗證信 */
+        if (memberEntity != null && memberEntity.getStatus().equals(ProjectConstant.SystemAdminStatus.NOT_ENABLED)) {
             String mail = memberEntity.getEmail();
             String verificationCode = AesUtils.encrypt(mail);
 
