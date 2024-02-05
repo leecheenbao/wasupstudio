@@ -284,14 +284,18 @@ public class AuthController {
         MemberEntity memberEntity = memberService.getAdminByEmail(memberDTO.getEmail());
 
         /* 如果帳號存在且未啟用，則發送驗證信 */
-        if (memberEntity != null && memberEntity.getStatus().equals(ProjectConstant.SystemAdminStatus.NOT_ENABLED)) {
+        if (memberEntity.getStatus().equals(ProjectConstant.SystemAdminStatus.NORMAL)) {
+            return ResultGenerator.genFailResult(ResultCode.SEND_MAIL_FAIL.getMessage());
+        }
+
+        if (memberEntity.getStatus().equals(ProjectConstant.SystemAdminStatus.NOT_ENABLED)) {
             String mail = memberEntity.getEmail();
             String verificationCode = AesUtils.encrypt(mail);
 
             MailUtil.sendMail(ProjectConstant.MailType.SIGNUP, verificationCode, mail);
             return ResultGenerator.genSuccessResult(ResultCode.SEND_MAIL_SUCCESS.getMessage());
         }
-        return ResultGenerator.genSuccessResult(ResultCode.EMAIL_NOT_EXIST.getMessage());
+        return ResultGenerator.genFailResult(ResultCode.SEND_MAIL_FAIL.getMessage());
     }
 
     /**

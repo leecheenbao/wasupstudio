@@ -81,8 +81,10 @@ public enum ResultCode {
     PASSWORD_CHANGE_SUCCESS(20060, "密碼修改成功"),
     PASSWORD_CHANGE_FAILD(20061, "密碼修改失敗，請重新嘗試"),
     SEND_MAIL_SUCCESS(20082, "信件已發送, 如果您未收到信件, 請檢查您輸入的信箱是否正確"),
+    SEND_MAIL_FAIL(20083, "信件發送失敗, 請重新嘗試"),
 
     /* 任務 */
+
     TASK_INVALID(20100, "任務時間已經結束 %s - %s"),
 
     /* 序號 */
