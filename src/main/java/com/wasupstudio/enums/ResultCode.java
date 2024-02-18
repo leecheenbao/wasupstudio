@@ -76,7 +76,7 @@ public enum ResultCode {
     VALIDATAE_CODE_ERROR(20002, "帳號驗證已經驗證過！"),
     VALIDATAE_CODE_SUCCESS(20003, "帳號驗證成功！您可以登錄您的帳號了。"),
     ACCOUNT_NOT_ENABLE(20004, "帳號尚未啟動！"),
-
+    ACCOUNT_DISABLE(20005, "帳號已被停用！"),
     EMAIL_NOT_EXIST(20018, "該郵箱帳號有誤，請確認後再嘗試"),
     MAIL_MESSAGE_SEND_ERROR(20059, "郵件發送過於頻繁，請稍後再試"),
     PASSWORD_CHANGE_SUCCESS(20060, "密碼修改成功"),

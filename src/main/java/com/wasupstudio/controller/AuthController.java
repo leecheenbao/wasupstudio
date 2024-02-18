@@ -240,7 +240,7 @@ public class AuthController {
 
         // 如果帳號存在但已停用
         if (memberEntity.getStatus().equals(ProjectConstant.SystemAdminStatus.DISABLE)) {
-            return ResultGenerator.genFailResult(ResultCode.USER_LOGIN_FAILED.getMessage());
+            return ResultGenerator.genFailResult(ResultCode.ACCOUNT_DISABLE.getMessage());
         }
 
         boolean checkLicense;
