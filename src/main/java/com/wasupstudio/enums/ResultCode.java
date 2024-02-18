@@ -74,7 +74,8 @@ public enum ResultCode {
     USER_REGISTER_FAILED(22000, "註冊失敗"),
     USER_NAME_EXIST(20001, "該用戶名已存在"),
     VALIDATAE_CODE_ERROR(20002, "帳號驗證已經驗證過！"),
-    VALIDATAE_CODE_SUCCESS(20006, "帳號驗證成功！您可以登錄您的帳號了。"),
+    VALIDATAE_CODE_SUCCESS(20003, "帳號驗證成功！您可以登錄您的帳號了。"),
+    ACCOUNT_NOT_ENABLE(20004, "帳號尚未啟動！"),
 
     EMAIL_NOT_EXIST(20018, "該郵箱帳號有誤，請確認後再嘗試"),
     MAIL_MESSAGE_SEND_ERROR(20059, "郵件發送過於頻繁，請稍後再試"),

@@ -129,6 +129,12 @@ public class AuthController {
 
             String mail = userInfo.getEmail();
             String role = memberEntity.getRole().toString();
+
+            // 如果帳號存在但已停用
+            if (memberEntity.getStatus().equals(ProjectConstant.SystemAdminStatus.DISABLE)) {
+                return new RedirectView(url);
+            }
+
             boolean checkLicense;
             if (memberEntity.getRole().equals(MemberEntity.Role.ROLE_ADMIN)) {
                 checkLicense = true;
@@ -231,6 +237,11 @@ public class AuthController {
         }
         Authentication authentication = JwtUtils.getAuthentication(jwtToken);
         MemberEntity memberEntity = memberService.getAdminByEmail(adminLoginQuery.getEmail());
+
+        // 如果帳號存在但已停用
+        if (memberEntity.getStatus().equals(ProjectConstant.SystemAdminStatus.DISABLE)) {
+            return ResultGenerator.genFailResult(ResultCode.USER_LOGIN_FAILED.getMessage());
+        }
 
         boolean checkLicense;
         if (memberEntity.getRole().equals(MemberEntity.Role.ROLE_ADMIN)) {
