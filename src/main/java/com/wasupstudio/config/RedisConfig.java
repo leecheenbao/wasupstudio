@@ -15,6 +15,8 @@ public class RedisConfig {
     private String host;
     @Value("${spring.redis.port}")
     private Integer port;
+    @Value("${spring.redis.password}")
+    private String pwd;
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
@@ -23,7 +25,7 @@ public class RedisConfig {
         redisConfig.setHostName(host);
         redisConfig.setPort(port);
         // 如果Redis服务器有密码，请设置密码
-        // redisConfig.setPassword("your_password");
+        redisConfig.setPassword("1rk5u38fswetercc");
 
         return new LettuceConnectionFactory(redisConfig);
     }
