@@ -545,16 +545,15 @@ public class AuthController {
     @ApiOperation(value = "PDF檔案下載")
     @GetMapping(value = "/download/pdf/valid")
     @ResponseBody
-    public Object checkTaskValid(@RequestParam("taskId") Integer taskId) {
+    public Object checkTaskValid(@RequestParam("taskId") Integer taskId, @RequestParam("media") String media) {
 
         // 取得對應PDF及影片資料
         TaskEntity task = taskService.findOne(taskId);
-        MediaDTO mediaDTO = mediaService.scriptEndingFile(taskId);
-//        MediaDTO mediaDTO = mediaService.findByScriptIdAndDescription(task.getScriptId(), media);
-
-        if (mediaDTO == null){
+        if (task == null){
             throw new BussinessException(ResultCode.DATA_NOT_EXIST.getMessage());
         }
+
+        MediaDTO mediaDTO = mediaService.scriptEndingFile(taskId, media);
 
         log.info("task:{}, 結局:{}", taskId, mediaDTO);
         try {

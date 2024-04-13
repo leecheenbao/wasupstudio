@@ -65,7 +65,7 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
     }
 
     @Override
-    public MediaDTO scriptEndingFile(Integer taskId) {
+    public MediaDTO scriptEndingFile(Integer taskId, String media) {
         BasePageInfo basePageInfo = scriptQuestionService.scoreDistribution(taskId);
 
         TaskEntity task = taskService.findOne(taskId);
@@ -73,12 +73,16 @@ public class MediaServiceImpl extends AbstractService<MediaEntity> implements Me
 
         Integer scritpId = task.getScriptId();
         String result = ScriptEndingEnum.SCRIPT_ENDING_ONE.getDesc();
-
-        for (ScoreDistributionQuery item : list){
-            scritpId = item.getScriptId();
-            result = item.getResult();
+        String desc = "";
+        if (media.contains(ScriptEndingEnum.SCRIPT_ENDING.getType())){
+            for (ScoreDistributionQuery item : list){
+                scritpId = item.getScriptId();
+                result = item.getResult();
+            }
+            desc = ScriptEndingEnum.getType(result).getType();
+        } else {
+            desc = media;
         }
-        String desc = ScriptEndingEnum.getType(result).getType();
         MediaDTO byScriptIdAndDescription = findByScriptIdAndDescription(scritpId, desc);
         return byScriptIdAndDescription;
     }

@@ -16,7 +16,7 @@ public interface MediaService {
 
     MediaDTO findByScriptIdAndDescription(Integer scriptId, String description);
 
-    MediaDTO scriptEndingFile(Integer taskId);
+    MediaDTO scriptEndingFile(Integer taskId, String media);
 
     BasePageInfo findAllData();
 
