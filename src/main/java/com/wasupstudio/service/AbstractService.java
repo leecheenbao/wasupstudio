@@ -1,7 +1,8 @@
 package com.wasupstudio.service;
 
 
-import com.wasupstudio.exception.BussinessException;
+import com.wasupstudio.exception.BusinessException;
+import com.wasupstudio.exception.CommonError;
 import com.wasupstudio.util.CommonMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.exceptions.TooManyResultsException;
@@ -99,7 +100,7 @@ public abstract class AbstractService<T> implements Service<T> {
             return target;
         } catch (ReflectiveOperationException e) {
             log.error("findBy ReflectiveOperationException", e);
-            throw new BussinessException(e.getMessage(), e);
+            throw new BusinessException(CommonError.PARAMETER_ERROR, e.getMessage());
         }
     }
 
@@ -113,7 +114,7 @@ public abstract class AbstractService<T> implements Service<T> {
             return mapper.select(model);
         } catch (ReflectiveOperationException e) {
             log.error("findAllBy ReflectiveOperationException", e);
-            throw new BussinessException(e.getMessage(), e);
+            throw new BusinessException(CommonError.PARAMETER_ERROR, e.getMessage());
         }
     }
 

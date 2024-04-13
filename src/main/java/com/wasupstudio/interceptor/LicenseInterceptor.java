@@ -5,7 +5,8 @@ import com.wasupstudio.annotation.SkipAuth;
 import com.wasupstudio.constant.BaseRedisKeyConstant;
 import com.wasupstudio.constant.UserRoleConstants;
 import com.wasupstudio.enums.ResultCode;
-import com.wasupstudio.exception.BussinessException;
+import com.wasupstudio.exception.BusinessException;
+import com.wasupstudio.exception.CommonError;
 import com.wasupstudio.model.Result;
 import com.wasupstudio.model.entity.MemberEntity;
 import com.wasupstudio.service.LicenseService;
@@ -49,7 +50,7 @@ public class LicenseInterceptor extends HandlerInterceptorAdapter {
             String token = auth.split(" ")[1];
             member = JwtUtils.getMember(JwtUtils.getAuthentication(token));
         } else {
-            throw new BussinessException("沒有權限觀看");
+            throw new BusinessException(CommonError.PERMISSION_DENIED);
         }
 
         Integer memberId = member.getId();

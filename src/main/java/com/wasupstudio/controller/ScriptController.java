@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import com.wasupstudio.constant.BaseRedisKeyConstant;
 import com.wasupstudio.enums.FileTypeEnum;
 import com.wasupstudio.enums.ResultCode;
-import com.wasupstudio.exception.BussinessException;
+import com.wasupstudio.exception.BusinessException;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
@@ -16,7 +16,6 @@ import com.wasupstudio.service.*;
 import com.wasupstudio.util.*;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -369,7 +368,7 @@ public class ScriptController {
             }
 
             return ResultGenerator.genSuccessResult(filePath);
-        } catch (BussinessException e) {
+        } catch (BusinessException e) {
             log.warn(e.getMessage());
             return ResultGenerator.genSuccessResult(pdf.getFilePath());
         }
@@ -412,52 +411,4 @@ public class ScriptController {
         return scriptQuery;
     }
 
-    public static void main(String[] args) {
-        Set set = new HashSet<>();
-        Queue<String> myQueue = new PriorityQueue<>();
-        myQueue.add("Task 1");
-        myQueue.add("Task 2");
-        myQueue.add("Task 3");
-        System.out.println(myQueue.poll());  // 輸出: Task 1
-        myQueue.remove();
-        System.out.println();  // 輸出: [Task 2, Task 3]
-        System.out.println(myQueue);
-
-    }
-
-    public static class Person {
-        private String name;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String newName) {
-            if (newName != null && !newName.isEmpty()) {
-                name = newName;
-            }
-        }
-    }
-
-    public static class Animal {
-        void bark() {
-            System.out.println("Animal can bark");
-        }
-
-        void eat() {
-            System.out.println("Animal is eating");
-        }
-    }
-
-    public static class Dog extends Animal {
-        void bark() {
-            System.out.println("Dog is barking");
-        }
-    }
-
-    public static class Cat extends Animal {
-        void bark() {
-            System.out.println("Cat is barking");
-        }
-    }
 }

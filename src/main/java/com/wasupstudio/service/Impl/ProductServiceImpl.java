@@ -2,7 +2,8 @@ package com.wasupstudio.service.Impl;
 
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.converter.ProductConverter;
-import com.wasupstudio.exception.BussinessException;
+import com.wasupstudio.exception.BusinessException;
+import com.wasupstudio.exception.CommonError;
 import com.wasupstudio.mapper.ProductMapper;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.dto.ProductDTO;
@@ -41,7 +42,7 @@ public class ProductServiceImpl extends AbstractService<ProductEntity> implement
     public void delete(Long productId) {
         List<OrderItemEntity> orderItemList = orderItemService.getOrderItemList(productId);
         if (orderItemList.size() != 0) {
-            throw new BussinessException("無法刪除");
+            throw new BusinessException(CommonError.CANNOT_DELETE);
         }
         deleteById(Math.toIntExact(productId));
     }

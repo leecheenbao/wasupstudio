@@ -16,7 +16,9 @@ import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfo;
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.enums.ResultCode;
-import com.wasupstudio.exception.BussinessException;
+import com.wasupstudio.exception.BusinessError;
+import com.wasupstudio.exception.BusinessException;
+import com.wasupstudio.exception.CommonError;
 import com.wasupstudio.exception.ResultGenerator;
 import com.wasupstudio.model.BasePageInfo;
 import com.wasupstudio.model.Result;
@@ -31,7 +33,6 @@ import com.wasupstudio.service.*;
 import com.wasupstudio.util.*;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -501,7 +502,6 @@ public class AuthController {
         BasePageInfo pageInfo = new BasePageInfo<>();
 
         for (ScriptQuery script : list) {
-//            ScriptQuery scriptQuery = tranData(script);
             script.setMediaDTO(mediaService.findByScriptId(script.getScriptId()));
             scriptQueryList.add(script);
         }
@@ -550,23 +550,23 @@ public class AuthController {
         // 取得對應PDF及影片資料
         TaskEntity task = taskService.findOne(taskId);
         if (task == null){
-            throw new BussinessException(ResultCode.DATA_NOT_EXIST.getMessage());
+            throw new BusinessException(CommonError.TASK_NOT_EXISTED);
         }
 
-        MediaDTO mediaDTO = mediaService.scriptEndingFile(taskId, media);
-
-        log.info("task:{}, 結局:{}", taskId, mediaDTO);
         try {
             // 任務時間結束直接回傳訊息
             long time = calculateRemainingSeconds(task.getEndTime());
 
             if (time < 0) {
                 String message = String.format(ResultCode.TASK_INVALID.getMessage(), DateUtils.getStartDate(task.getCreateTime()), DateUtils.getEndDate(task.getEndTime()));
-                throw new BussinessException(message);
+                throw new BusinessException(CommonError.PARAMETER_ERROR, message);
             }
-        } catch (BussinessException e) {
+        } catch (BusinessException e) {
             return e.getMessage();
         }
+
+        MediaDTO mediaDTO = mediaService.scriptEndingFile(taskId, media);
+        log.info("task:{}, 結局:{}", taskId, mediaDTO);
 
         return new RedirectView(mediaDTO.getFilePath());
     }

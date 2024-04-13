@@ -108,15 +108,6 @@ public class ScriptServiceImpl extends AbstractService<ScriptEntity> implements 
 
 
     public static ScriptQuery getScriptQuery(ScriptEntity scriptEntity) {
-        Gson gson = new Gson();
-        List<String> tips = gson.fromJson(scriptEntity.getTips(), List.class);
-        List<String> goals = gson.fromJson(scriptEntity.getGoal(), List.class);
-        List<String> preambles = gson.fromJson(scriptEntity.getPreamble(), List.class);
-        ScriptQuery scriptQuery = new ScriptQuery();
-        BeanUtils.copyProperties(scriptEntity, scriptQuery);
-        scriptQuery.setTips(tips);
-        scriptQuery.setGoal(goals);
-        scriptQuery.setPreamble(preambles);
-        return scriptQuery;
+        return getScriptQuery(scriptEntity);
     }
 }
