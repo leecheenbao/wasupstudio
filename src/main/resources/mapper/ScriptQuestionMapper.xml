@@ -104,11 +104,11 @@
             wsq.script_id,
             wsq.task_id,
             CASE
-                WHEN SUM(wssc.stu_orderly + wspc.par_orderly) = 0 THEN 1
+                WHEN SUM(wssc.stu_orderly + wspc.par_orderly) = 0 THEN -1
                 ELSE SUM(wssc.stu_orderly + wspc.par_orderly)
             END AS orderlyTotal,
             CASE
-                WHEN SUM(wssc.stu_relation + wspc.par_relation) = 0 THEN 1
+                WHEN SUM(wssc.stu_relation + wspc.par_relation) = 0 THEN -1
                 ELSE SUM(wssc.stu_relation + wspc.par_relation)
             END AS relationTotal
         FROM wa_script_question wsq
