@@ -133,8 +133,8 @@ public class ScriptQuestionServiceImpl extends AbstractService<ScriptQuestionEnt
                 ));
 
         // 在Map中檢查並更新總和
-        relationMap.replaceAll((key, value) -> value.equals(BigDecimal.ZERO) ? BigDecimal.ONE : value);
-        orderlyMap.replaceAll((key, value) -> value.equals(BigDecimal.ZERO) ? BigDecimal.ONE : value);
+        relationMap.replaceAll((key, value) -> value.equals(BigDecimal.ZERO) ? BigDecimal.ZERO.subtract(BigDecimal.ONE) : value);
+        orderlyMap.replaceAll((key, value) -> value.equals(BigDecimal.ZERO) ? BigDecimal.ZERO.subtract(BigDecimal.ONE) : value);
 
         // 合併兩個map
         Map<String, Integer[]> combinedMap = new HashMap<>();
@@ -142,12 +142,12 @@ public class ScriptQuestionServiceImpl extends AbstractService<ScriptQuestionEnt
             BigDecimal relationValue = relationMap.get(key);
             BigDecimal orderlyValue = orderlyMap.get(key);
 
-            // 確保值不為0
+            // 確保值不為0, 為0的話變為-1
             if (relationValue.equals(BigDecimal.ZERO)) {
-                relationValue = BigDecimal.ONE;
+                relationValue = BigDecimal.ZERO.subtract(BigDecimal.ONE);
             }
             if (orderlyValue.equals(BigDecimal.ZERO)) {
-                orderlyValue = BigDecimal.ONE;
+                orderlyValue = BigDecimal.ZERO.subtract(BigDecimal.ONE);
             }
 
             Integer[] values = new Integer[]{relationValue.intValue(), orderlyValue.intValue()};
@@ -161,7 +161,6 @@ public class ScriptQuestionServiceImpl extends AbstractService<ScriptQuestionEnt
             String[] key = res.getKey().split("-");
             Integer taskId = Integer.valueOf(key[0]);
             Integer scriptId = Integer.valueOf(key[1]);
-            System.out.println(key);
             Integer[] value = res.getValue();
             Integer orderlyTotal = value[0];
             Integer relationTotal = value[1];
@@ -230,7 +229,6 @@ public class ScriptQuestionServiceImpl extends AbstractService<ScriptQuestionEnt
                 endingReportQuery.setScriptId(scriptId);
                 List<QuestionReportV2Query> questionReportV2QueryList = new ArrayList<>();
                 for (QuestionReportV2Query questionReportV2Query : list) {
-                    System.out.println(questionReportV2Query.getScriptId());
                     if (questionReportV2Query.getScriptId().equals(scriptId)){
                         questionReportV2QueryList.add(questionReportV2Query);
                     }

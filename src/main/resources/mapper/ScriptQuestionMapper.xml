@@ -40,16 +40,16 @@
         SELECT
             wsq.task_id, wt.task_name,
             wsq.script_id, ws.title,
-            SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) + CASE WHEN (SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) = 0) THEN 1 ELSE 0 END AS orderly,
-            SUM(wssc.stu_relation) + SUM(wspc.par_relation) + CASE WHEN (SUM(wssc.stu_relation) + SUM(wspc.par_relation) = 0) THEN 1 ELSE 0 END AS relation,
-            CASE WHEN (SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) + CASE WHEN (SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) = 0) THEN 1 ELSE 0 END > 0)
-                AND (SUM(wssc.stu_relation) + SUM(wspc.par_relation) + CASE WHEN (SUM(wssc.stu_relation) + SUM(wspc.par_relation) = 0) THEN 1 ELSE 0 END > 0) THEN '結局一'
-                 WHEN (SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) + CASE WHEN (SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) = 0) THEN 1 ELSE 0 END < 0)
-                     AND (SUM(wssc.stu_relation) + SUM(wspc.par_relation) + CASE WHEN (SUM(wssc.stu_relation) + SUM(wspc.par_relation) = 0) THEN 1 ELSE 0 END > 0) THEN '結局二'
-                 WHEN (SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) + CASE WHEN (SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) = 0) THEN 1 ELSE 0 END < 0)
-                     AND (SUM(wssc.stu_relation) + SUM(wspc.par_relation) + CASE WHEN (SUM(wssc.stu_relation) + SUM(wspc.par_relation) = 0) THEN 1 ELSE 0 END < 0) THEN '結局三'
-                 WHEN (SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) + CASE WHEN (SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) = 0) THEN 1 ELSE 0 END > 0)
-                     AND (SUM(wssc.stu_relation) + SUM(wspc.par_relation) + CASE WHEN (SUM(wssc.stu_relation) + SUM(wspc.par_relation) = 0) THEN 1 ELSE 0 END < 0) THEN '結局四'
+            SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) + CASE WHEN (SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) = 0) THEN -1 ELSE 0 END AS orderly,
+            SUM(wssc.stu_relation) + SUM(wspc.par_relation) + CASE WHEN (SUM(wssc.stu_relation) + SUM(wspc.par_relation) = 0) THEN -1 ELSE 0 END AS relation,
+            CASE WHEN (SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) + CASE WHEN (SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) = 0) THEN -1 ELSE 0 END > 0)
+                AND (SUM(wssc.stu_relation) + SUM(wspc.par_relation) + CASE WHEN (SUM(wssc.stu_relation) + SUM(wspc.par_relation) = 0) THEN -1 ELSE 0 END > 0) THEN '結局一'
+                 WHEN (SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) + CASE WHEN (SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) = 0) THEN -1 ELSE 0 END < 0)
+                     AND (SUM(wssc.stu_relation) + SUM(wspc.par_relation) + CASE WHEN (SUM(wssc.stu_relation) + SUM(wspc.par_relation) = 0) THEN -1 ELSE 0 END > 0) THEN '結局二'
+                 WHEN (SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) + CASE WHEN (SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) = 0) THEN -1 ELSE 0 END < 0)
+                     AND (SUM(wssc.stu_relation) + SUM(wspc.par_relation) + CASE WHEN (SUM(wssc.stu_relation) + SUM(wspc.par_relation) = 0) THEN -1 ELSE 0 END < 0) THEN '結局三'
+                 WHEN (SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) + CASE WHEN (SUM(wssc.stu_orderly) + SUM(wspc.par_orderly) = 0) THEN -1 ELSE 0 END > 0)
+                     AND (SUM(wssc.stu_relation) + SUM(wspc.par_relation) + CASE WHEN (SUM(wssc.stu_relation) + SUM(wspc.par_relation) = 0) THEN -1 ELSE 0 END < 0) THEN '結局四'
                  ELSE '其他結局'
                 END AS result
         FROM wa_script_question wsq
