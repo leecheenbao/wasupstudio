@@ -21,6 +21,8 @@ public enum CommonError implements BusinessError {
     PERMISSION_DENIED(HttpStatus.FORBIDDEN, "000013", "沒有權限觀看"),
     CANNOT_DELETE(HttpStatus.BAD_REQUEST, "000014", "無法刪除"),
     TASK_NOT_EXISTED(HttpStatus.BAD_REQUEST, "000015", "任務不存在"),
+    FILE_TYPE_ERROR(HttpStatus.BAD_REQUEST, "000016", "檔案類型錯誤"),
+    FILE_SIZE_ERROR(HttpStatus.BAD_REQUEST, "000017", "檔案大小超過限制(30M)"),
     ;
 
     private final String code;

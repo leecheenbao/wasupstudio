@@ -2,6 +2,8 @@ package com.wasupstudio.util;
 
 import com.wasupstudio.constant.ProjectConstant;
 import com.wasupstudio.enums.FileTypeEnum;
+import com.wasupstudio.exception.BusinessException;
+import com.wasupstudio.exception.CommonError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,10 +20,10 @@ import java.text.DecimalFormat;
 public class FileUtils {
 
 
-    public static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-    public static final long MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB;
-    public static final long MAX_VIDEO_SIZE = 1024 * 1024 * 1024; // 1G;
-    public static final long MAX_PDF_SIZE = 5 * 1024 * 1024; // 5M;
+    public static final long MAX_FILE_SIZE = 30 * 1024 * 1024;
+    public static final long MAX_IMAGE_SIZE = 30 * 1024 * 1024;
+    public static final long MAX_VIDEO_SIZE = 1024 * 1024 * 1024;
+    public static final long MAX_PDF_SIZE = 30 * 1024 * 1024;
 
     // 定義有效的影音文件副檔名
     private static final String[] VALID_VIDEO_TYPES = {"mp4", "avi", "mkv", "wmv"};
@@ -36,19 +38,20 @@ public class FileUtils {
         String mediaType = checkFileType(file.getOriginalFilename());
         switch (mediaType) {
             case ProjectConstant.FileType.DOCS: {
-                return file.getSize() >= MAX_FILE_SIZE;
+                return file.getSize() <= MAX_FILE_SIZE;
             }
             case ProjectConstant.FileType.IMAGE: {
-                return file.getSize() >= MAX_IMAGE_SIZE;
+                return file.getSize() <= MAX_IMAGE_SIZE;
             }
             case ProjectConstant.FileType.VIDEO: {
-                return file.getSize() >= MAX_VIDEO_SIZE;
+                return file.getSize() <= MAX_VIDEO_SIZE;
             }
             case ProjectConstant.FileType.PDF: {
-                return file.getSize() >= MAX_PDF_SIZE;
+                return file.getSize() <= MAX_PDF_SIZE;
             }
+            default:
+                throw new BusinessException(CommonError.FILE_SIZE_ERROR);
         }
-        return true;
     }
 
     public static boolean validateFileExtension(String fileName) {
@@ -60,7 +63,7 @@ public class FileUtils {
                 return false;
             }
         }
-        return true;
+        throw new BusinessException(CommonError.FILE_TYPE_ERROR);
     }
 
     /**
@@ -113,8 +116,9 @@ public class FileUtils {
             return FileTypeEnum.DOCS.getType();
         } else if (isPdfFile(fileExtension, VALID_PDF_TYPES)) {
             return FileTypeEnum.PDF.getType();
+        } else {
+            throw new BusinessException(CommonError.FILE_TYPE_ERROR);
         }
-        return FileTypeEnum.PDF.getType();
     }
 
     // 判斷是否為影音文件
