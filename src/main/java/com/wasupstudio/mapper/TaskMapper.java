@@ -12,4 +12,7 @@ public interface TaskMapper extends CommonMapper<TaskEntity> {
 
     @Select("SELECT * FROM wa_task WHERE member_id =#{memberId}")
     List<TaskEntity> getMyTask(Integer memberId);
+
+    @Select("SELECT * FROM wa_task ORDER BY create_time DESC")
+    List<TaskEntity> findAllData();
 }

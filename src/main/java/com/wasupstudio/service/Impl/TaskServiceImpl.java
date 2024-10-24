@@ -61,7 +61,8 @@ public class TaskServiceImpl extends AbstractService<TaskEntity> implements Task
     @Override
     public BasePageInfo findAllData() {
 
-        List<TaskEntity> list = this.findAll();
+        List<TaskEntity> list = taskMapper.findAllData();
+
         BasePageInfo basePageInfo = new BasePageInfo<>();
         basePageInfo.setList(list);
         basePageInfo.setTotal(list.size());
