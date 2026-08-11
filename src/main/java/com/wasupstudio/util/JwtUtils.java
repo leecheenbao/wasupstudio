@@ -14,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.xml.bind.DatatypeConverter;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -145,43 +144,31 @@ public class JwtUtils {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Claims claims = getTokenBody(authentication.getCredentials().toString());
         Map<String, Object> map = (Map<String, Object>) claims.get(SecurityConstants.TOKEN_MEMBER_INFO);
-        return Optional.ofNullable(map).map(memberMap -> {
-            String dateString = (String) memberMap.get("birthday");
-            LocalDate birthday = LocalDate.parse(dateString);
-            MemberEntity memberEntity = new MemberEntity();
-            memberEntity.setId((Integer) memberMap.get("id"));
-            memberEntity.setPhone((String) memberMap.get("phone"));
-            memberEntity.setEmail((String) memberMap.get("email"));
-            memberEntity.setStatus((Integer) memberMap.get("status"));
-            memberEntity.setGrade((Integer) memberMap.get("grade"));
-            memberEntity.setOrganization((String) memberMap.get("organization"));
-            memberEntity.setBirthday(birthday.toString());
-            memberEntity.setRole(MemberEntity.Role.valueOf((String) memberMap.get("role")));
-            memberEntity.setName((String) memberMap.get("name"));
-
-            return memberEntity;
-        }).orElse(null);
+        return Optional.ofNullable(map).map(JwtUtils::toMemberEntity).orElse(null);
     }
 
     public static MemberEntity getMember(Authentication authentication) {
         Claims claims = getTokenBody(authentication.getCredentials().toString());
         Map<String, Object> map = (Map<String, Object>) claims.get(SecurityConstants.TOKEN_MEMBER_INFO);
-        return Optional.ofNullable(map).map(memberMap -> {
-            String dateString = (String) memberMap.get("birthday");
-            LocalDate birthday = LocalDate.parse(dateString);
-            MemberEntity memberEntity = new MemberEntity();
-            memberEntity.setId((Integer) memberMap.get("id"));
-            memberEntity.setPhone((String) memberMap.get("phone"));
-            memberEntity.setEmail((String) memberMap.get("email"));
-            memberEntity.setStatus((Integer) memberMap.get("status"));
-            memberEntity.setGrade((Integer) memberMap.get("grade"));
-            memberEntity.setOrganization((String) memberMap.get("organization"));
-            memberEntity.setBirthday(birthday.toString());
-            memberEntity.setRole(MemberEntity.Role.valueOf((String) memberMap.get("role")));
-            memberEntity.setName((String) memberMap.get("name"));
+        return Optional.ofNullable(map).map(JwtUtils::toMemberEntity).orElse(null);
+    }
 
-            return memberEntity;
-        }).orElse(null);
+    /**
+     * 將 JWT claim 還原為 MemberEntity。
+     * birthday 可能為 null（Google 登入或舊會員未填），不可 LocalDate.parse。
+     */
+    private static MemberEntity toMemberEntity(Map<String, Object> memberMap) {
+        MemberEntity memberEntity = new MemberEntity();
+        memberEntity.setId((Integer) memberMap.get("id"));
+        memberEntity.setPhone((String) memberMap.get("phone"));
+        memberEntity.setEmail((String) memberMap.get("email"));
+        memberEntity.setStatus((Integer) memberMap.get("status"));
+        memberEntity.setGrade((Integer) memberMap.get("grade"));
+        memberEntity.setOrganization((String) memberMap.get("organization"));
+        memberEntity.setBirthday((String) memberMap.get("birthday"));
+        memberEntity.setRole(MemberEntity.Role.valueOf((String) memberMap.get("role")));
+        memberEntity.setName((String) memberMap.get("name"));
+        return memberEntity;
     }
 }
 
